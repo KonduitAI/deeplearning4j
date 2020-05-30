@@ -35,15 +35,16 @@ namespace sd {
     }
 
     template<typename X, typename Y>
-    void ReductionFloatLoops<X, Y>::wrapper(const int opNum, const X *x, const Nd4jLong *xShapeInfo, Y *z,
-                                            const Nd4jLong *zShapeInfo, const Nd4jLong *tadShapeInfo,
-                                            const  Nd4jLong *tadOffsets, Y *extraParams, int64_t start, int64_t stop) {
+    void ReductionFloatLoops<X, Y>::wrapper(const int opNum, const X *x, const Nd4jLong *xShapeInfo,
+                                            Y *z, const Nd4jLong *zShapeInfo,
+                                            const Nd4jLong *tadShapeInfo, const Nd4jLong *tadOffsets,
+                                            Y *extraParams,
+                                            int64_t start, int64_t stop) {
 #ifndef INLINE_LOOPS
         DISPATCH_BY_OPNUM_TT(innerloopReduce, PARAMS(x, xShapeInfo, z, zShapeInfo, tadShapeInfo, tadOffsets, extraParams, start, stop), REDUCE_FLOAT_OPS);
 #endif
     }
-
-    BUILD_DOUBLE_TEMPLATE(template class ND4J_EXPORT ReductionFloatLoops, , LIBND4J_TYPES, FLOAT_TYPES_3);
+     
 }
 
 
