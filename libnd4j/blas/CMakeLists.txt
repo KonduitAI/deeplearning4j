@@ -307,7 +307,8 @@ elseif(SD_CPU)
 
 
     file(GLOB_RECURSE COMPILATION_UNITS false ../include/ops/declarable/helpers/cpu/compilation_units/*.cpp.in 
-    ../include/loops/cpu/compilation_units/*.cpp.in ../include/helpers/cpu/loops/*.cpp.in)
+    ../include/loops/cpu/compilation_units/*.cpp.in ../include/helpers/cpu/loops/*.cpp.in
+    ../include/ops/impl/compilation_units/*.cpp.in)
 
     foreach(FL_ITEM ${COMPILATION_UNITS})   
         genCompilation(FL_ITEM)
