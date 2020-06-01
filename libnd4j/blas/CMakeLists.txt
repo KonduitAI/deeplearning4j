@@ -229,7 +229,8 @@ if(SD_CUDA)
         file(GLOB_RECURSE LOOPS_SOURCES_CUDA false ../include/loops/*.cu)
 
 
-        file(GLOB_RECURSE COMPILATION_UNITS false ../include/loops/cuda/compilation_units/*.cu.in)
+        file(GLOB_RECURSE COMPILATION_UNITS false ../include/loops/cuda/compilation_units/*.cu.in
+          ../include/ops/impl/compilation_units/*.cpp.in)
 
         foreach(FL_ITEM ${COMPILATION_UNITS})   
             genCompilation(FL_ITEM)

@@ -21,13 +21,12 @@
 # defined inside { include/types/types.h, include/system/type_boilerplate.h}
 # OUTPUT:
 # $CUSTOMOPS_GENERIC_SOURCES  generated files will be added into this List
-# variable
 #////////////////////////////////////////////////////////////////////////////////
 #  A simple template-configuration file example:
 # // hints and defines what types will be generated
 # #cmakedefine LIBND4J_TYPE_GEN 
 # #cmakedefine FLOAT_TYPE_GEN 
-# //below if defines blocks are needed for correctly handling multiple types
+# // below if defines blocks are needed for correctly handling multiple types
 # #if  defined(LIBND4J_TYPE_GEN)
 #  BUILD_DOUBLE_TEMPLATE(template void someFunc, (arg_list,..), 
 #                          LIBND4J_TYPES_@FL_TYPE_INDEX@, INDEXING_TYPES);
