@@ -222,7 +222,7 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>chosen</artifactId>
-            <version>0.9.8</version>
+            <version>1.8.7</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
