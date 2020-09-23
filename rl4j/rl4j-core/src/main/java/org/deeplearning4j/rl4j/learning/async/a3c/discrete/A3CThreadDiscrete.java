@@ -29,7 +29,6 @@ import org.deeplearning4j.rl4j.policy.Policy;
 import org.deeplearning4j.rl4j.space.DiscreteSpace;
 import org.nd4j.linalg.api.rng.Random;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.api.rng.Random;
 
 /**
  * @author rubenfiszel (ruben.fiszel@epfl.ch) 7/23/16.
