@@ -43,3 +43,17 @@ The core logic will contain the following components:
 1. Loading onnx pb files
 2. A graph runner in similar nature to nd4j-tensorflow
 3. Interop with onnxruntime's version of an ndarray/tensor
+
+Using different accelerators/backends
+-----------------------------------------
+
+Similar to nd4j-tensorflow which uses javacpp for the specific version of
+tensorflow to use, this module will rely on the user picking the right dependency
+to link against. Different builds of cpu, gpu, .. exist [here](https://repo1.maven.org/maven2/org/bytedeco/tensorflow/1.15.3-1.5.4/)
+The equivalent of this in onnxruntime can be found [here](https://repo1.maven.org/maven2/org/bytedeco/onnxruntime/1.4.0-1.5.4/)
+
+The user will need to include the version of onnxruntime they wish to use
+similar to how you link against a particular implementation in a c library
+or include a backend in nd4j. This will happen via maven.
+
+
