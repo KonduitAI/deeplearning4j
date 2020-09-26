@@ -141,4 +141,8 @@ public class LSTMBlock extends DynamicCustomOp {
         return "BlockLSTM";
     }
 
+    @Override
+    public String onnxName() {
+        return "LSTM";
+    }
 }

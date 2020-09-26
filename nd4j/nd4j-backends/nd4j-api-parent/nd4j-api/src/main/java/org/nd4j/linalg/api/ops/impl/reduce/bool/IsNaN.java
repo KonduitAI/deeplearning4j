@@ -60,10 +60,14 @@ public class IsNaN extends BaseReduceBoolOp {
     }
 
     @Override
-    public String onnxName() {
-        return "hasNaNs";
+    public String[] onnxNames() {
+        return new String[]{"hasNaNs","isNaN"};
     }
 
+    @Override
+    public String tensorflowName() {
+        return "IsNan";
+    }
 
     @Override
     public List<SDVariable> doDiff(List<SDVariable> i_v) {

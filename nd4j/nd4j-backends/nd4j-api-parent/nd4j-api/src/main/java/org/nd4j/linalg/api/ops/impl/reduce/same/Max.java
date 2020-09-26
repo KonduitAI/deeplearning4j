@@ -83,8 +83,8 @@ public class Max extends BaseReduceSameOp {
     }
 
     @Override
-    public String onnxName() {
-        return "ReduceMax";
+    public String[] onnxNames() {
+        return new String[] {"ReduceMax","Max"};
     }
 
     @Override

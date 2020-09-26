@@ -64,6 +64,15 @@ public class IsInf extends BaseReduceBoolOp {
         return "HasInf";
     }
 
+    @Override
+    public String[] onnxNames() {
+        return new String[]{"HasInf","IsInf"};
+    }
+
+    @Override
+    public String tensorflowName() {
+        return "IsInf";
+    }
 
     @Override
     public List<SDVariable> doDiff(List<SDVariable> i_v) {

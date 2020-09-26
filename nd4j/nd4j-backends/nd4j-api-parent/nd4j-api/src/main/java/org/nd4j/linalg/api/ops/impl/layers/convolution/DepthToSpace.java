@@ -129,6 +129,11 @@ public class DepthToSpace extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "DepthToSpace";
+    }
+
+    @Override
     public List<DataType> calculateOutputDataTypes(List<DataType> dataTypes){
         return Collections.singletonList(dataTypes.get(0));
     }

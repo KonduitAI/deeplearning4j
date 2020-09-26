@@ -45,7 +45,7 @@ public class Flatten extends DynamicCustomOp {
         for (val in:inputs)
             inputArguments.add(in);
 
-        iArguments.add(Long.valueOf((int) this.order));
+        iArguments.add((long) this.order);
     }
 
     public Flatten(INDArray output, INDArray... inputs) {
@@ -58,6 +58,16 @@ public class Flatten extends DynamicCustomOp {
         super(sameDiff, inputs);
         this.order = order;
         addIArgument(order);
+    }
+
+    @Override
+    public String onnxName() {
+        return "Flatten";
+    }
+
+    @Override
+    public String tensorflowName() {
+        return super.tensorflowName();
     }
 
     @Override

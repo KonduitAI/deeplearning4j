@@ -108,6 +108,11 @@ public class Pad extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "Pad";
+    }
+
+    @Override
     public void initFromTensorFlow(NodeDef nodeDef, SameDiff initWith, Map<String, AttrValue> attributesForNode, GraphDef graph) {
         //Based on TF codebase: gen_array_ops.mirror_pad is osed for BOTH REFLECT and SYMMETRIC mode. Hence only constant being imported here
         this.mode = Mode.CONSTANT;

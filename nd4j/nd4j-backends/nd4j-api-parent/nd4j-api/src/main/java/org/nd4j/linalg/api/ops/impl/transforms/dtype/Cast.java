@@ -124,6 +124,11 @@ public class Cast extends BaseDynamicTransformOp {
     }
 
     @Override
+    public String onnxName() {
+        return "Cast";
+    }
+
+    @Override
     public List<SDVariable> doDiff(List<SDVariable> i_v) {
         //If input is numerical: reverse cast. Otherwise 0
         if(arg().dataType().isFPType()){

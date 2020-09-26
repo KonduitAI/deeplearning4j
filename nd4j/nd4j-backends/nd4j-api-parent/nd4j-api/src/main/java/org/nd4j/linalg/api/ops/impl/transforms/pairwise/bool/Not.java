@@ -63,7 +63,12 @@ public class Not extends BaseTransformBoolOp {
     public String onnxName() {
         return "Not";
     }
-    
+
+    @Override
+    public String tensorflowName() {
+        return "LogicalNot";
+    }
+
     @Override
     public List<SDVariable> doDiff(List<SDVariable> f1) {
         return Collections.singletonList(sameDiff.zerosLike(arg()));

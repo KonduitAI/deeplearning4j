@@ -62,7 +62,7 @@ public class Sign extends BaseTransformSameOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op found for " + opName());
+        return "Sign";
     }
 
     @Override

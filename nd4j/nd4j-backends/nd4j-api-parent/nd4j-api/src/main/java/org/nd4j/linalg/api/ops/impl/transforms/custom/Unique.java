@@ -52,6 +52,11 @@ public class Unique extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "Unique";
+    }
+
+    @Override
     public List<SDVariable> doDiff(List<SDVariable> i_v) {
         throw new UnsupportedOperationException("Not implemented yet");
     }

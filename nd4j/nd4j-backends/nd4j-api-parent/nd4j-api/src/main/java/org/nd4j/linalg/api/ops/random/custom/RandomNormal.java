@@ -59,6 +59,11 @@ public class RandomNormal extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "RandomNormal";
+    }
+
+    @Override
     public List<SDVariable> doDiff(List<SDVariable> grad){
         return Collections.singletonList(sameDiff.zerosLike(arg()));
     }

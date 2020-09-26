@@ -59,6 +59,11 @@ public class Where extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "Where";
+    }
+
+    @Override
     public List<DataType> calculateOutputDataTypes(List<DataType> inputTypes) {
         Preconditions.checkState(inputTypes != null && (inputTypes.size() == 1 || inputTypes.size() == 3),
                 "Expected 1 or 3 input types, got %s for op %s",inputTypes, getClass());

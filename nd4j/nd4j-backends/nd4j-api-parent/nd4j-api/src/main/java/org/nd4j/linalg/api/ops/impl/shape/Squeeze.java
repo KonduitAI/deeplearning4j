@@ -57,7 +57,7 @@ public class Squeeze extends DynamicCustomOp {
         nodeDef.getAttrMap().get("squeeze_dims");
         List<Long> dimList = attributesForNode.get("squeeze_dims").getList().getIList();
         squeezeDims = new int[dimList.size()];
-        for( int i=0; i<dimList.size(); i++ )
+        for( int i = 0; i < dimList.size(); i++)
             squeezeDims[i] = dimList.get(i).intValue();
         addIArgument(squeezeDims);
     }
@@ -69,6 +69,11 @@ public class Squeeze extends DynamicCustomOp {
 
     @Override
     public String tensorflowName() {
+        return "Squeeze";
+    }
+
+    @Override
+    public String onnxName() {
         return "Squeeze";
     }
 

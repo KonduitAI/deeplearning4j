@@ -23,7 +23,8 @@ import org.nd4j.imports.descriptors.properties.AttributeAdapter;
 import java.lang.reflect.Field;
 
 @AllArgsConstructor
-public class SizeThresholdIntArrayIntIndexAdpater implements AttributeAdapter {
+public class SizeThresholdIntArrayIntIndexAdapter implements AttributeAdapter {
+
     private int index;
     private int sizeThreshold;
     private int fallbackIndex;

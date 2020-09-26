@@ -58,7 +58,7 @@ public class Eye extends DynamicCustomOp {
     public Eye() {
     }
 
-    public Eye(@NonNull INDArray rows){
+    public Eye(@NonNull INDArray rows) {
         this(rows.getInt(0));
         Preconditions.checkArgument(rows.isScalar(), "Rows INDArray must be a scalar");
     }
@@ -150,7 +150,22 @@ public class Eye extends DynamicCustomOp {
     }
 
     @Override
-    public List<LongShapeDescriptor> calculateOutputShape(){
+    public void addBArgument(boolean... arg) {
+        super.addBArgument(arg);
+    }
+
+    @Override
+    public String onnxName() {
+        return "EyeLike";
+    }
+
+    @Override
+    public String tensorflowName() {
+        return super.tensorflowName();
+    }
+
+    @Override
+    public List<LongShapeDescriptor> calculateOutputShape() {
         List<LongShapeDescriptor> l = super.calculateOutputShape();
         if(dataType != null && l != null && l.size() > 0){
             l.set(0, l.get(0).asDataType(dataType));

@@ -110,7 +110,7 @@ public class ReverseSequence extends DynamicCustomOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op opName found for " + opName());
+        return "ReverseSequence";
     }
 
     @Override

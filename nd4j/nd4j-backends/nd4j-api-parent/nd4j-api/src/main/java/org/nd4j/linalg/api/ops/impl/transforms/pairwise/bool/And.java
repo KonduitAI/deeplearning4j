@@ -93,12 +93,12 @@ public class And extends BaseTransformBoolOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op opName found for " +  opName());
+        return "and";
     }
 
     @Override
     public String tensorflowName() {
-        throw new NoOpNameFoundException("No Tensorflow op opName found for " +  opName());
+        return "LogicalAnd";
     }
 
     @Override

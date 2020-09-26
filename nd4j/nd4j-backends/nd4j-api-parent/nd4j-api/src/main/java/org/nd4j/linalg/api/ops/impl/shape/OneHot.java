@@ -151,7 +151,7 @@ public class OneHot extends DynamicCustomOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx name found for " + opName());
+        return "OneHot";
     }
 
     @Override

@@ -95,7 +95,7 @@ public class Or extends BaseTransformBoolOp {
 
     @Override
     public String tensorflowName() {
-        throw new NoOpNameFoundException("No tensorflow op name found for " + opName());
+        return "LogicalOr";
     }
 
 

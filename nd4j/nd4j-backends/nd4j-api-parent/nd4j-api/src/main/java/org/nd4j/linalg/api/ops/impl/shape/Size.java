@@ -54,7 +54,7 @@ public class Size extends DynamicCustomOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx name found for shape " + opName());
+        return "Size";
     }
 
     @Override

@@ -18,11 +18,17 @@ package org.nd4j.linalg.api.ops.random.impl;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import onnx.Onnx;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.random.BaseRandomOp;
+import org.tensorflow.framework.AttrValue;
+import org.tensorflow.framework.GraphDef;
+import org.tensorflow.framework.NodeDef;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * DropOut implementation as Op
@@ -64,6 +70,26 @@ public class DropOut extends BaseRandomOp {
     @Override
     public Type opType() {
         return Type.RANDOM ;
+    }
+
+    @Override
+    public void initFromTensorFlow(NodeDef nodeDef, SameDiff initWith, Map<String, AttrValue> attributesForNode, GraphDef graph) {
+        super.initFromTensorFlow(nodeDef, initWith, attributesForNode, graph);
+    }
+
+    @Override
+    public void initFromOnnx(Onnx.NodeProto node, SameDiff initWith, Map<String, Onnx.AttributeProto> attributesForNode, Onnx.GraphProto graph) {
+        super.initFromOnnx(node, initWith, attributesForNode, graph);
+    }
+
+    @Override
+    public String onnxName() {
+        return "Dropout";
+    }
+
+    @Override
+    public String tensorflowName() {
+        return "Dropout";
     }
 
     @Override

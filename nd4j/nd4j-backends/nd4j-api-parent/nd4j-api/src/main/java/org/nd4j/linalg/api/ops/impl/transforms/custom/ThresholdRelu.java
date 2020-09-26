@@ -63,6 +63,16 @@ public class ThresholdRelu extends DynamicCustomOp {
     }
 
     @Override
+    public String tensorflowName() {
+        return "ThresholdedRelu";
+    }
+
+    @Override
+    public String onnxName() {
+        return "ThresholdedRelu";
+    }
+
+    @Override
     public List<DataType> calculateOutputDataTypes(List<DataType> dataTypes) {
         Preconditions
                 .checkArgument(dataTypes != null && dataTypes.size() == 1, "Expected exactly 1 input datatypes, got %s", dataTypes);

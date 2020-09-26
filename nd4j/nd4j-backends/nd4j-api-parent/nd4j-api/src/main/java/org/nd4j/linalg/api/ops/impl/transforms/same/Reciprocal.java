@@ -56,13 +56,9 @@ public class Reciprocal extends BaseTransformSameOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No  onnx opName found for " + opName());
-    }
-
-    @Override
-    public String tensorflowName() {
         return "Reciprocal";
     }
+
 
     @Override
     public String[] tensorflowNames(){

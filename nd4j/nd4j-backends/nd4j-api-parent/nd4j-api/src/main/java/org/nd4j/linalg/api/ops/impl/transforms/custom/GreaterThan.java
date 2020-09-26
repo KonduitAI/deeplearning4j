@@ -64,7 +64,7 @@ public class GreaterThan extends BaseDynamicTransformOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op opName found for " +  opName());
+        return "Greater";
     }
 
     @Override

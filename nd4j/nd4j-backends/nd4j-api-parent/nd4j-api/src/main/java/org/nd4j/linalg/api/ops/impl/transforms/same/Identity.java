@@ -52,9 +52,10 @@ public class Identity extends BaseDynamicTransformOp {
         return "identity";
     }
 
+
     @Override
-    public String onnxName() {
-        return "Constant";
+    public String[] onnxNames() {
+        return new String[]{"Identity","Constant"};
     }
 
     @Override

@@ -293,9 +293,9 @@ public class TFGraphMapper {
                             String origInName = nd.getInput(i);
                             String inName = stripControl(origInName);
 
-                            if(inName.endsWith(":0")){
+                            if(inName.endsWith(":0")) {
                                 //Strip ":0" suffix. Some ops can depend on placeholders, like "image_tensor:0" but in SameDiff this is a variable called "image_tensor"
-                                inName = inName.substring(0, inName.length()-2);
+                                inName = inName.substring(0, inName.length() - 2);
                             }
 
                             boolean isControlDep = isControlDep(origInName);
@@ -323,11 +323,11 @@ public class TFGraphMapper {
                             if (!isControlDep && (v.getInputsForOp() == null || !v.getInputsForOp().contains(name))) {
                                 //May already be present - for example, add(x,x)
                                 if (v.getInputsForOp() == null)
-                                    v.setInputsForOp(new ArrayList<String>());
+                                    v.setInputsForOp(new ArrayList<>());
                                 v.getInputsForOp().add(name);
                             } else if (isControlDep) {
                                 if (v.getControlDepsForOp() == null)
-                                    v.setControlDepsForOp(new ArrayList<String>());
+                                    v.setControlDepsForOp(new ArrayList<>());
                                 if (!v.getControlDepsForOp().contains(name)) {
                                     v.getControlDepsForOp().add(name);
                                 }
@@ -392,6 +392,7 @@ public class TFGraphMapper {
                             sd.getVariables().put(varName, outVars[i]);
                             log.trace("Added variable to graph: {} (output of op {})", varName, name);
                         }
+
                         sd.getOps().get(name).setOutputsOfOp(outNames);
 
                         log.trace("Imported op: {} (name={})", opName, name);
@@ -450,7 +451,7 @@ public class TFGraphMapper {
 
                         if(inName.endsWith(":0")){
                             //Strip ":0" suffix. Some ops can depend on placeholders, like "image_tensor:0" but in SameDiff this is a variable called "image_tensor"
-                            inName = inName.substring(0, inName.length()-2);
+                            inName = inName.substring(0, inName.length() - 2);
                         }
 
 //                        log.info("Input: {}, {}", s, inName);
@@ -494,7 +495,7 @@ public class TFGraphMapper {
             for (String s : cdOpNames) {
                 SameDiffOp sdo = sd.getOps().get(s);
                 if (sdo.getControlDepFor() == null)
-                    sdo.setControlDepFor(new ArrayList<String>());
+                    sdo.setControlDepFor(new ArrayList<>());
                 List<String> l = sdo.getControlDepFor();
                 if (!l.contains(s))
                     l.add(varName);
@@ -505,7 +506,7 @@ public class TFGraphMapper {
         for (Map.Entry<String, String> e : mergeOpsPostProcess.entrySet()) {
             Variable v = sd.getVariables().get(e.getValue());
             if (v.getInputsForOp() == null)
-                v.setInputsForOp(new ArrayList<String>());
+                v.setInputsForOp(new ArrayList<>());
             v.getInputsForOp().add(e.getKey());
         }
 

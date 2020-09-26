@@ -90,7 +90,7 @@ public class Xor extends BaseTransformBoolOp {
 
     @Override
     public String tensorflowName() {
-        throw new NoOpNameFoundException("No Tensorflow op opName found for " +  opName());
+        return "BitwiseXor";
     }
 
 

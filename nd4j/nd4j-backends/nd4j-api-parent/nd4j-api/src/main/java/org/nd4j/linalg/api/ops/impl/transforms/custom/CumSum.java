@@ -87,6 +87,11 @@ public class CumSum extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "CumSum";
+    }
+
+    @Override
     public Map<String, Map<String, AttributeAdapter>> attributeAdaptersForFunction() {
         Map<String, Map<String, AttributeAdapter>> ret = new HashMap<>();
         Map<String, AttributeAdapter> tfMappings = new LinkedHashMap<>();

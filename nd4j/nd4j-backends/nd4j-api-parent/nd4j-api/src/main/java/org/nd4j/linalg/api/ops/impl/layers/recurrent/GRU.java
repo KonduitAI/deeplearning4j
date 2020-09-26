@@ -61,6 +61,16 @@ public class GRU extends DynamicCustomOp {
 
 
     @Override
+    public String onnxName() {
+        return "GRU";
+    }
+
+    @Override
+    public String tensorflowName() {
+       return "GRU";
+    }
+
+    @Override
     public String opName() {
         return "gru";
     }

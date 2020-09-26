@@ -64,7 +64,7 @@ public class Erf extends BaseTransformStrictOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op opName found for " + opName());
+        return "Erf";
     }
 
     @Override

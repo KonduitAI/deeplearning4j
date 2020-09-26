@@ -71,6 +71,11 @@ public class Mean extends BaseReduceFloatOp {
     }
 
     @Override
+    public String[] onnxNames() {
+        return new String[]{"Mean","ReduceMean"};
+    }
+
+    @Override
     public String onnxName() {
         return "ReduceMean";
     }

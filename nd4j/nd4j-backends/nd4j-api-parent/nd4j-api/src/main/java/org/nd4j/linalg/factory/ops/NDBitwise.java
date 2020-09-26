@@ -20,7 +20,7 @@ package org.nd4j.linalg.factory.ops;
 
 import static org.nd4j.linalg.factory.NDValidation.isSameType;
 
-import org.nd4j.common.base.Preconditions;
+import org.nd4j.base.Preconditions;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.NDValidation;
 import org.nd4j.linalg.factory.Nd4j;
@@ -132,7 +132,7 @@ public class NDBitwise {
 
   /**
    * Bitwise left cyclical shift operation. Supports broadcasting.<br>
-   * Unlike {@link #leftShift(INDArray, INDArray)} the bits will "wrap around":<br>
+   * Unlike #leftShift(INDArray, INDArray) the bits will "wrap around":<br>
    * {@code leftShiftCyclic(01110000, 2) -> 11000001}<br>
    *
    * @param x Input to be bit shifted (INT type)
@@ -178,7 +178,7 @@ public class NDBitwise {
 
   /**
    * Bitwise right cyclical shift operation. Supports broadcasting.<br>
-   * Unlike {@link #rightShift(INDArray, INDArray)} the bits will "wrap around":<br>
+   * Unlike rightShift(INDArray, INDArray) the bits will "wrap around":<br>
    * {@code rightShiftCyclic(00001110, 2) -> 10000011}<br>
    *
    * @param x Input to be bit shifted (INT type)

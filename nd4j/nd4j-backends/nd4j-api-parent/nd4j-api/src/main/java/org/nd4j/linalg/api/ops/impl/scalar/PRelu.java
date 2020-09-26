@@ -61,12 +61,13 @@ public class PRelu extends DynamicCustomOp {
     }
 
     @Override
-    public String onnxName() { throw new NoOpNameFoundException("No onnx op opName found for " +  opName());
+    public String onnxName() {
+        return "PRelu";
     }
 
     @Override
     public String tensorflowName() {
-        throw new NoOpNameFoundException("No tensorflow op opName found for " +  opName());
+        return "PRelu";
     }
 
     @Override

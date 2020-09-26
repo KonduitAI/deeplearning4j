@@ -49,6 +49,11 @@ public class Split extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "Split";
+    }
+
+    @Override
     public void initFromTensorFlow(NodeDef nodeDef, SameDiff initWith, Map<String, AttrValue> attributesForNode, GraphDef graph) {
         val numSplits = (int) attributesForNode.get("num_split").getI();
         this.numSplit = numSplits;

@@ -74,7 +74,7 @@ public class Slice extends DynamicCustomOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx opName found for " + opName());
+        return "Slice";
     }
 
     @Override

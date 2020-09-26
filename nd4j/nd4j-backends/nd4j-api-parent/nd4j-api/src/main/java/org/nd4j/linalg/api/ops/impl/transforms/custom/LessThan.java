@@ -64,12 +64,12 @@ public class LessThan extends BaseDynamicTransformOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op opName found for " +  opName());
+        return "Less";
     }
 
     @Override
     public String tensorflowName() {
-      return "Less";
+        return "Less";
     }
 
 

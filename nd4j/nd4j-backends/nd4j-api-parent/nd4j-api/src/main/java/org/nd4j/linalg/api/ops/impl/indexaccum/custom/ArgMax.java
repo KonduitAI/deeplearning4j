@@ -20,6 +20,9 @@ import lombok.Data;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.common.base.Preconditions;
+import org.nd4j.imports.NoOpNameFoundException;
+import org.nd4j.imports.descriptors.properties.AttributeAdapter;
+import org.nd4j.imports.descriptors.properties.PropertyMapping;
 import org.nd4j.imports.graphmapper.tf.TFGraphMapper;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -28,12 +31,11 @@ import org.tensorflow.framework.AttrValue;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.framework.NodeDef;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class ArgMax extends DynamicCustomOp {
+
     protected boolean keepDims = false;
     private int[] dimensions;
 
@@ -90,6 +92,43 @@ public class ArgMax extends DynamicCustomOp {
     @Override
     public String tensorflowName() {
         return "ArgMax";
+    }
+
+    @Override
+    public String onnxName() {
+        return "ArgMax";
+    }
+
+    @Override
+    public Map<String, Map<String, AttributeAdapter>> attributeAdaptersForFunction() {
+        return super.attributeAdaptersForFunction();
+    }
+
+    @Override
+    public Map<String, Map<String, PropertyMapping>> mappingsForFunction() {
+        Map<String, Map<String, PropertyMapping>> ret = new LinkedHashMap<>();
+        Map<String, PropertyMapping> map = new HashMap<>();
+
+        PropertyMapping propertyMapping = PropertyMapping.builder()
+                .onnxAttrName("axis")
+                .tfAttrName("axis")
+                .propertyNames(new String[]{"dimensions"})
+                .build();
+
+        try {
+            ret.put(onnxName(), map);
+        } catch (NoOpNameFoundException e) {
+            //ignore
+        }
+
+
+        try {
+            ret.put(tensorflowName(), map);
+        } catch (NoOpNameFoundException e) {
+            //ignore
+        }
+
+        return ret;
     }
 
     @Override

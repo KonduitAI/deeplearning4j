@@ -62,6 +62,11 @@ public class TopK extends DynamicCustomOp {
     }
 
     @Override
+    public String onnxName() {
+        return "TopK";
+    }
+
+    @Override
     public void initFromTensorFlow(NodeDef nodeDef, SameDiff initWith, Map<String, AttrValue> attributesForNode, GraphDef graph) {
 
         String thisName = nodeDef.getName();

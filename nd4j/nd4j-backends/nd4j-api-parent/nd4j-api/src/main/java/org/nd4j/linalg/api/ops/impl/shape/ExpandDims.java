@@ -138,8 +138,7 @@ public class ExpandDims extends DynamicCustomOp {
 
     @Override
     public String onnxName() {
-        throw new NoOpNameFoundException("No onnx op opName found for " + opName());
-
+        return "Expand";
     }
 
     @Override

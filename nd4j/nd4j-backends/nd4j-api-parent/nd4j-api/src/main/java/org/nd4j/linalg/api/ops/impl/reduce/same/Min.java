@@ -65,8 +65,8 @@ public class Min extends BaseReduceSameOp {
     }
 
     @Override
-    public String onnxName() {
-        return "ReduceMin";
+    public String[] onnxNames() {
+        return new String[] {"ReduceMin","Min"};
     }
 
     @Override
