@@ -1,7 +1,7 @@
 # Onnx runtime module
 
 ## Status
-Proposed
+Accepted
 
 Proposed by: Adam Gibson (23-09-2020)
 
