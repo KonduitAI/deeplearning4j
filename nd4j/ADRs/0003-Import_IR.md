@@ -36,7 +36,7 @@ This could be a future file format depending on how the framework evolves. For n
 
 An example can be found under: src/main/proto/nd4j/nd4j.proto
 
-## Decision
+## Proposal
 
 Similar to [ONNX](https://onnx.ai/) and  [Tensorflow](https://tensorflow.org/) we will use protobuf for expressing an attribute based file format mapping samediff/nd4j operations to this format. We will have a translation layer that handles mapping from attributes to the ordered arguments approach reflected in samediff/nd4j.
 
@@ -85,7 +85,7 @@ This bridge would allow for the following benefits:
 Similar to onnx and tensorflow, the goals are as follows:
 
 1. Define an attribute based op schema allowing interop between tensorflow/onnx and nd4j
-2. Within the same opschema, define mappings from attributes to indexed arguments in each list present within libnd4j.
+2. Within the same op schema, define mappings from attributes to indexed arguments in each list present within libnd4j.
 
  We can do that with an  op definition schema similar to tensorflow located at:
 https://github.com/KonduitAI/deeplearning4j/blob/b5f0ec072f3fd0da566e32f82c0e43ca36553f39/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/resources/ops.proto#L1742
@@ -191,6 +191,12 @@ Note above that we add list information to the attribute based declaration from 
 Migration to an attribute based import format makes working with other deep learning frameworks easier in the future.
 
 This may encourage future work to be done to the samediff file format.
+Of note here for prior work is the current code generation
+https://github.com/KonduitAI/dl4j-dev-tools/blob/master/codegen/src/main/ops/org/nd4j/codegen/ops/CNN.kt#L28
+
+While it does have the intended description, it’s kotlin specific and is only available for a very small subset of the ops where pre-created objects were created for specific operations. The goal of this ADR is to expand upon that and make it language agnostic by providing this information in a neutral file format that has code generation with it.
+
+Current code generation efforts can be augmented using this file format. More on this decision making can be found https://github.com/KonduitAI/dl4j-dev-tools/blob/master/codegen/adr/0007-configuration_objects.md
 
 ### Drawbacks
 
@@ -206,4 +212,5 @@ This may encourage future work to be done to the samediff file format.
 3. Easily interops with existing other deep learning frameworks.
 4. No additional dependencies from what's already normal.
 5. Protobuf allows easy code generation for other languages.
+6. Industry standard conventions being used over proprietary tooling reducing friction for adoption for people coming from other frameworks
 
