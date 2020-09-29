@@ -144,35 +144,129 @@ This bridge would allow for the following benefits:
    5. Attribute: A key/value pair with metadata describing type,
    comments, etc. Since the goal of this IR Is interop, we will target
    similarities to onnx while extending [the ONNX IR](https://github.com/onnx/onnx/blob/25fd2c332cf854fd38a92aa8f60d232530ab0065/onnx/onnx.proto#L113) for libnd4j execution
-   use cases
-    Attributes have the following values:
+   use cases.
+   
+   Attributes have the following values:
          
-          a. name: the name of the attribute (STRING)
+   a. name: the name of the attribute (STRING)
          
-          b. type: the type of the attribute, types can have any value listed in line 124 :
+   b. type: the type of the attribute, types can have any value listed in line 124 :
             
-          c. value: one of the above types
+   c. value: one of the above types
           
-          d.  description: description of the attribute
+   d.  description: description of the attribute
           
-    6. Node: The node in a sorted graph. This node will have 1 input and 1 output as well as additonal possible attributes. More in depth:
+    
+   6. Node: The node in a sorted graph. This node will have 1 or more inputs and 1 or more outputs as well as additonal possible attributes. More in depth:
      
-        a. input: string as input name
-        b. output: string as output name
+        a. input: list of strings as input name
+        b. output: list of strings as output names
         c. name: the name of the node itself
         d. operation type: the operator referenced by name
         e. description: the description for the node (optional)
         
      
      
-    7. Graph: A sorted in order directed acyclic graph representing a sequential
+   7. Graph: A sorted in order directed acyclic graph representing a sequential
     set of operations to run. Details below:
     
-     1. List of nodes
-     2. name of note
-     3. list of named tensors as input
-     4. list of named sparse tensors as inputs
-     5. the names of inputs to the graph
-     6. the names of outputs to the graph
+       a. List of nodes
+       
+       b. name of note
+       
+       c. list of named tensors as input
+       
+       d. list of named sparse tensors as inputs
+       
+       e. the names of inputs to the graph
+       
+       f. the names of outputs to the graph
      
-    
+
+##Mapping from import format to lower level representation
+
+In order to convert from a name/attribute based format to nd4j's
+list based format, we need to map the parts of the nd4j graph one by one.
+This section will break down how to map various individual attribute items in
+to the appropriate indexed lists by type.
+
+Using an extension of [onnx's operator/function protos](https://github.com/onnx/onnx/blob/25fd2c332cf854fd38a92aa8f60d232530ab0065/onnx/onnx-operators.proto#L36), we will need to map
+operators we will need to read graphs with operators and functions that
+contain 
+
+First we will breakdown the mappings by type:
+
+Reminder, Nd4j has the following types:
+
+1. t arguments: floating point arguments (float, double,..)
+
+2. integer arguments: integer arguments (long, integer)
+
+3. boolean argument: boolean arguments
+
+4. data type arguments: data types for input/output
+
+5. input arguments: ndarrays for input
+
+6. output arguments: often optional (dynamically created) output ndarray
+arguments. If the user wants to pass in outputs to control memory, they are allowed
+to do so.
+
+7. axis arguments: Integer arguments that represent the dimension(s)
+for an operation to be executed on.
+
+
+ 1. FLOAT: Floating point values (float32, 64,..)
+   2. INT:   Integer values (int32, int64)
+   3. STRING: UTF8 String
+   4. TENSOR: An ndarray
+   5. NODE: An operation in a deeplearning pipeline
+   6. GRAPH: A DAG of NODES
+   7. SPARSE TENSOR: Sparse ndarray
+   8. FLOATS: List of floats
+   9. INTS: List of Integers
+   10. STRINGS: List of strings
+   11. TENSORS: List of Tensors
+   12. GRAPHS: List of GRAPHS
+   13. SPARSE_TENSORS: List of SPARSE_TENSOR
+
+
+Given the 2 sets of types, we will map the 2 types as follows:
+
+Nd4j            IR
+1. T Arguments: FLOAT, FLOATS
+2. Int Arguments: INT, INTS
+3. Boolean Arguments: INTS
+4. Data type arguments: Implicit in the ndarray data types
+5. Input Arguments: Look up inputs for a given node by name
+6. Output Arguments:  Look up given outputs from a given node by name
+7. Axis Arguments: Pulled from the axis attribute on a given op
+
+
+## Consequences
+
+Migrating to an attribute based import format
+will make working with other deep learning frameworks easier in the future.
+
+This may encourage future work to be done to the samediff file format.
+
+### Drawbacks
+
+Yet another file format.
+
+Risk migrating to new file format in the future.
+
+A lot of up front manual work to index set of current operations.
+
+
+### Advantages
+
+Easy to maintain.
+
+Backwards compatible.
+
+Easily interops with existing other deep learning frameworks.
+
+No additional dependencies from what's already normal.
+
+Protobuf allows easy code generation for other languages.

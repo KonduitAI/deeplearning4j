@@ -26,6 +26,7 @@ import org.nd4j.linalg.api.iter.NdIndexIterator;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.factory.Nd4jBackend;
+import org.nd4j.linalg.indexing.*;
 import org.nd4j.linalg.ops.transforms.Transforms;
 import org.nd4j.common.util.ArrayUtil;
 
@@ -492,7 +493,7 @@ public class IndexingTestsC extends BaseNd4jTest {
                 inAxisCount++;
                 continue;
             }
-            if(idxs[i] instanceof NDArrayIndexAll){
+            if(idxs[i] instanceof NDArrayIndexAll) {
                 out[outAxisCount++] = in.size(inAxisCount++);
             } else if(idxs[i] instanceof IntervalIndex){
                 IntervalIndex ii = (IntervalIndex)idxs[i];

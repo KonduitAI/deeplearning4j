@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.nd4j.onnxruntime.runner;
 
+import onnx.Onnx;
 import org.junit.Test;
 import org.nd4j.common.io.ClassPathResource;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -32,6 +33,7 @@ public class OnnxRuntimeRunnerTests {
     @Test
     public void testAdd() throws Exception {
         ClassPathResource classPathResource = new ClassPathResource("add.onnx");
+        Onnx.ModelProto modelProto = Onnx.ModelProto.parseFrom(classPathResource.getInputStream());
         File f = classPathResource.getFile();
         INDArray x = Nd4j.scalar(1.0f).reshape(1,1);
         INDArray y = Nd4j.scalar(1.0f).reshape(1,1);

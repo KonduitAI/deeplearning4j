@@ -11,7 +11,7 @@
 
     <artifactId>nd4j-onnxruntime</artifactId>
 
-    <name>nd4j-onnx</name>
+    <name>nd4j-onnxruntime</name>
 
 
     <properties>
@@ -56,6 +56,12 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
-    
+
 </project>
