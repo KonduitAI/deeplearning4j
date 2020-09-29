@@ -383,7 +383,6 @@ elseif(SD_CPU)
     if (NOT BLAS_LIBRARIES)
         set(BLAS_LIBRARIES "")
     endif()
-    message("Linking libraries: ${LIBND4J_NAME} ${MKLDNN} ${MKLDNN_LIBRARIES} ${OPENBLAS_LIBRARIES} ${BLAS_LIBRARIES} ${CPU_FEATURES}")
     target_link_libraries(${SD_LIBRARY_NAME} ${MKLDNN} ${MKLDNN_LIBRARIES} ${OPENBLAS_LIBRARIES} ${BLAS_LIBRARIES} ${CPU_FEATURES})
 
     if ("${SD_ALL_OPS}" AND "${SD_BUILD_MINIFIER}")
