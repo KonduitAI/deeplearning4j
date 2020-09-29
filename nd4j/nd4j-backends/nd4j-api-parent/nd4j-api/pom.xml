@@ -153,10 +153,12 @@
                             <includeDirectories>
                                 <include>src/main/protobuf/tf</include>
                                 <include>src/main/protobuf/onnx</include>
+                                <include>src/main/protobuf/nd4j</include>
                             </includeDirectories>
                             <inputDirectories>
                                 <include>src/main/protobuf/tf/tensorflow</include>
                                 <include>src/main/protobuf/onnx</include>
+                                <include>src/main/protobuf/nd4j</include>
                             </inputDirectories>
                             <addSources>main</addSources>
                             <cleanOutputFolder>false</cleanOutputFolder>
@@ -174,6 +176,7 @@
                         <include>${project.build.sourceDirectory}/org/tensorflow/**</include>
                         <include>${project.build.sourceDirectory}/tensorflow/**</include>
                         <include>${project.build.sourceDirectory}/onnx/**</include>
+                        <include>${project.build.sourceDirectory}/org/nd4j/ir/**</include>
                     </includes>
                     <token>com.google.protobuf.</token>
                     <value>org.nd4j.shade.protobuf.</value>

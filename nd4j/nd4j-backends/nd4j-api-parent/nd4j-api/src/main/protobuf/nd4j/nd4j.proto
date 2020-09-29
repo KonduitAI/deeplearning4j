@@ -1,5 +1,5 @@
 syntax = "proto3";
-package org.nd4j;
+package org.nd4j.ir;
 
 //Using a subset of onnx, we define a small IR
 //for defining nd4j operations
