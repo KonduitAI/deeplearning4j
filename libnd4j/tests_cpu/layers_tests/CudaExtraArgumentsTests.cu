@@ -30,8 +30,6 @@ class CudaExtraArgumentsTests : public testing::Test {
 public:
 
     CudaExtraArgumentsTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

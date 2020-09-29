@@ -28,8 +28,6 @@ class ExtraArgumentsTests : public testing::Test {
 public:
 
     ExtraArgumentsTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

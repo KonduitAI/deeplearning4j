@@ -163,7 +163,7 @@ TEST_F(NativeOpsTests, ExecIndexReduce_2) {
 TEST_F(NativeOpsTests, ExecBroadcast_1) {
     auto x = NDArrayFactory::create<float>('c', {5, 5});
     auto y = NDArrayFactory::create<float>('c', {5, 1});
-    auto exp = NDArrayFactory::create<float>('c', {5, 5});
+    auto z = NDArrayFactory::create<float>('c', {5, 5});
     x.linspace(1.0);
     y.linspace(2,2);
 #ifdef __CUDABLAS__
@@ -173,7 +173,7 @@ TEST_F(NativeOpsTests, ExecBroadcast_1) {
 
     OpaqueDataBuffer xBuf(x.dataBuffer());
     OpaqueDataBuffer yBuf(y.dataBuffer());
-    OpaqueDataBuffer expBuf(exp.dataBuffer());
+    OpaqueDataBuffer expBuf(z.dataBuffer());
     OpaqueDataBuffer dimBuf(dimension.dataBuffer());
 
     ::execBroadcast(nullptr,
@@ -182,12 +182,12 @@ TEST_F(NativeOpsTests, ExecBroadcast_1) {
                              nullptr,
                              &yBuf, y.shapeInfo(),
                              nullptr,
-                             &expBuf, exp.shapeInfo(),
+                             &expBuf, z.shapeInfo(),
                              nullptr,
                              &dimBuf, dimension.shapeInfo(),
                              nullptr);
 
-    ASSERT_TRUE(exp.e<float>(0) == 3.);
+    ASSERT_TRUE(z.e<float>(0) == 3.);
 #endif
 
 }

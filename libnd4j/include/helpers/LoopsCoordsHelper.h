@@ -435,6 +435,91 @@ namespace sd {
 		return last_offset;
 	}
 
+
+	struct triple_size_t {
+		size_t first;
+		size_t second;
+		size_t third;
+	};
+
+
+	template<bool Last_Index_Faster = true>
+	FORCEINLINE triple_size_t inc_coords(const Nd4jLong* bases, const Nd4jLong* x_strides, const  Nd4jLong* y_strides, const  Nd4jLong* z_strides, Nd4jLong* coords, triple_size_t last_offset, const size_t rank, const size_t skip = 0) {
+
+		Nd4jLong  val = 0;
+		for (int i = rank - skip - 1; i >= 0; i--) {
+			val = coords[i] + 1;
+			if (likely(val < bases[i])) {
+				coords[i] = val;
+				last_offset.first += x_strides[i];
+				last_offset.second += y_strides[i];
+				last_offset.third += z_strides[i];
+				break;
+			}
+			else {
+				last_offset.first -= coords[i] * x_strides[i];
+				last_offset.second -= coords[i] * y_strides[i];
+				last_offset.third -= coords[i] * z_strides[i];
+				coords[i] = 0;
+			}
+		}
+		return last_offset;
+	}
+
+	template<>
+	FORCEINLINE triple_size_t inc_coords<false>(const Nd4jLong* bases, const Nd4jLong* x_strides, const  Nd4jLong* y_strides, const  Nd4jLong* z_strides, Nd4jLong* coords, triple_size_t last_offset, const size_t rank, const size_t skip) {
+
+		Nd4jLong  val = 0;
+		for (int i = skip; i < rank; i++) {
+			val = coords[i] + 1;
+			if (likely(val < bases[i])) {
+				coords[i] = val;
+
+				last_offset.first += x_strides[i];
+				last_offset.second += y_strides[i];
+				last_offset.third += z_strides[i];
+				break;
+			}
+			else {
+				last_offset.first -= coords[i] * x_strides[i];
+				last_offset.second -= coords[i] * y_strides[i];
+				last_offset.third -= coords[i] * z_strides[i];
+				coords[i] = 0;
+			}
+		}
+		return last_offset;
+	}
+
+	FORCEINLINE triple_size_t offset_from_coords(const Nd4jLong* x_strides, const  Nd4jLong* y_strides, const  Nd4jLong* z_strides, const Nd4jLong* coords, const Nd4jLong& rank) {
+
+		triple_size_t offset = { 0,0 ,0 };
+		size_t rank_4 = rank & -4;
+		for (int i = 0; i < rank_4; i += 4) {
+			offset.first = offset.first
+				+ coords[i] * x_strides[i]
+				+ coords[i + 1] * x_strides[i + 1]
+				+ coords[i + 2] * x_strides[i + 2]
+				+ coords[i + 3] * x_strides[i + 3];
+			offset.second = offset.second
+				+ coords[i] * y_strides[i]
+				+ coords[i + 1] * y_strides[i + 1]
+				+ coords[i + 2] * y_strides[i + 2]
+				+ coords[i + 3] * y_strides[i + 3];
+			offset.third = offset.third
+				+ coords[i] * z_strides[i]
+				+ coords[i + 1] * z_strides[i + 1]
+				+ coords[i + 2] * z_strides[i + 2]
+				+ coords[i + 3] * z_strides[i + 3];
+		}
+		for (int i = rank_4; i < rank; i++) {
+			offset.first += coords[i] * x_strides[i];
+			offset.second += coords[i] * y_strides[i];
+			offset.third += coords[i] * z_strides[i];
+		}
+		return offset;
+	}
+
+
 }
 
 #endif

@@ -143,6 +143,9 @@ TEST_F(DeclarableOpsTests2, gather_6) {
 
     auto* output = result.at(0);
 
+    expected.printIndexedBuffer("expctd");
+    output->printIndexedBuffer("output");
+
     ASSERT_TRUE(expected.isSameShapeStrict(*output));
     ASSERT_TRUE(expected.equalsTo(output));
 

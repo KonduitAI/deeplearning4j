@@ -30,8 +30,6 @@ class LambdaTests : public testing::Test {
 public:
 
     LambdaTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

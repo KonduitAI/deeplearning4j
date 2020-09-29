@@ -4842,7 +4842,6 @@ ResultSet NDArray::allTensorsAlongDimension(const std::vector<int> &dimensions) 
 ////////////////////////////////////////////////////////////////////////
 // operator returns sub-array with buffer pointing at this->_buffer + certain offset
 NDArray NDArray::operator()(const std::vector<Nd4jLong>& idx, const bool keepUnitiesInShape, const bool isStrided)  const {
-
     if(isEmpty())
         throw std::invalid_argument("NDArray::operator(sub-arrays): array is empty !");
 

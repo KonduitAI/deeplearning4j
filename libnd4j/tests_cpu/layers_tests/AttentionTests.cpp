@@ -32,8 +32,6 @@ using namespace sd;
 class AttentionTests : public testing::Test {
 public:
     AttentionTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

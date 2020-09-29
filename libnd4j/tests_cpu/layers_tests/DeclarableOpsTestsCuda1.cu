@@ -34,8 +34,6 @@ class DeclarableOpsTestsCuda1 : public testing::Test {
 public:
 
     DeclarableOpsTestsCuda1() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

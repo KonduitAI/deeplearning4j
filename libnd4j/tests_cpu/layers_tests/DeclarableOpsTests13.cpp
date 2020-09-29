@@ -44,8 +44,6 @@ class TypedDeclarableOpsTests13 : public testing::Test {
 public:
 
     TypedDeclarableOpsTests13() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

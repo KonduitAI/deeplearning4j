@@ -34,8 +34,6 @@ public:
     int poolSize = 10;
 
     OpTrackerTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

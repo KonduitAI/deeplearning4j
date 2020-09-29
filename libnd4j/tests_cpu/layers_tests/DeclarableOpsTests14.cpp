@@ -33,8 +33,6 @@ class DeclarableOpsTests14 : public testing::Test {
 public:
 
     DeclarableOpsTests14() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

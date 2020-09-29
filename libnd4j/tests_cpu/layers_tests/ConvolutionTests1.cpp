@@ -436,7 +436,7 @@ TEST_F(ConvolutionTests1, sconv2d_1) {
     //output->printShapeInfo("Result shape");
     ASSERT_TRUE(exp.isSameShape(output));
 
-        //exp.printBuffer("Expctd buffer");
+    //exp.printBuffer("Expctd buffer");
     //output->printBuffer("Result buffer");
     ASSERT_TRUE(exp.equalsTo(output));
 

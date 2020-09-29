@@ -30,8 +30,6 @@ class EmptyTests : public testing::Test {
 public:
 
     EmptyTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

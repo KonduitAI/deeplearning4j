@@ -32,8 +32,6 @@ class DeclarableOpsTests8 : public testing::Test {
 public:
 
     DeclarableOpsTests8() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 
@@ -42,8 +40,6 @@ class TypedDeclarableOpsTests8 : public testing::Test {
 public:
 
     TypedDeclarableOpsTests8() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

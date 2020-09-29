@@ -33,8 +33,6 @@ class NlpTests : public testing::Test {
 public:
 
     NlpTests() {
-        printf("\n");
-        fflush(stdout);
     }
 };
 

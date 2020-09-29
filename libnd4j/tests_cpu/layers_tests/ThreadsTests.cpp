@@ -208,6 +208,72 @@ TEST_F(ThreadsTests, reduction_test_1) {
     ASSERT_EQ(8192, sum);
 }
 
+TEST_F(ThreadsTests, MutexedTest_1) {
+    Nd4jLong res[10000];
+    std::mutex set_mutex;
+
+
+    auto func = PRAGMA_THREADS_FOR {
+        for (auto e = start; e < stop; e++) {
+            std::lock_guard<std::mutex> lock(set_mutex);
+            res[e] = 10000LL * e;
+        };
+    };
+
+    const auto start = std::chrono::steady_clock::now();
+
+    samediff::Threads::parallel_tad(func, 0, 10000, 1);
+
+    const auto end = std::chrono::steady_clock::now();
+    auto elapsed = end - start;
+    std::cout << "Time For Process: " << elapsed.count() << std::endl;
+    //ASSERT_EQ(8192, sum);
+}
+
+TEST_F(ThreadsTests, MutexedTest_2) {
+    Nd4jLong res[10000];
+    //std::mutex set_mutex;
+
+    auto func = PRAGMA_THREADS_FOR {
+        for (auto e = start; e < stop; e++) {
+      //      std::lock_guard<std::mutex> lock(set_mutex);
+            res[e] = 10000LL * e;
+        };
+    };
+    const auto start = std::chrono::steady_clock::now();
+
+    samediff::Threads::parallel_tad(func, 0, 10000, 1);
+    const auto end = std::chrono::steady_clock::now();
+    auto elapsed = end - start;
+    std::cout << "Time For Process: " << elapsed.count() << std::endl;
+    //ASSERT_EQ(8192, sum);
+}
+
+TEST_F(ThreadsTests, increment_aligned_test_1) {
+
+    int inc = 324;
+    int total = 197 * 256 * inc + 17;
+    int last_thread_xtra = total % inc;
+
+    FUNC_1D func = [&](uint64_t thread_id, int64_t start, int64_t stop, int64_t increment) -> void {
+        ASSERT_EQ(increment, inc);
+        ASSERT_EQ(start % increment, 0);
+        //in real, the second condition (last_thread_xtra)  happens only for the last thread
+        ASSERT_EQ((stop % increment == 0) || (stop % increment == last_thread_xtra), true);
+        if (stop % increment == last_thread_xtra) {
+            nd4j_printf("%3ld) start %10ld stop %10ld  increment %10ld tail %10ld \n", thread_id, start, stop, increment, stop % increment);
+        }
+        else {
+            nd4j_printf("%3ld) start %10ld stop %10ld  increment %10ld \n", thread_id, start, stop, increment);
+        }
+
+    };
+
+    samediff::Threads::parallel_aligned_increment(func, 0, total, inc);
+
+
+}
+
 /*
 TEST_F(ThreadsTests, basic_test_1) {
     if (!Environment::getInstance()->isCPU())
