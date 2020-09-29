@@ -19,8 +19,8 @@
 // @author raver119@gmail.com
 //
 
-#include "../specials_single.hpp"
-
+#include <ops/impl/specials_single.hpp> 
+#cmakedefine LIBND4J_TYPE_GEN
 namespace sd {
-    BUILD_SINGLE_TEMPLATE(template class SpecialMethods, , LIBND4J_TYPES_0);
+    BUILD_SINGLE_TEMPLATE(template class SpecialMethods, , LIBND4J_TYPES_@FL_TYPE_INDEX@);
 }
