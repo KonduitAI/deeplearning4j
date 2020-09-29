@@ -90,8 +90,8 @@ void gather(sd::LaunchContext * context, const NDArray* input, const NDArray* in
 
                     auto func = PRAGMA_THREADS_FOR {
                         for (auto i = 0; i < numOfSubArrs; i++) {
-                            void* inBuff  =  input->bufferWithOffset(inOffsets[indices->e<Nd4jLong>(i)]);
-                            void* outBuff = output->bufferWithOffset(outOffsets[i]);
+                            auto inBuff  =  input->bufferWithOffset(inOffsets[indices->e<Nd4jLong>(i)]);
+                            auto outBuff = output->bufferWithOffset(outOffsets[i]);
 
                             memcpy(outBuff, inBuff, shape::length(inTadShapeInfo) * input->sizeOfT());
                         }
@@ -142,7 +142,7 @@ void gather(sd::LaunchContext * context, const NDArray* input, const NDArray* in
 
                     for (auto i = start; i < stop; i++) {
                         auto inBuff  =  input->bufferWithOffset(inTadPack.primaryOffsets()[intArgs[i + 1]]);
-                        void* outBuff = output->bufferWithOffset(outTadPack.primaryOffsets()[i]);
+                        auto outBuff = output->bufferWithOffset(outTadPack.primaryOffsets()[i]);
 
                         std::memcpy(outBuff, inBuff, shape::length(inTadShapeInfo) * input->sizeOfT());
                     }

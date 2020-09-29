@@ -1018,7 +1018,7 @@ template <typename T1, typename T2, typename T3>
 static void batchedGemmUnPackC(const NDArray* vA, const NDArray* vB, NDArray* vC,
     const double alpha, const double beta, char out_order) {
 
-    const Nd4jLong* cShapeInfo = vC->getShapeInfo();
+    const Nd4jLong* cShapeInfo = vC->shapeInfo();
     const Nd4jLong* bases = &(cShapeInfo[1]);
     const int max_rank = vC->rankOf();
     Nd4jLong batch_len = 1;
