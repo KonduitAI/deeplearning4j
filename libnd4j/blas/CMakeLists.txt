@@ -315,11 +315,6 @@ elseif(SD_CPU)
         genCompilation(FL_ITEM)
     endforeach() 
 
-                    configure_file(  "${FL_ITEM}" "${FL_ITEM_WLE}_${FL_TYPE_INDEX}.cpp" @ONLY)
-                    LIST(APPEND CUSTOMOPS_GENERIC_SOURCES ${FL_ITEM_WLE}_${FL_TYPE_INDEX}.cpp )
-                endforeach() 
-    endforeach() 
-
     if (SD_X86_BUILD)
         # we disable platform optimizations for certains files for linux/macos
         set_source_files_properties(cpu/NativeOps.cpp PROPERTIES COMPILE_FLAGS "-march=x86-64 -mtune=generic")
