@@ -42,70 +42,7 @@ enum DataType {
 }
 
 
-// NodeProto stores a node that is similar to the notion of "layer"
-// or "operator" in many deep learning frameworks. For example, it can be a
-// node of type "Conv" that takes in an image, a filter tensor and a bias
-// tensor, and produces the convolved output.
-message NodeProto {
-  repeated string input = 1;    // namespace Value
-  repeated string output = 2;   // namespace Value
 
-  // An optional identifier for this node in a graph.
-  // This field MAY be absent in ths version of the IR.
-  string name = 3;     // namespace Node
-
-  // The symbolic identifier of the Operator to execute.
-  string op_type = 4;  // namespace Operator
-  // The domain of the OperatorSet that specifies the operator named by op_type.
-  string domain = 7;   // namespace Domain
-
-  // Additional named attributes.
-  // NOTE: Simply using ValueProto.NameValuePairProto is the most general
-  //       solution.  I kept AttributeProto to minimize churn on CI results.
-  repeated AttributeProto attribute = 5;
-
-  // A human-readable documentation for this node. Markdown is allowed.
-  string doc_string = 6;
-}
-
-// GraphProto defines a parameterized series of nodes to form a directed acyclic graph.
-// This is the equivalent of the "network" and "graph" in many deep learning
-// frameworks.
-message GraphProto {
-  // The nodes in the graph.
-  repeated NodeProto node = 1;
-
-  // The name of the graph.
-  string name = 2;   // namespace Graph
-
-  // A list of named tensor values (constants), used to specify default
-  // values for some of the inputs of the graph.
-  // Each TensorProto entry must have a distinct name (within the list) that
-  // also appears in the input list.
-  // In an evaluation, the default value specified here is used if and only if
-  // user specifies no value for the corresponding input parameter.
-  // May be used to pass serialized parameters for networks.
-  repeated TensorProto initializer = 5;
-
-  // A human-readable documentation for this graph. Markdown is allowed.
-  string doc_string = 10;
-
-  // The inputs and outputs of the graph.
-  repeated ValueInfoProto input = 11;
-  repeated ValueInfoProto output = 12;
-
-  // Information for the values in the graph. The ValueInfoProto.name's
-  // must be distinct. It is optional for a value to appear in value_info list.
-  repeated ValueInfoProto value_info = 13;
-
-  // DO NOT USE the following fields, they were deprecated before
-  // repeated string input = 3;
-  // repeated string output = 4;
-  // optional int64 ir_version = 6;
-  // optional int64 producer_version = 7;
-  // optional string producer_tag = 8;
-  // optional string domain = 9;
-}
 
 // Define the types.
 message TypeProto {
@@ -161,60 +98,6 @@ enum OpListType {
 }
 
 
-// A named attribute containing either singular float, integer, string
-// and tensor values, or repeated float, integer, string and tensor values.
-// An AttributeProto MUST contain the name field, and *only one* of the
-// following content fields, effectively enforcing a C/C++ union equivalent.
-message AttributeProto {
-
-  // Note: this enum is structurally identical to the OpSchema::AttrType
-  // enum defined in schema.h.  If you rev one, you likely need to rev the other.
-  enum AttributeType {
-    UNDEFINED = 0;
-    FLOAT = 1;
-    INT = 2;
-    STRING = 3;
-    TENSOR = 4;
-    GRAPH = 5;
-
-    FLOATS = 6;
-    INTS = 7;
-    STRINGS = 8;
-    TENSORS = 9;
-    GRAPHS = 10;
-  }
-
-  // The name field MUST be present for this version of the IR.
-  string name = 1;           // namespace Attribute
-
-  // A human-readable documentation for this attribute. Markdown is allowed.
-  string doc_string = 13;
-
-  // The type field MUST be present for this version of the IR.
-  // For 0.0.1 versions of the IR, this field was not defined, and
-  // implementations needed to use has_field hueristics to determine
-  // which value field was in use.  For IR_VERSION 0.0.2 or later, this
-  // field MUST be set and match the f|i|s|t|... field in use.  This
-  // change was made to accomodate proto3 implementations.
-  AttributeType type = 20;   // discriminator that indicates which field below is in use
-
-  // Exactly ONE of the following fields must be present for this version of the IR
-  float f = 2;               // float
-  int64 i = 3;               // int
-  bytes s = 4;               // UTF-8 string
-  TensorProto t = 5;         // tensor value
-  GraphProto g = 6;          // graph
-  // Do not use field below, it's deprecated.
-  // optional ValueProto v = 12;         // value - subsumes everything but graph
-
-  repeated float floats = 7;          // list of floats
-  repeated int64 ints = 8;            // list of ints
-  repeated bytes strings = 9;         // list of UTF-8 strings
-  repeated TensorProto tensors = 10;  // list of tensors
-  repeated GraphProto graphs = 11;    // list of graph
-  OpListType opListType = 12;
-  repeated int32 opListIndices = 14;
-}
 
 // Tensors
 //
@@ -329,15 +212,20 @@ message TensorProto {
   repeated uint64 uint64_data = 11 [packed = true];
 }
 
-
+//Op descriptor
 message Op {
   string name = 1;
+  // t args
   repeated float floatTArgs = 2;
   repeated float doubleTArgs = 3;
+  //iArgs
   repeated int32 intArgs = 4;
   repeated int32 int64Args = 5;
+  //boolArgs
   repeated bool  boolArgs = 6;
+  // data type args
   repeated DataType dataTypeArgs = 7;
+  //inputs and output ndarrays
   repeated TensorProto inputs = 8;
   repeated TensorProto outputs = 9;
 }
