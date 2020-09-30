@@ -185,6 +185,66 @@ op {
 
 Note above that we add list information to the attribute based declaration from onnx.
 
+###Op Descriptor
+
+An op descriptor from libnd4j is as follows:
+```java
+ private String name;
+    private int nIn,nOut,tArgs,iArgs;
+    private boolean inplaceAble;
+    private List<String> inArgNames;
+    private List<String> outArgNames;
+    private List<String> tArgNames;
+    private List<String> iArgNames;
+    private List<String> bArgNames;
+    private OpDeclarationType opDeclarationType;
+
+    public enum OpDeclarationType {
+        CUSTOM_OP_IMPL,
+        BOOLEAN_OP_IMPL,
+        LIST_OP_IMPL,
+        LOGIC_OP_IMPL,
+        OP_IMPL,
+        DIVERGENT_OP_IMPL,
+        CONFIGURABLE_OP_IMPL,
+        REDUCTION_OP_IMPL,
+        BROADCASTABLE_OP_IMPL,
+        BROADCASTABLE_BOOL_OP_IMPL
+    }
+```
+These contain all the op declarations and fields associated with a descriptor.
+Validation for what can be present in the various names can eb found 
+[here](https://github.com/KonduitAI/deeplearning4j/blob/master/libnd4j/include/ops/declarable/impl/DeclarableOp.cpp#L734-L765)
+
+A declaration in libnd4j is a set of macros that can be found
+[here](https://github.com/eclipse/deeplearning4j/blob/master/libnd4j/include/system/op_boilerplate.h)
+
+All the macros contain various declarations that are easy to find
+for automatically extracting out what properties are declared with what variable names.
+
+We use this to create automatic attribute mappings that can be serialized
+as a protobuf file for interpretation by an interpreter.
+
+###Interpreter
+
+An interpreter will take a tensorflow or pytorch model and figure out how to map
+various ops. Their attributes and op names will be mapped to libnd4j
+using information from the above op descriptor.
+
+An interpreter can take in an individual op from tensorflow, onnx or
+another framework and translate it to an equivalent op in libnd4j represented
+as the equivalent op descriptor.
+
+The usage will be as follows:
+
+```java
+Interpreter interpreter = ...;
+
+OpDescriptor descriptor = interpreter.interpret(nodeFromOtherFramework);
+
+//proceed to use descriptor to map for model import...
+```
+
 
 ## Consequences
 
