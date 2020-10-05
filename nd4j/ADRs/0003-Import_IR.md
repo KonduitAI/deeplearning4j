@@ -510,72 +510,107 @@ The libnd4j OpDescriptor:
 OpDeclarationDescriptor(name=conv2d, nIn=2, nOut=1, tArgs=0, iArgs=9, inplaceAble=false, inArgNames=[input, weights, bias, gradO, gradIShape], outArgNames=[output, gradI, gradW, gradB], tArgNames=[], iArgNames=[sH, sW, pH, pW, dH, dW, isSameMode, isNCHW, wFormat, kH, kW], bArgNames=[], opDeclarationType=CUSTOM_OP_IMPL)
 ```
 
-A mapping can be found here:
-```prototext
-conv2d {
-  tensorflow_mapping: {
-     input_mappings: {
-       input_mapping {
-        input: "input"
-        weights: "filter"
-     }
-         
-     }
-     output_mappings: {
-        output: "output"
-     }
-    # sH, sW, pH, pW, dH, dW, isSameMode, isNCHW, wFormat, kH, kW
-    attribute_mappings: {
-      sH: "strides[0]"
-      sW: "strides[1]"
-      pH: "padding"
-      pW: "padding"
-      isSameMode: "padding"
-      isNCHW: "data_format"
-      kH: "kernel_shape[0]"
-      kW: "kernel_shape[1]"
-    }
+A few challenges stand out when trying to map all these formats
+to nd4j:
 
-    attribute_mapping_functions {
-    
-     }
-  }
-  onnx_mapping {
-    input_mappings: {
-       inputs: "X"
-       weights: "filter"
-       bias: "bias"
-    }
-    output_mappings: {
-        z: "Y"
-    }
+1. Different conventions for the same concept. One example that stands out from conv
+is padding. Padding can be represented as a string or have a boolean that says what a string equals.
+In nd4j, we represent this as a boolean: isSameMode. We need to do a conversion inline in order
+to invoke nd4j correctly.
+
+2. Another issue is implicit concepts. Commonly, convolution requires you to configure a layout
+of NWHC (Batch size, Height, Width, Channels) 
+or NCHW (Batch size, Channels,Height, Width). Tensorflow allows you to specify it,
+nd4j also allows you to specify it. Onnx does not.
  
-    attribute_mappings: {
-       sH: "strides[0]"
-       sW: "strides[1]"
-       pH: "padding"
-       pW: "padding"
-       isSameMode: "padding"
-       isNCHW: "data_format"
+ A more in depth conversation on this specific issue relating to the 
+ 2 frameworks can be found [here](https://github.com/onnx/onnx-tensorflow/issues/31)
+
+In order to bypass this issue, a mapping rule is needed.
+Defining this example can be found as MappingRule
+and Mapper found in [./nd4j-backends/nd4j-api-parent/nd4j-api/src/main/protobuf/nd4j/nd4j.proto]
+
+We use these 2 core concepts to define a set of rules
+allowing translation for each op within each framework.
+
+A mapper for nd4j and tensorflow can be found as follows:
+
+```prototext
+MappingRule {
+  name: "nchwConversion"
+  functionName: "StringEqualsConversion"  
+}
+
+MappingRule {
+  name: "strideIndexLookup"
+  functionName: "IndexLookup"
+}
+MappingRule {
+  name: "kernelIndexLookup"
+  functionName: "IndexLookup"
+}
+
+
+Mapper {
+  name: "tensorflowConversion"
+  opName: "conv2d"
+  rules {
+    list {
+     MappingRule {
+        name: "nchwConversion"
+        functionName: "StringEqualsConversion"  
+    }
+
+    MappingRule {
+      name: "strideIndexLookup"
+      functionName: "IndexLookup"
+    }
+
+    MappingRule {
+      name: "kernelIndexLookup"
+      functionName: "IndexLookup"
+    }
 
     }
-    
-     attribute_mapping_functions {
-
-     }
-
   }
+ 
+
+ # attribute mappings..
 }
 ```
+
+
+
+
 
 Convolution is significantly more complicated and does not map
 1 to 1. In order to properly map both tensorflow and onnx
 to libnd4j, we need to have adapter functions built in.
 
-Adapter functions need to be built in and defined if they are to be language
-neutral. It also might be possible to add custom functions
-depending on the use case. Adapter functions are outside the scope of this
-ADR.
+Adapter functions need to be built in and defined if they are
+to be language neutral. It also might be possible to add custom functions
+depending on the use case. 
+
+Adapter functions are simple implementations in the nd4j
+side (and would need to be implemented for other languages if added)
+where the mapper will specify by name what adapter functions to invoke.
+This allows definition of rules and functions in protobuf
+and clear mappings from declaration to implementation (that could be picked up by code generation later)
+
+Adapter function invocations are handled by declaring rules.
+Rules specify how to lookup arguments and what function to run on them.
+
+An individual mapper declaration for an op consists of a list of rules
+to apply for a given op.The declaration contains the framework 
+name meant to map for, and the name of the nd4j op to map.
+
+This allows the user to lookup which mapper to use for what framework
+at runtime. This also unifies the mapper framework from the current
+tensorflow import which has similar metadata, but only in java.
+
+
+
+
 
 ## Consequences
 

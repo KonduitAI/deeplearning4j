@@ -1,0 +1,36 @@
+syntax = "proto3";
+package org.nd4j.ir;
+option java_outer_classname = "OpNamespace";
+
+import "tensor.proto";
+
+message ArgDescriptor {
+  enum ArgType {
+    FLOAT = 0;
+    DOUBLE = 1;
+    INT32 = 2;
+    INT64 = 3;
+    BOOL = 4;
+    DATA_TYPE = 5;
+    TENSOR = 6;
+  }
+
+  string name = 1;
+  float floatValue = 2;
+  double doubleValue = 3;
+  int32 int32Value = 4;
+  int64 int64Value = 5;
+  bool boolValue  = 6;
+  DataType dataTypeValue = 7;
+  TensorProto inputvalue = 8;
+  TensorProto outputValue = 9;
+
+  ArgType argType = 10;
+}
+
+//Op descriptor
+message OpDescriptor {
+  string name = 1;
+  repeated ArgDescriptor argDescriptor = 2;
+}
+

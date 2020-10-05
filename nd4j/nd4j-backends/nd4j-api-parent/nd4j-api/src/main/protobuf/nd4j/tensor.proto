@@ -1,6 +1,10 @@
 syntax = "proto3";
 package org.nd4j.ir;
 
+
+option java_outer_classname = "TensorNamespace";
+
+
 //Using a subset of onnx, we define a small IR
 //for defining nd4j operations
 
@@ -48,7 +52,7 @@ enum DataType {
 // Define the types.
 message TypeProto {
 
-  message Tensor {
+  message TensorDescriptor {
     // This field MUST NOT have the value of UNDEFINED
     // This field MUST be present for this version of the IR.
     DataType elem_type = 1;
@@ -58,7 +62,7 @@ message TypeProto {
 
   oneof value {
     // The type of a tensor.
-    Tensor tensor_type = 1;
+    TensorDescriptor tensor_type = 1;
 
   }
 }
@@ -88,15 +92,6 @@ message ValueInfoProto {
   string doc_string = 3;
 }
 
-enum OpListType {
-  TARG = 0;
-  IARG = 1;
-  BARG = 2;
-  DTYPEARG = 3;
-  INPUTARG = 4;
-  OUTPUTARG = 5;
-  AXISARG = 6;
-}
 
 
 
@@ -213,20 +208,3 @@ message TensorProto {
   repeated uint64 uint64_data = 11 [packed = true];
 }
 
-//Op descriptor
-message Op {
-  string name = 1;
-  // t args
-  repeated float floatTArgs = 2;
-  repeated float doubleTArgs = 3;
-  //iArgs
-  repeated int32 intArgs = 4;
-  repeated int32 int64Args = 5;
-  //boolArgs
-  repeated bool  boolArgs = 6;
-  // data type args
-  repeated DataType dataTypeArgs = 7;
-  //inputs and output ndarrays
-  repeated TensorProto inputs = 8;
-  repeated TensorProto outputs = 9;
-}
