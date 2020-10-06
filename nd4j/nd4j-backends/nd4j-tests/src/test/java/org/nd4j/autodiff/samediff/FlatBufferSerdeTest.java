@@ -22,6 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.nd4j.autodiff.functions.DifferentialFunction;
+import org.nd4j.graph.*;
 import org.nd4j.linalg.BaseNd4jTest;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -30,6 +31,7 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.factory.Nd4jBackend;
 import org.nd4j.linalg.learning.GradientUpdater;
+import org.nd4j.linalg.learning.config.*;
 import org.nd4j.linalg.learning.regularization.L1Regularization;
 import org.nd4j.linalg.learning.regularization.L2Regularization;
 import org.nd4j.linalg.learning.regularization.WeightDecay;
@@ -252,7 +254,7 @@ public class FlatBufferSerdeTest extends BaseNd4jTest {
         //1. Training config is serialized/deserialized correctly
         //2. Updater state
 
-        for(IUpdater u : new IUpdater[]{
+        for(IUpdater u : new IUpdater[] {
                 new AdaDelta(), new AdaGrad(2e-3), new Adam(2e-3), new AdaMax(2e-3),
                 new AMSGrad(2e-3), new Nadam(2e-3), new Nesterovs(2e-3), new NoOp(),
                 new RmsProp(2e-3), new Sgd(2e-3)}) {

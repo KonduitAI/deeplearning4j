@@ -26,6 +26,7 @@ import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.CustomOp;
 import org.nd4j.linalg.api.ops.DynamicCustomOp;
+import org.nd4j.linalg.api.ops.custom.*;
 import org.nd4j.linalg.api.ops.executioner.OpExecutioner;
 import org.nd4j.linalg.api.ops.executioner.OpStatus;
 import org.nd4j.linalg.api.ops.impl.controlflow.Where;
@@ -1237,7 +1238,8 @@ public class CustomOpsTests extends BaseNd4jTest {
     public void testRandomCrop() {
         INDArray x = Nd4j.createFromArray(new double[]{1.8, 2.5,  4.,  9., 2.1, 2.4,  3.,  9.,2.1, 2.1, 0.7, 0.1,3., 4.2, 2.2, 1. }).reshape(2,2,4);
         INDArray shape = Nd4j.createFromArray(new int[] {1,2,3});
-        val op = new RandomCrop(x, shape);
+        RandomCrop op;
+        op = new RandomCrop(x, shape);
         INDArray[] res = Nd4j.exec(op);
     }
 

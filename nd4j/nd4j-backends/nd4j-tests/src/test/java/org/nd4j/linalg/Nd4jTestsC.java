@@ -47,6 +47,7 @@ import org.nd4j.linalg.api.ops.DynamicCustomOp;
 import org.nd4j.linalg.api.ops.Op;
 import org.nd4j.linalg.api.ops.executioner.GridExecutioner;
 import org.nd4j.linalg.api.ops.executioner.OpExecutioner;
+import org.nd4j.linalg.api.ops.impl.broadcast.*;
 import org.nd4j.linalg.api.ops.impl.broadcast.bool.BroadcastEqualTo;
 import org.nd4j.linalg.api.ops.impl.broadcast.bool.BroadcastGreaterThan;
 import org.nd4j.linalg.api.ops.impl.broadcast.bool.BroadcastGreaterThanOrEqual;
@@ -64,6 +65,7 @@ import org.nd4j.linalg.api.ops.impl.reduce.custom.LogSumExp;
 import org.nd4j.linalg.api.ops.impl.reduce.floating.Norm1;
 import org.nd4j.linalg.api.ops.impl.reduce.floating.Norm2;
 import org.nd4j.linalg.api.ops.impl.reduce.same.Sum;
+import org.nd4j.linalg.api.ops.impl.reduce3.*;
 import org.nd4j.linalg.api.ops.impl.scalar.LeakyReLU;
 import org.nd4j.linalg.api.ops.impl.scalar.ReplaceNans;
 import org.nd4j.linalg.api.ops.impl.scalar.comparison.ScalarEquals;
@@ -4668,17 +4670,18 @@ public class Nd4jTestsC extends BaseNd4jTest {
             initial.getRow(i).assign(i + 1);
         }
         INDArray needle = Nd4j.create(10).assign(1.0);
-        INDArray reduced = Nd4j.getExecutioner().exec(new EuclideanDistance(initial, needle, 1));
+        try (INDArray reduced = Nd4j.getExecutioner().exec(new EuclideanDistance(initial, needle, 1))) {
 
-        log.warn("Reduced: {}", reduced);
+            log.warn("Reduced: {}", reduced);
 
-        for (int i = 0; i < initial.rows(); i++) {
-            INDArray x = initial.getRow(i).dup();
-            double res = Nd4j.getExecutioner().execAndReturn(new EuclideanDistance(x, needle)).getFinalResult()
-                    .doubleValue();
-            assertEquals("Failed at " + i, reduced.getDouble(i), res, 0.001);
+            for (int i = 0; i < initial.rows(); i++) {
+                INDArray x = initial.getRow(i).dup();
+                double res = Nd4j.getExecutioner().execAndReturn(new EuclideanDistance(x, needle)).getFinalResult()
+                        .doubleValue();
+                assertEquals("Failed at " + i, reduced.getDouble(i), res, 0.001);
 
-//            log.info("Euclidean: {} vs {} is {}", x, needle, res);
+    //            log.info("Euclidean: {} vs {} is {}", x, needle, res);
+            }
         }
     }
 

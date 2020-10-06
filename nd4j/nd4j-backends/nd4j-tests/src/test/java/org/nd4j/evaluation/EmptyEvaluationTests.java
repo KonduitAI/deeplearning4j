@@ -1,6 +1,7 @@
 package org.nd4j.evaluation;
 
 import org.junit.Test;
+import org.nd4j.evaluation.classification.*;
 import org.nd4j.evaluation.regression.RegressionEvaluation;
 import org.nd4j.evaluation.regression.RegressionEvaluation.Metric;
 import org.nd4j.linalg.BaseNd4jTest;

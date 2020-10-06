@@ -64,6 +64,10 @@
         <libnd4j.extension></libnd4j.extension>
         <libnd4j.cuda></libnd4j.cuda>
         <libnd4j.compute></libnd4j.compute>
+        <cpu.core.count></cpu.core.count>
+        <javacpp.platform.library.path></javacpp.platform.library.path>
+        <libnd4j.cuda.compile.skip>false</libnd4j.cuda.compile.skip>
+        <libnd4j.cpu.compile.skip>false</libnd4j.cpu.compile.skip>
         <libnd4j.classifier>${libnd4j.platform}</libnd4j.classifier>
         <libnd4j.buildthreads></libnd4j.buildthreads>
         <libnd4j.helper></libnd4j.helper>
@@ -187,6 +191,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.6</version>
                 <executions>
@@ -207,6 +212,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
@@ -352,6 +358,7 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
                         <version>3.0.0</version>
                         <executions>

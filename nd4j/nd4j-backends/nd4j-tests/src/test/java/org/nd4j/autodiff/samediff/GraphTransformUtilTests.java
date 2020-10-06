@@ -18,6 +18,7 @@ package org.nd4j.autodiff.samediff;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.nd4j.autodiff.samediff.transform.*;
 import org.nd4j.linalg.BaseNd4jTest;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -105,15 +106,12 @@ public class GraphTransformUtilTests extends BaseNd4jTest {
 
         SubGraphPredicate p = SubGraphPredicate.withRoot(OpPredicate.classEquals(AddOp.class));
 
-        SameDiff sd2 = GraphTransformUtil.replaceSubgraphsMatching(sd, p, new SubGraphProcessor() {
-            @Override
-            public List<SDVariable> processSubgraph(SameDiff sd, SubGraph subGraph) {
-                //Let's replace add op with div op
-                assertTrue(subGraph.getChildNodes() == null || subGraph.getChildNodes().isEmpty());
-                List<SDVariable> inputs = subGraph.inputs();
-                SDVariable out = inputs.get(0).div(inputs.get(1));
-                return Collections.singletonList(out);
-            }
+        SameDiff sd2 = GraphTransformUtil.replaceSubgraphsMatching(sd, p, (sd1, subGraph) -> {
+            //Let's replace add op with div op
+            assertTrue(subGraph.getChildNodes() == null || subGraph.getChildNodes().isEmpty());
+            List<SDVariable> inputs = subGraph.inputs();
+            SDVariable out = inputs.get(0).div(inputs.get(1));
+            return Collections.singletonList(out);
         });
 
         INDArray exp2 = p1.div(p2).mul(p1.sub(p2));

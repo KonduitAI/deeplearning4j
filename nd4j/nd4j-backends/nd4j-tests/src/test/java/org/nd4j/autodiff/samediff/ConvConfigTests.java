@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.nd4j.linalg.BaseNd4jTest;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.DeConv2D;
+import org.nd4j.linalg.api.ops.impl.layers.convolution.config.*;
 import org.nd4j.linalg.factory.Nd4jBackend;
 
 public class ConvConfigTests extends BaseNd4jTest {
