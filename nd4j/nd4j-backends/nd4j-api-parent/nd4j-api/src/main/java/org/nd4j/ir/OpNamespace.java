@@ -276,9 +276,13 @@ public final class OpNamespace {
        */
       DATA_TYPE(5),
       /**
-       * <code>TENSOR = 6;</code>
+       * <code>INPUT_TENSOR = 6;</code>
        */
-      TENSOR(6),
+      INPUT_TENSOR(6),
+      /**
+       * <code>OUTPUT_TENSOR = 7;</code>
+       */
+      OUTPUT_TENSOR(7),
       UNRECOGNIZED(-1),
       ;
 
@@ -307,9 +311,13 @@ public final class OpNamespace {
        */
       public static final int DATA_TYPE_VALUE = 5;
       /**
-       * <code>TENSOR = 6;</code>
+       * <code>INPUT_TENSOR = 6;</code>
        */
-      public static final int TENSOR_VALUE = 6;
+      public static final int INPUT_TENSOR_VALUE = 6;
+      /**
+       * <code>OUTPUT_TENSOR = 7;</code>
+       */
+      public static final int OUTPUT_TENSOR_VALUE = 7;
 
 
       public final int getNumber() {
@@ -336,7 +344,8 @@ public final class OpNamespace {
           case 3: return INT64;
           case 4: return BOOL;
           case 5: return DATA_TYPE;
-          case 6: return TENSOR;
+          case 6: return INPUT_TENSOR;
+          case 7: return OUTPUT_TENSOR;
           default: return null;
         }
       }
@@ -2537,6 +2546,794 @@ public final class OpNamespace {
 
   }
 
+  public interface OpDescriptorListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.nd4j.ir.OpDescriptorList)
+      org.nd4j.shade.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    java.util.List<org.nd4j.ir.OpNamespace.OpDescriptor> 
+        getOpListList();
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    org.nd4j.ir.OpNamespace.OpDescriptor getOpList(int index);
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    int getOpListCount();
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    java.util.List<? extends org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder> 
+        getOpListOrBuilderList();
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder getOpListOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code org.nd4j.ir.OpDescriptorList}
+   */
+  public  static final class OpDescriptorList extends
+      org.nd4j.shade.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:org.nd4j.ir.OpDescriptorList)
+      OpDescriptorListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use OpDescriptorList.newBuilder() to construct.
+    private OpDescriptorList(org.nd4j.shade.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private OpDescriptorList() {
+      opList_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new OpDescriptorList();
+    }
+
+    @java.lang.Override
+    public final org.nd4j.shade.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private OpDescriptorList(
+        org.nd4j.shade.protobuf.CodedInputStream input,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      org.nd4j.shade.protobuf.UnknownFieldSet.Builder unknownFields =
+          org.nd4j.shade.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                opList_ = new java.util.ArrayList<org.nd4j.ir.OpNamespace.OpDescriptor>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              opList_.add(
+                  input.readMessage(org.nd4j.ir.OpNamespace.OpDescriptor.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (org.nd4j.shade.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new org.nd4j.shade.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          opList_ = java.util.Collections.unmodifiableList(opList_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final org.nd4j.shade.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.nd4j.ir.OpNamespace.internal_static_org_nd4j_ir_OpDescriptorList_descriptor;
+    }
+
+    @java.lang.Override
+    protected org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.nd4j.ir.OpNamespace.internal_static_org_nd4j_ir_OpDescriptorList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.nd4j.ir.OpNamespace.OpDescriptorList.class, org.nd4j.ir.OpNamespace.OpDescriptorList.Builder.class);
+    }
+
+    public static final int OPLIST_FIELD_NUMBER = 1;
+    private java.util.List<org.nd4j.ir.OpNamespace.OpDescriptor> opList_;
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    public java.util.List<org.nd4j.ir.OpNamespace.OpDescriptor> getOpListList() {
+      return opList_;
+    }
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    public java.util.List<? extends org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder> 
+        getOpListOrBuilderList() {
+      return opList_;
+    }
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    public int getOpListCount() {
+      return opList_.size();
+    }
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    public org.nd4j.ir.OpNamespace.OpDescriptor getOpList(int index) {
+      return opList_.get(index);
+    }
+    /**
+     * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+     */
+    public org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder getOpListOrBuilder(
+        int index) {
+      return opList_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(org.nd4j.shade.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < opList_.size(); i++) {
+        output.writeMessage(1, opList_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < opList_.size(); i++) {
+        size += org.nd4j.shade.protobuf.CodedOutputStream
+          .computeMessageSize(1, opList_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.nd4j.ir.OpNamespace.OpDescriptorList)) {
+        return super.equals(obj);
+      }
+      org.nd4j.ir.OpNamespace.OpDescriptorList other = (org.nd4j.ir.OpNamespace.OpDescriptorList) obj;
+
+      if (!getOpListList()
+          .equals(other.getOpListList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getOpListCount() > 0) {
+        hash = (37 * hash) + OPLIST_FIELD_NUMBER;
+        hash = (53 * hash) + getOpListList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        java.nio.ByteBuffer data)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        java.nio.ByteBuffer data,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        org.nd4j.shade.protobuf.ByteString data)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        org.nd4j.shade.protobuf.ByteString data,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(byte[] data)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        byte[] data,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.nd4j.shade.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        java.io.InputStream input,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.nd4j.shade.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.nd4j.shade.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseDelimitedFrom(
+        java.io.InputStream input,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.nd4j.shade.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        org.nd4j.shade.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return org.nd4j.shade.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList parseFrom(
+        org.nd4j.shade.protobuf.CodedInputStream input,
+        org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.nd4j.shade.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.nd4j.ir.OpNamespace.OpDescriptorList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        org.nd4j.shade.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.nd4j.ir.OpDescriptorList}
+     */
+    public static final class Builder extends
+        org.nd4j.shade.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.nd4j.ir.OpDescriptorList)
+        org.nd4j.ir.OpNamespace.OpDescriptorListOrBuilder {
+      public static final org.nd4j.shade.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.nd4j.ir.OpNamespace.internal_static_org_nd4j_ir_OpDescriptorList_descriptor;
+      }
+
+      @java.lang.Override
+      protected org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.nd4j.ir.OpNamespace.internal_static_org_nd4j_ir_OpDescriptorList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.nd4j.ir.OpNamespace.OpDescriptorList.class, org.nd4j.ir.OpNamespace.OpDescriptorList.Builder.class);
+      }
+
+      // Construct using org.nd4j.ir.OpNamespace.OpDescriptorList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          org.nd4j.shade.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (org.nd4j.shade.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getOpListFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (opListBuilder_ == null) {
+          opList_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          opListBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public org.nd4j.shade.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.nd4j.ir.OpNamespace.internal_static_org_nd4j_ir_OpDescriptorList_descriptor;
+      }
+
+      @java.lang.Override
+      public org.nd4j.ir.OpNamespace.OpDescriptorList getDefaultInstanceForType() {
+        return org.nd4j.ir.OpNamespace.OpDescriptorList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.nd4j.ir.OpNamespace.OpDescriptorList build() {
+        org.nd4j.ir.OpNamespace.OpDescriptorList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.nd4j.ir.OpNamespace.OpDescriptorList buildPartial() {
+        org.nd4j.ir.OpNamespace.OpDescriptorList result = new org.nd4j.ir.OpNamespace.OpDescriptorList(this);
+        int from_bitField0_ = bitField0_;
+        if (opListBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            opList_ = java.util.Collections.unmodifiableList(opList_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.opList_ = opList_;
+        } else {
+          result.opList_ = opListBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          org.nd4j.shade.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          org.nd4j.shade.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          org.nd4j.shade.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          org.nd4j.shade.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          org.nd4j.shade.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(org.nd4j.shade.protobuf.Message other) {
+        if (other instanceof org.nd4j.ir.OpNamespace.OpDescriptorList) {
+          return mergeFrom((org.nd4j.ir.OpNamespace.OpDescriptorList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.nd4j.ir.OpNamespace.OpDescriptorList other) {
+        if (other == org.nd4j.ir.OpNamespace.OpDescriptorList.getDefaultInstance()) return this;
+        if (opListBuilder_ == null) {
+          if (!other.opList_.isEmpty()) {
+            if (opList_.isEmpty()) {
+              opList_ = other.opList_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureOpListIsMutable();
+              opList_.addAll(other.opList_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.opList_.isEmpty()) {
+            if (opListBuilder_.isEmpty()) {
+              opListBuilder_.dispose();
+              opListBuilder_ = null;
+              opList_ = other.opList_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              opListBuilder_ = 
+                org.nd4j.shade.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getOpListFieldBuilder() : null;
+            } else {
+              opListBuilder_.addAllMessages(other.opList_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          org.nd4j.shade.protobuf.CodedInputStream input,
+          org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.nd4j.ir.OpNamespace.OpDescriptorList parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (org.nd4j.shade.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.nd4j.ir.OpNamespace.OpDescriptorList) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<org.nd4j.ir.OpNamespace.OpDescriptor> opList_ =
+        java.util.Collections.emptyList();
+      private void ensureOpListIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          opList_ = new java.util.ArrayList<org.nd4j.ir.OpNamespace.OpDescriptor>(opList_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private org.nd4j.shade.protobuf.RepeatedFieldBuilderV3<
+          org.nd4j.ir.OpNamespace.OpDescriptor, org.nd4j.ir.OpNamespace.OpDescriptor.Builder, org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder> opListBuilder_;
+
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public java.util.List<org.nd4j.ir.OpNamespace.OpDescriptor> getOpListList() {
+        if (opListBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(opList_);
+        } else {
+          return opListBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public int getOpListCount() {
+        if (opListBuilder_ == null) {
+          return opList_.size();
+        } else {
+          return opListBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public org.nd4j.ir.OpNamespace.OpDescriptor getOpList(int index) {
+        if (opListBuilder_ == null) {
+          return opList_.get(index);
+        } else {
+          return opListBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder setOpList(
+          int index, org.nd4j.ir.OpNamespace.OpDescriptor value) {
+        if (opListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOpListIsMutable();
+          opList_.set(index, value);
+          onChanged();
+        } else {
+          opListBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder setOpList(
+          int index, org.nd4j.ir.OpNamespace.OpDescriptor.Builder builderForValue) {
+        if (opListBuilder_ == null) {
+          ensureOpListIsMutable();
+          opList_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          opListBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder addOpList(org.nd4j.ir.OpNamespace.OpDescriptor value) {
+        if (opListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOpListIsMutable();
+          opList_.add(value);
+          onChanged();
+        } else {
+          opListBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder addOpList(
+          int index, org.nd4j.ir.OpNamespace.OpDescriptor value) {
+        if (opListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOpListIsMutable();
+          opList_.add(index, value);
+          onChanged();
+        } else {
+          opListBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder addOpList(
+          org.nd4j.ir.OpNamespace.OpDescriptor.Builder builderForValue) {
+        if (opListBuilder_ == null) {
+          ensureOpListIsMutable();
+          opList_.add(builderForValue.build());
+          onChanged();
+        } else {
+          opListBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder addOpList(
+          int index, org.nd4j.ir.OpNamespace.OpDescriptor.Builder builderForValue) {
+        if (opListBuilder_ == null) {
+          ensureOpListIsMutable();
+          opList_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          opListBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder addAllOpList(
+          java.lang.Iterable<? extends org.nd4j.ir.OpNamespace.OpDescriptor> values) {
+        if (opListBuilder_ == null) {
+          ensureOpListIsMutable();
+          org.nd4j.shade.protobuf.AbstractMessageLite.Builder.addAll(
+              values, opList_);
+          onChanged();
+        } else {
+          opListBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder clearOpList() {
+        if (opListBuilder_ == null) {
+          opList_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          opListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public Builder removeOpList(int index) {
+        if (opListBuilder_ == null) {
+          ensureOpListIsMutable();
+          opList_.remove(index);
+          onChanged();
+        } else {
+          opListBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public org.nd4j.ir.OpNamespace.OpDescriptor.Builder getOpListBuilder(
+          int index) {
+        return getOpListFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder getOpListOrBuilder(
+          int index) {
+        if (opListBuilder_ == null) {
+          return opList_.get(index);  } else {
+          return opListBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public java.util.List<? extends org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder> 
+           getOpListOrBuilderList() {
+        if (opListBuilder_ != null) {
+          return opListBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(opList_);
+        }
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public org.nd4j.ir.OpNamespace.OpDescriptor.Builder addOpListBuilder() {
+        return getOpListFieldBuilder().addBuilder(
+            org.nd4j.ir.OpNamespace.OpDescriptor.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public org.nd4j.ir.OpNamespace.OpDescriptor.Builder addOpListBuilder(
+          int index) {
+        return getOpListFieldBuilder().addBuilder(
+            index, org.nd4j.ir.OpNamespace.OpDescriptor.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .org.nd4j.ir.OpDescriptor opList = 1;</code>
+       */
+      public java.util.List<org.nd4j.ir.OpNamespace.OpDescriptor.Builder> 
+           getOpListBuilderList() {
+        return getOpListFieldBuilder().getBuilderList();
+      }
+      private org.nd4j.shade.protobuf.RepeatedFieldBuilderV3<
+          org.nd4j.ir.OpNamespace.OpDescriptor, org.nd4j.ir.OpNamespace.OpDescriptor.Builder, org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder> 
+          getOpListFieldBuilder() {
+        if (opListBuilder_ == null) {
+          opListBuilder_ = new org.nd4j.shade.protobuf.RepeatedFieldBuilderV3<
+              org.nd4j.ir.OpNamespace.OpDescriptor, org.nd4j.ir.OpNamespace.OpDescriptor.Builder, org.nd4j.ir.OpNamespace.OpDescriptorOrBuilder>(
+                  opList_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          opList_ = null;
+        }
+        return opListBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final org.nd4j.shade.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final org.nd4j.shade.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:org.nd4j.ir.OpDescriptorList)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.nd4j.ir.OpDescriptorList)
+    private static final org.nd4j.ir.OpNamespace.OpDescriptorList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.nd4j.ir.OpNamespace.OpDescriptorList();
+    }
+
+    public static org.nd4j.ir.OpNamespace.OpDescriptorList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final org.nd4j.shade.protobuf.Parser<OpDescriptorList>
+        PARSER = new org.nd4j.shade.protobuf.AbstractParser<OpDescriptorList>() {
+      @java.lang.Override
+      public OpDescriptorList parsePartialFrom(
+          org.nd4j.shade.protobuf.CodedInputStream input,
+          org.nd4j.shade.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws org.nd4j.shade.protobuf.InvalidProtocolBufferException {
+        return new OpDescriptorList(input, extensionRegistry);
+      }
+    };
+
+    public static org.nd4j.shade.protobuf.Parser<OpDescriptorList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.nd4j.shade.protobuf.Parser<OpDescriptorList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.nd4j.ir.OpNamespace.OpDescriptorList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final org.nd4j.shade.protobuf.Descriptors.Descriptor
     internal_static_org_nd4j_ir_ArgDescriptor_descriptor;
   private static final 
@@ -2547,6 +3344,11 @@ public final class OpNamespace {
   private static final 
     org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_nd4j_ir_OpDescriptor_fieldAccessorTable;
+  private static final org.nd4j.shade.protobuf.Descriptors.Descriptor
+    internal_static_org_nd4j_ir_OpDescriptorList_descriptor;
+  private static final 
+    org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_nd4j_ir_OpDescriptorList_fieldAccessorTable;
 
   public static org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2556,7 +3358,7 @@ public final class OpNamespace {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\236\003" +
+      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\267\003" +
       "\n\rArgDescriptor\022\014\n\004name\030\001 \001(\t\022\022\n\nfloatVa" +
       "lue\030\002 \001(\002\022\023\n\013doubleValue\030\003 \001(\001\022\022\n\nint32V" +
       "alue\030\004 \001(\005\022\022\n\nint64Value\030\005 \001(\003\022\021\n\tboolVa" +
@@ -2565,11 +3367,14 @@ public final class OpNamespace {
       "g.nd4j.ir.TensorProto\022-\n\013outputValue\030\t \001" +
       "(\0132\030.org.nd4j.ir.TensorProto\0223\n\007argType\030" +
       "\n \001(\0162\".org.nd4j.ir.ArgDescriptor.ArgTyp" +
-      "e\"[\n\007ArgType\022\t\n\005FLOAT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005I" +
+      "e\"t\n\007ArgType\022\t\n\005FLOAT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005I" +
       "NT32\020\002\022\t\n\005INT64\020\003\022\010\n\004BOOL\020\004\022\r\n\tDATA_TYPE" +
-      "\020\005\022\n\n\006TENSOR\020\006\"O\n\014OpDescriptor\022\014\n\004name\030\001" +
-      " \001(\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4j.i" +
-      "r.ArgDescriptorB\rB\013OpNamespaceb\006proto3"
+      "\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021\n\rOUTPUT_TENSOR\020\007\"" +
+      "O\n\014OpDescriptor\022\014\n\004name\030\001 \001(\t\0221\n\rargDesc" +
+      "riptor\030\002 \003(\0132\032.org.nd4j.ir.ArgDescriptor" +
+      "\"=\n\020OpDescriptorList\022)\n\006opList\030\001 \003(\0132\031.o" +
+      "rg.nd4j.ir.OpDescriptorB\rB\013OpNamespaceb\006" +
+      "proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2588,6 +3393,12 @@ public final class OpNamespace {
       org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_nd4j_ir_OpDescriptor_descriptor,
         new java.lang.String[] { "Name", "ArgDescriptor", });
+    internal_static_org_nd4j_ir_OpDescriptorList_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_org_nd4j_ir_OpDescriptorList_fieldAccessorTable = new
+      org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_org_nd4j_ir_OpDescriptorList_descriptor,
+        new java.lang.String[] { "OpList", });
     org.nd4j.ir.TensorNamespace.getDescriptor();
   }
 

@@ -35,6 +35,8 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <byteunits.version>0.9.1</byteunits.version>
+        <neoitertools.version>1.0.0</neoitertools.version>
     </properties>
 
     <dependencies>

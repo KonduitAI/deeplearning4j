@@ -12,7 +12,8 @@ message ArgDescriptor {
     INT64 = 3;
     BOOL = 4;
     DATA_TYPE = 5;
-    TENSOR = 6;
+    INPUT_TENSOR = 6;
+    OUTPUT_TENSOR = 7;
   }
 
   string name = 1;
@@ -32,5 +33,9 @@ message ArgDescriptor {
 message OpDescriptor {
   string name = 1;
   repeated ArgDescriptor argDescriptor = 2;
+}
+
+message OpDescriptorList {
+  repeated OpDescriptor opList = 1;
 }
 
