@@ -690,6 +690,18 @@ For defining and implementing transforms, a transform is just a name.
 The IR consumption language needs to implement the desired operations.
 In the protoubuf spec, we call this a MappingRule.
 
+A definition/mapping rule is an annotated function that gets dynamically picked up at runtime.
+
+Its inputs are as follows:
+ 1. framework specific instantiated op definition
+ 2. framework specific op descriptor
+ 
+Its outputs are an op descriptor definition from nd4j representing the needed information
+to facilitate creation of a custom op.
+
+The annotated functions all need to be picked up at runtime and match what is in the desired
+framework mapping. This includes any custom operations or transforms discovered during the initial scan.
+Validation is done at the beginning of the loading process.
 
 ## Consequences
 
