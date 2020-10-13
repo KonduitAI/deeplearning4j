@@ -116,12 +116,6 @@ Validation for what can be present in the various names can be found
 A declaration in libnd4j is a set of macros that can be found
 [here](https://github.com/eclipse/deeplearning4j/blob/master/libnd4j/include/system/op_boilerplate.h)
 
-All the macros contain various declarations that are easy to find
-for automatically extracting out what properties are declared with what variable names.
-
-We use this to create automatic attribute mappings that can be serialized
-as a protobuf file for interpretation by an interpreter.
-
 
 ## Format Comparison to other frameworks
 
@@ -171,34 +165,6 @@ Onnx’s add can be found here https://github.com/onnx/onnx/blob/master/docs/Ope
 
 To summarize, the IR is a hybrid naming by index format.
 Onnx and tensorflow are purely attribute based.
-
-Below we addres the challenges in bridging the gap between the 2 formats.
-
-## Challenges when mapping nd4j ops
-
-The above formats are vastly different. Onnx and tensorflow
-are purely attribute based. Nd4j is index based.
-This challenge is addressed by the IR by adding names to each property.
-
-
-In order to actually map these properties, we need to define rules for doing so.
-Examples of why these mapping rules are needed below:
-
-1. Different conventions for the same concept. One example that stands out from conv
-is padding. Padding can be represented as a string or have a boolean that says what a string equals.
-In nd4j, we represent this as a boolean: isSameMode. We need to do a conversion inline in order
-to invoke nd4j correctly.
-
-2. Another issue is implicit concepts. Commonly, convolution requires you to configure a layout
-of NWHC (Batch size, Height, Width, Channels) 
-or NCHW (Batch size, Channels,Height, Width). Tensorflow allows you to specify it,
-nd4j also allows you to specify it. Onnx does not.
- 
- A more in depth conversation on this specific issue relating to the 
- 2 frameworks can be found [here](https://github.com/onnx/onnx-tensorflow/issues/31)
-In order to address these challenges, we introduce a MappingRule allowing
-us to define a series of steps to map the input format to the nd4j format
-in a language netural way via a protobuf declaration.
 
 
 ## Consequences
