@@ -20,7 +20,7 @@ to be able to define a direct mapping.
 
 ## Context
 
-Currently, there is a gap in the way samediff/nd4j operations are  implemented vs how other frameworks represent their models.
+Currently, there is a gap in the way samediff/nd4j operations are implemented vs how other frameworks represent their models.
 
 Keras, Tensorflow, and Pytorch use an attribute based format with names. Interop between Onnx ,Tensorflow, and Keras tends to follow the following formula:
 
@@ -75,24 +75,57 @@ int wFormat = block.getIArguments()->size() > 6 ? INT_ARG(6) : 0;           // 0
 ```
 
 We can see that there are macros in the libnd4j code base reflecting how each argument is accessed. Each list of arguments has an expected ordering of arguments we need to explicitly map to a parseable structure.
-
 Comparing this to [onnx's Convolution operator](https://github.com/onnx/onnx/blob/master/docs/Operators.md#Conv), we see:
-
 attributes with various types such as lists of ints and named tensors. These concepts exist internally in the operations and layers themselves in nd4j/samediff, but not are exposed directly to the user.
 
 
+An op descriptor from libnd4j is as follows:
+```java
+ private String name;
+    private int nIn,nOut,tArgs,iArgs;
+    private boolean inplaceAble;
+    private List<String> inArgNames;
+    private List<String> outArgNames;
+    private List<String> tArgNames;
+    private List<String> iArgNames;
+    private List<String> bArgNames;
+    private OpDeclarationType opDeclarationType;
 
-## Format Example
+    public enum OpDeclarationType {
+        CUSTOM_OP_IMPL,
+        BOOLEAN_OP_IMPL,
+        LIST_OP_IMPL,
+        LOGIC_OP_IMPL,
+        OP_IMPL,
+        DIVERGENT_OP_IMPL,
+        CONFIGURABLE_OP_IMPL,
+        REDUCTION_OP_IMPL,
+        BROADCASTABLE_OP_IMPL,
+        BROADCASTABLE_BOOL_OP_IMPL
+    }
+```
+These contain all the op declarations and fields associated with a descriptor.
 
-Similar to onnx and tensorflow, the goals are as follows:
+In the libnd4j code base, we represent the op descriptor types above
+implicitly through validation as well as the different macros present in the code base
+representing what an op execution looks like.
 
-1. Define an attribute based op schema allowing interop between tensorflow/onnx and nd4j
-2. Within the same op schema, define mappings from attributes to indexed arguments in each list present within libnd4j.
+Validation for what can be present in the various names can be found 
+[here](https://github.com/KonduitAI/deeplearning4j/blob/master/libnd4j/include/ops/declarable/impl/DeclarableOp.cpp#L734-L765)
 
- We can do that with an  op definition schema similar to tensorflow located at:
-https://github.com/KonduitAI/deeplearning4j/blob/b5f0ec072f3fd0da566e32f82c0e43ca36553f39/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/resources/ops.proto#L1742
+A declaration in libnd4j is a set of macros that can be found
+[here](https://github.com/eclipse/deeplearning4j/blob/master/libnd4j/include/system/op_boilerplate.h)
 
-In addition to the attribute based mapping we need for each op, we also have descriptions of the operation indexing.
+All the macros contain various declarations that are easy to find
+for automatically extracting out what properties are declared with what variable names.
+
+We use this to create automatic attribute mappings that can be serialized
+as a protobuf file for interpretation by an interpreter.
+
+
+## Format Comparison to other frameworks
+
+
 An add op in tensorflow looks like:
 
 ```
@@ -135,401 +168,21 @@ op {
 
 Onnx’s add can be found here https://github.com/onnx/onnx/blob/master/docs/Operators.md#Add
 
-In nd4j an add would simply be 2 input ndarrays. This metadata was added to the attribute based information already found in the tensorflow and onnx file formats.
-An nd4j IR extension would look like:
 
-```
+To summarize, the IR is a hybrid naming by index format.
+Onnx and tensorflow are purely attribute based.
 
+Below we addres the challenges in bridging the gap between the 2 formats.
 
-op {
-  name: "Add"
-  input_arg {
-    name: "x"
-    type_attr: "T"
-  }
-  input_arg {
-    name: "y"
-    type_attr: "T"
-  }
-  output_arg {
-    name: "z"
-    type_attr: "T"
-  }
-  attr {
-    name: "T"
-    type: "type"
-    allowed_values {
-      list {
-        type: DT_BFLOAT16
-        type: DT_HALF
-        type: DT_FLOAT
-        type: DT_DOUBLE
-        type: DT_UINT8
-        type: DT_INT8
-        type: DT_INT16
-        type: DT_INT32
-        type: DT_INT64
-        type: DT_COMPLEX64
-        type: DT_COMPLEX128
-        type: DT_STRING
-      }
-    }
-  }
-  
-  repeated int64 ints;
-  repeated bool booleans;
-  repeated int32 axisArguments;
-  
-  
-}
-```
+## Challenges when mapping nd4j ops
+
+The above formats are vastly different. Onnx and tensorflow
+are purely attribute based. Nd4j is index based.
+This challenge is addressed by the IR by adding names to each property.
 
 
-Note above that we add list information to the attribute based declaration from onnx.
-
-###Op Descriptor
-
-An op descriptor from libnd4j is as follows:
-```java
- private String name;
-    private int nIn,nOut,tArgs,iArgs;
-    private boolean inplaceAble;
-    private List<String> inArgNames;
-    private List<String> outArgNames;
-    private List<String> tArgNames;
-    private List<String> iArgNames;
-    private List<String> bArgNames;
-    private OpDeclarationType opDeclarationType;
-
-    public enum OpDeclarationType {
-        CUSTOM_OP_IMPL,
-        BOOLEAN_OP_IMPL,
-        LIST_OP_IMPL,
-        LOGIC_OP_IMPL,
-        OP_IMPL,
-        DIVERGENT_OP_IMPL,
-        CONFIGURABLE_OP_IMPL,
-        REDUCTION_OP_IMPL,
-        BROADCASTABLE_OP_IMPL,
-        BROADCASTABLE_BOOL_OP_IMPL
-    }
-```
-These contain all the op declarations and fields associated with a descriptor.
-Validation for what can be present in the various names can eb found 
-[here](https://github.com/KonduitAI/deeplearning4j/blob/master/libnd4j/include/ops/declarable/impl/DeclarableOp.cpp#L734-L765)
-
-A declaration in libnd4j is a set of macros that can be found
-[here](https://github.com/eclipse/deeplearning4j/blob/master/libnd4j/include/system/op_boilerplate.h)
-
-All the macros contain various declarations that are easy to find
-for automatically extracting out what properties are declared with what variable names.
-
-We use this to create automatic attribute mappings that can be serialized
-as a protobuf file for interpretation by an interpreter.
-
-###Interpreter
-
-An interpreter takes  a tensorflow or pytorch model and figure out how to map
-various ops. Their attributes and op names are mapped to libnd4j
-using information from the above op descriptor.
-
-An interpreter can take in an individual op from tensorflow, onnx or
-another framework and translate it to an equivalent op in libnd4j represented
-as the equivalent op descriptor.
-
-The usage is as follows:
-
-
-## Op def files
-
-For each framework in tensorflow/onnx, we have inbuilt definition files
-for each tensorflow and pytorch.
-
-For onnx, we have an onnx.pbtxt generated by the dl4j-dev tools submodule 
-onnx-defs. This definition file has each op serialized as an [onnx NodeProto](https://github.com/onnx/onnx/blob/25fd2c332cf854fd38a92aa8f60d232530ab0065/onnx/onnx-ml.proto#L193)
-For tensorflow, we have an ops.proto pulled from tensorflow's official repo.
-
-We  use these files to map operation attributes serialized by 
-nd4j's generated operation definition tool found in dl4j-dev-tools
-to their equivalents in tensorflow and pytorch.
-
-An interpreter has 2 methods:
-
-
-```java
-Interpreter interpreter = ...;
-
-OpDescriptor descriptor = interpreter.interpretTensorflow(nodeFromOtherFramework);
-OpDescriptor descriptor = interpreter.interpretOnnx(nodeFromOtherFramework);
-
-//proceed to use descriptor to map for model import...
-```  
-
-##Interpreter file format
-
-An interpreter is language neutral. We have a mini syntax
-for mapping attributes from one format to another.
-
-Through indexing every attribute and input/output in libnd4j,
-we can maintain an index of operation names and attributes
-with a mapping syntax. If we want to map a trivial operation like say:
-Abs, let's compare tensorflow, onnx and the descriptor in nd4j.
-
-Tensorflow:
-```prototext
-op {
-  name: "Floor"
-  input_arg {
-    name: "x"
-    type_attr: "T"
-  }
-  output_arg {
-    name: "y"
-    type_attr: "T"
-  }
-  attr {
-    name: "T"
-    type: "type"
-    allowed_values {
-      list {
-        type: DT_BFLOAT16
-        type: DT_HALF
-        type: DT_FLOAT
-        type: DT_DOUBLE
-      }
-    }
-  }
-}
-```
-
-Onnx:
-```prototext
-input: "X"
-output: "Y"
-name: "Floor"
-op_type: "Floor"
-attribute {
-  name: "X-types"
-  strings: "float"
-  strings: "float16"
-  strings: "double"
-  type: STRINGS
-}
-doc_string: "\nFloor takes one input data (Tensor<T>) and produces one output data\n(Tensor<T>) where the floor is, y = floor(x), is applied to\nthe tensor elementwise.\n"
-```
-
-The op descriptor for libnd4j is:
-```
-OpDeclarationDescriptor(name=Floor, nIn=1, nOut=1, tArgs=0, iArgs=0, inplaceAble=true, inArgNames=[first], outArgNames=[z], tArgNames=[], iArgNames=[], bArgNames=[], opDeclarationType=OP_IMPL)
-```
-
-Floor is a fairly simple op with 1 input and 1 output.
-Inputs and outputs are implicitly tensors.
-This is true for both onnx and tensorflow.
-
-Tensorflow has an attribute defined for valid types.
-The way we generated the onnx schema proto, we have something equivalent
-that allows for a list of types presented as a string.
-
-
-Mapping a descriptor happens based on attribute.
-An example of abs below:
-
-```prototext
-floor {
-  tensorflow_mapping: {
-     input_mappings: {
-       input_mapping {
-        first: "x"
-     }
-         
-     }
-     output_mappings: {
-        z: "y"
-     }
-  
-      attribute_mapping_functions: {
-
-     }
-
-  }
-  onnx_mapping {
-    input_mappings {
-       first: "X"
-    }
-    output_mappings {
-        z: "Y"
-    }
-
-     attribute_mapping_functions {
-
-     }
-  }
-}
-```
-
-Now we can compare this to Convolution.
-In tensorflow, the convolution op is represented as:
-```prototext
-op {
-  name: "Conv2D"
-  input_arg {
-    name: "input"
-    type_attr: "T"
-  }
-  input_arg {
-    name: "filter"
-    type_attr: "T"
-  }
-  output_arg {
-    name: "output"
-    type_attr: "T"
-  }
-  attr {
-    name: "T"
-    type: "type"
-    allowed_values {
-      list {
-        type: DT_HALF
-        type: DT_BFLOAT16
-        type: DT_FLOAT
-        type: DT_DOUBLE
-      }
-    }
-  }
-  attr {
-    name: "strides"
-    type: "list(int)"
-  }
-  attr {
-    name: "use_cudnn_on_gpu"
-    type: "bool"
-    default_value {
-      b: true
-    }
-  }
-  attr {
-    name: "padding"
-    type: "string"
-    allowed_values {
-      list {
-        s: "SAME"
-        s: "VALID"
-      }
-    }
-  }
-  attr {
-    name: "data_format"
-    type: "string"
-    default_value {
-      s: "NHWC"
-    }
-    allowed_values {
-      list {
-        s: "NHWC"
-        s: "NCHW"
-      }
-    }
-  }
-  attr {
-    name: "dilations"
-    type: "list(int)"
-    default_value {
-      list {
-        i: 1
-        i: 1
-        i: 1
-        i: 1
-      }
-    }
-  }
-}
-```
-In onnx, it's represented as:
-```prototext
-input: "X"
-input: "W"
-input: "B"
-output: "Y"
-name: "Conv"
-op_type: "Conv"
-attribute {
-  name: "auto_pad"
-  s: "NOTSET"
-  type: STRING
-}
-attribute {
-  name: "dilations"
-  s: ""
-  type: INTS
-}
-attribute {
-  name: "group"
-  i: 1
-  type: INT
-}
-attribute {
-  name: "kernel_shape"
-  s: ""
-  type: INTS
-}
-attribute {
-  name: "pads"
-  s: ""
-  type: INTS
-}
-attribute {
-  name: "strides"
-  s: ""
-  type: INTS
-}
-attribute {
-  name: "X-types"
-  strings: "double"
-  strings: "float"
-  strings: "float16"
-  type: STRINGS
-}
-attribute {
-  name: "W-types"
-  strings: "double"
-  strings: "float"
-  strings: "float16"
-  type: STRINGS
-}
-attribute {
-  name: "B-types"
-  strings: "double"
-  strings: "float"
-  strings: "float16"
-  type: STRINGS
-}
-doc_string: "\nThe convolution operator consumes an input tensor and a filter, and\ncomputes the output."
-```
-
-The libnd4j OpDescriptor:
-```
-OpDeclarationDescriptor(name=conv2d, nIn=2, nOut=1, tArgs=0, iArgs=9, inplaceAble=false, inArgNames=[input, weights, bias, gradO, gradIShape], outArgNames=[output, gradI, gradW, gradB], tArgNames=[], iArgNames=[sH, sW, pH, pW, dH, dW, isSameMode, isNCHW, wFormat, kH, kW], bArgNames=[], opDeclarationType=CUSTOM_OP_IMPL)
-```
-
-A libnd4j op descriptor has the following attributes (described elsewhere in this document as well):
-
-1. name of the op
-2. the number of input ndarrays (negative indicates variable length)
-3. the number of output arrays(negative indicates variable length)
-4. tArgs: the floating point arguments (negative indicates variable length)
-5. iArgs: the integer arguments (negative indicates variable length)
-6. inplaceable: whether the op's outputs can override its input arrays as its inputs
-7. inArgNames: the input argument names
-8. outArgNames: the output argument names
-9. tArgNames: the float argument names
-10. iArgNames: the integer argument names
-11. bArgNames: the boolean argument names
-12. opDeclarationType: the type of the op
-
-
-A few challenges stand out when trying to map all these formats
-to nd4j:
+In order to actually map these properties, we need to define rules for doing so.
+Examples of why these mapping rules are needed below:
 
 1. Different conventions for the same concept. One example that stands out from conv
 is padding. Padding can be represented as a string or have a boolean that says what a string equals.
@@ -543,165 +196,10 @@ nd4j also allows you to specify it. Onnx does not.
  
  A more in depth conversation on this specific issue relating to the 
  2 frameworks can be found [here](https://github.com/onnx/onnx-tensorflow/issues/31)
+In order to address these challenges, we introduce a MappingRule allowing
+us to define a series of steps to map the input format to the nd4j format
+in a language netural way via a protobuf declaration.
 
-In order to bypass this issue, a mapping rule is needed.
-Defining this example can be found as MappingRule
-and Mapper found in [./nd4j-backends/nd4j-api-parent/nd4j-api/src/main/protobuf/nd4j/nd4j.proto]
-
-We use these 2 core concepts to define a set of rules
-allowing translation for each op within each framework.
-
-A mapper for nd4j and tensorflow can be found as follows:
-
-```prototext
-MappingRule {
-  name: "nchwConversion"
-  functionName: "StringEqualsConversion"  
-}
-
-MappingRule {
-  name: "strideIndexLookup"
-  functionName: "IndexLookup"
-}
-MappingRule {
-  name: "kernelIndexLookup"
-  functionName: "IndexLookup"
-}
-
-
-Mapper {
-  name: "tensorflowConversion"
-  opName: "conv2d"
-  rules {
-    list {
-     MappingRule {
-        name: "nchwConversion"
-        functionName: "StringEqualsConversion"  
-    }
-
-    MappingRule {
-      name: "strideIndexLookup"
-      functionName: "IndexLookup"
-    }
-
-    MappingRule {
-      name: "kernelIndexLookup"
-      functionName: "IndexLookup"
-    }
-
-    }
-  }
- 
-
- # attribute mappings..
-}
-```
-
-Convolution is significantly more complicated and does not map
-1 to 1. In order to properly map both tensorflow and onnx
-to libnd4j, we need to have adapter functions built in.
-
-Adapter functions are built in and language neutral. It also might be possible to add custom functions
-depending on the use case. 
-
-Adapter functions are simple implementations in the nd4j
-side (and would need to be implemented for other languages if added)
-where the mapper specifies by name what adapter functions to invoke.
-This allows definition of rules and functions in protobuf
-and clear mappings from declaration to implementation (that could be picked up by code generation later)
-
-Adapter function invocations are handled by declaring rules.
-Rules specify how to lookup arguments and what function to run on them.
-
-An individual mapper declaration for an op consists of a list of rules
-to apply for a given op.The declaration contains the framework 
-name meant to map for, and the name of the nd4j op to map.
-
-This allows the user to lookup which mapper to use for what framework
-at runtime. This also unifies the mapper framework from the current
-tensorflow import which has similar metadata, but only in java.
-
-
-##Attribute mapping
-
-In order to map inputs, we need to be able to take the descriptors
-mentioned above and do 1 to 1 mappings to the names of each op.
-In order to do this, an attribute mapping is needed. Attributes are
-simply named types. Both tensorflow and onnx have this format.
-The op descriptor format also aligns with this pattern.
-
-We map names and types to equivalent concepts in each framework.
-Onnx tensorflow does this with an [attribute converter](https://github.com/onnx/onnx-tensorflow/blob/08e41de7b127a53d072a54730e4784fe50f8c7c3/onnx_tf/common/attr_converter.py)
-
-This is done by a handler (one for each op).
-More can be found [here](https://github.com/onnx/onnx-tensorflow/tree/master/onnx_tf/handlers/backend)
-
-Our version of this is a MapperDeclaration.
-We define a mapper for each op. Those mappers are
-registered with a central dictionary that will allow dynamic lookups
-for a specific mapper that knows how to handle a particular op
-within tensorflow.
-
-In order to bootstrap the implementation of the mapper declarations,
-the existing property mappings already existing in each java operation
-will be used. Mapping metadata already exists from the current tensorflow import.
-
-An example is the [existing propertiesForFunction](https://github.com/KonduitAI/deeplearning4j/blob/ec757f654d92e9d4199adf17690420525fd5bd53/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/autodiff/functions/DifferentialFunction.java#L153)
-The mapping (now deprecated, but still used) is found [here](https://github.com/KonduitAI/deeplearning4j/blob/88d3c4867fb87ec760b445c6b9459ecf353cec47/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/imports/graphmapper/tf/TFGraphMapper.java#L669-L668)
-
-## IR Generation
-
-Given the above configuration used for representing ops and ops transformations,
-we also automatically generate those mappings.
-
-We generate mappings from kotlin mappings and outputting the above protobuf format
-that can be read/consumed/interpreted by any language supported by protobuf and implements
-the spec operations needed for processing op transformations needed for mapping.
-
-In order to implement a mapping, we annotate a generator that generates an op descriptor
-for a particular op.
-
-We discover these mapper generators with annotation scanning. The annotation looks looks like the
-following:
-```java
-@MapperGenerator("opName","frameworkName")
-```
-
-where opName is the name of the nd4j op to generate a mapping for and frameworkName
-is the framework to generate a mapping for.
-
-This scan dynamically happens at runtime allowing for discovery of custom operation generators
-as well. This allows workarounds for missing ops.
-
-
-
-## IR Consumption
-
-In order to consume the IR and write an interpreter for the IR, a few simple steps are followed:
-1. Generate protobuf bindings for the desired language
-
-2. Implement the necessary transforms that manipulate the protobuf to achieve
-the desired mapping for nd4j op execution. Remember, a transform is something simple like:
-convert tensor to list of ints, convert string to list of ints
-
-## Transformation definitions
-
-For defining and implementing transforms, a transform is just a name.
-The IR consumption language needs to implement the desired operations.
-In the protoubuf spec, we call this a MappingRule.
-
-A definition/mapping rule is an annotated function that gets dynamically picked up at runtime.
-
-Its inputs are as follows:
- 1. framework specific instantiated op definition
- 2. framework specific op descriptor
- 
-Its outputs are an op descriptor definition from nd4j representing the needed information
-to facilitate creation of a custom op.
-
-The annotated functions all need to be picked up at runtime and match what is in the desired
-framework mapping. This includes any custom operations or transforms discovered during the initial scan.
-Validation is done at the beginning of the loading process.
 
 ## Consequences
 
