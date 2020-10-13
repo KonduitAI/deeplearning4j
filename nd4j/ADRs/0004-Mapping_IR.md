@@ -16,7 +16,7 @@ In the [previous ADR](./Import_IR.md), we added an IR which makes it easier to
 interop with other frameworks. 
 
 In this ADR, this work is extended to add a file format for 
-descirbing lists of operations as MappingRules which allow transformations
+describing lists of operations as MappingRules which allow transformations
 from one framework to another.
 
 These transformations manipulate protobuf as input and output Nd4j's
@@ -61,7 +61,7 @@ The op descriptor format also aligns with this pattern.
 
 For defining and implementing transforms, a transform is just a name.
 The IR consumption language needs to implement the desired operations.
-In the protoubuf spec, we call this a MappingRule.
+In the protobuf spec, we call this a MappingRule.
 
 A definition/mapping rule is an annotated function that gets dynamically picked up at runtime.
 
