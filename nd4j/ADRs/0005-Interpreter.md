@@ -166,6 +166,10 @@ In order to address these challenges, we introduce a MappingRule allowing
 us to define a series of steps to map the input format to the nd4j format
 in a language neutral way via a protobuf declaration.
 
+
+
+
+
 ## Consequences
 ### Advantages
 * Allows a language neutral way of describing a set of transforms necessary

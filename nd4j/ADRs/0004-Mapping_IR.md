@@ -178,6 +178,33 @@ In order to address these challenges, we introduce a MappingRule allowing
 us to define a series of steps to map the input format to the nd4j format
 in a language neutral way via a protobuf declaration.
 
+
+
+## Implementation details
+
+In order to implement proper mapping functionality, a common interface is implemented.
+Below are the needed common types for mapping:
+
+1. IRNodeDef: A node definition in a graph
+2. IRTensor: A tensor type for mapping
+3. IROpList: A list of operations
+4. IRAttrDef: An attribute definition
+5. IRAttrValue: An attribute value
+6. IROpDef: An op definition for the IR
+7. IRDataType: A data type
+
+Each one of these types is a wrapper around a specific framework's input types
+of the equivalent concepts.
+
+Each of these wrappers knows how to convert the specific concepts
+in to the nd4j equivalents for interpretation by a mapper which applies
+the mapping rules for a particular framework.
+
+Doing this will allow us to share logic between mappers and making 1 implementation of 
+mapping possible by calling associated getter methods for concepts like data types and nodes.
+
+
+
 ## Consequences
 ### Advantages
 * Allows a language neutral way of describing a set of transforms necessary
