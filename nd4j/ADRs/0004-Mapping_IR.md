@@ -204,6 +204,32 @@ Doing this will allow us to share logic between mappers and making 1 implementat
 mapping possible by calling associated getter methods for concepts like data types and nodes.
 
 
+## Custom types
+
+Some types will  not map 1 to 1 or are directly applicable to nd4j.
+In order to combat this, when an unknown type is discovered during mapping,
+adapter functions for specific types must be specified.
+
+Supported type include:
+
+1. Long/Int
+2. Double/Float
+3. String
+4. Boolean
+5. Bytes
+6. NDArrays
+
+On a case by case basis, this should be registered as a mapper.
+
+An example:
+
+A Dim in tensorflow can be mapped to a long in nd4j.
+
+Shape Information can be a  list of longs or multiple lists depending on the 
+context.
+
+
+
 
 ## Consequences
 ### Advantages
