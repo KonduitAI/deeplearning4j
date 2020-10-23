@@ -370,6 +370,44 @@ public final class MapperNamespace {
      */
     org.nd4j.shade.protobuf.ByteString
         getOutputBooleanNameBytes(int index);
+
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    java.util.List<java.lang.String>
+        getInputTensorNameList();
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    int getInputTensorNameCount();
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    java.lang.String getInputTensorName(int index);
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    org.nd4j.shade.protobuf.ByteString
+        getInputTensorNameBytes(int index);
+
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    java.util.List<java.lang.String>
+        getOutputTensorNameList();
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    int getOutputTensorNameCount();
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    java.lang.String getOutputTensorName(int index);
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    org.nd4j.shade.protobuf.ByteString
+        getOutputTensorNameBytes(int index);
   }
   /**
    * Protobuf type {@code org.nd4j.ir.MappingRule}
@@ -396,6 +434,8 @@ public final class MapperNamespace {
       outputDoubleName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
       inputBooleanName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
       outputBooleanName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+      inputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+      outputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -531,6 +571,24 @@ public final class MapperNamespace {
               outputBooleanName_.add(s);
               break;
             }
+            case 106: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000400) != 0)) {
+                inputTensorName_ = new org.nd4j.shade.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000400;
+              }
+              inputTensorName_.add(s);
+              break;
+            }
+            case 114: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000800) != 0)) {
+                outputTensorName_ = new org.nd4j.shade.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000800;
+              }
+              outputTensorName_.add(s);
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -575,6 +633,12 @@ public final class MapperNamespace {
         }
         if (((mutable_bitField0_ & 0x00000200) != 0)) {
           outputBooleanName_ = outputBooleanName_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00000400) != 0)) {
+          inputTensorName_ = inputTensorName_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00000800) != 0)) {
+          outputTensorName_ = outputTensorName_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -951,6 +1015,64 @@ public final class MapperNamespace {
       return outputBooleanName_.getByteString(index);
     }
 
+    public static final int INPUTTENSORNAME_FIELD_NUMBER = 13;
+    private org.nd4j.shade.protobuf.LazyStringList inputTensorName_;
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    public org.nd4j.shade.protobuf.ProtocolStringList
+        getInputTensorNameList() {
+      return inputTensorName_;
+    }
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    public int getInputTensorNameCount() {
+      return inputTensorName_.size();
+    }
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    public java.lang.String getInputTensorName(int index) {
+      return inputTensorName_.get(index);
+    }
+    /**
+     * <code>repeated string inputTensorName = 13;</code>
+     */
+    public org.nd4j.shade.protobuf.ByteString
+        getInputTensorNameBytes(int index) {
+      return inputTensorName_.getByteString(index);
+    }
+
+    public static final int OUTPUTTENSORNAME_FIELD_NUMBER = 14;
+    private org.nd4j.shade.protobuf.LazyStringList outputTensorName_;
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    public org.nd4j.shade.protobuf.ProtocolStringList
+        getOutputTensorNameList() {
+      return outputTensorName_;
+    }
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    public int getOutputTensorNameCount() {
+      return outputTensorName_.size();
+    }
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    public java.lang.String getOutputTensorName(int index) {
+      return outputTensorName_.get(index);
+    }
+    /**
+     * <code>repeated string outputTensorName = 14;</code>
+     */
+    public org.nd4j.shade.protobuf.ByteString
+        getOutputTensorNameBytes(int index) {
+      return outputTensorName_.getByteString(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1000,6 +1122,12 @@ public final class MapperNamespace {
       }
       for (int i = 0; i < outputBooleanName_.size(); i++) {
         org.nd4j.shade.protobuf.GeneratedMessageV3.writeString(output, 12, outputBooleanName_.getRaw(i));
+      }
+      for (int i = 0; i < inputTensorName_.size(); i++) {
+        org.nd4j.shade.protobuf.GeneratedMessageV3.writeString(output, 13, inputTensorName_.getRaw(i));
+      }
+      for (int i = 0; i < outputTensorName_.size(); i++) {
+        org.nd4j.shade.protobuf.GeneratedMessageV3.writeString(output, 14, outputTensorName_.getRaw(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1096,6 +1224,22 @@ public final class MapperNamespace {
         size += dataSize;
         size += 1 * getOutputBooleanNameList().size();
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < inputTensorName_.size(); i++) {
+          dataSize += computeStringSizeNoTag(inputTensorName_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getInputTensorNameList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < outputTensorName_.size(); i++) {
+          dataSize += computeStringSizeNoTag(outputTensorName_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getOutputTensorNameList().size();
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1135,6 +1279,10 @@ public final class MapperNamespace {
           .equals(other.getInputBooleanNameList())) return false;
       if (!getOutputBooleanNameList()
           .equals(other.getOutputBooleanNameList())) return false;
+      if (!getInputTensorNameList()
+          .equals(other.getInputTensorNameList())) return false;
+      if (!getOutputTensorNameList()
+          .equals(other.getOutputTensorNameList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1189,6 +1337,14 @@ public final class MapperNamespace {
       if (getOutputBooleanNameCount() > 0) {
         hash = (37 * hash) + OUTPUTBOOLEANNAME_FIELD_NUMBER;
         hash = (53 * hash) + getOutputBooleanNameList().hashCode();
+      }
+      if (getInputTensorNameCount() > 0) {
+        hash = (37 * hash) + INPUTTENSORNAME_FIELD_NUMBER;
+        hash = (53 * hash) + getInputTensorNameList().hashCode();
+      }
+      if (getOutputTensorNameCount() > 0) {
+        hash = (37 * hash) + OUTPUTTENSORNAME_FIELD_NUMBER;
+        hash = (53 * hash) + getOutputTensorNameList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1347,6 +1503,10 @@ public final class MapperNamespace {
         bitField0_ = (bitField0_ & ~0x00000100);
         outputBooleanName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000200);
+        inputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000400);
+        outputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
 
@@ -1426,6 +1586,16 @@ public final class MapperNamespace {
           bitField0_ = (bitField0_ & ~0x00000200);
         }
         result.outputBooleanName_ = outputBooleanName_;
+        if (((bitField0_ & 0x00000400) != 0)) {
+          inputTensorName_ = inputTensorName_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000400);
+        }
+        result.inputTensorName_ = inputTensorName_;
+        if (((bitField0_ & 0x00000800) != 0)) {
+          outputTensorName_ = outputTensorName_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000800);
+        }
+        result.outputTensorName_ = outputTensorName_;
         onBuilt();
         return result;
       }
@@ -1579,6 +1749,26 @@ public final class MapperNamespace {
           } else {
             ensureOutputBooleanNameIsMutable();
             outputBooleanName_.addAll(other.outputBooleanName_);
+          }
+          onChanged();
+        }
+        if (!other.inputTensorName_.isEmpty()) {
+          if (inputTensorName_.isEmpty()) {
+            inputTensorName_ = other.inputTensorName_;
+            bitField0_ = (bitField0_ & ~0x00000400);
+          } else {
+            ensureInputTensorNameIsMutable();
+            inputTensorName_.addAll(other.inputTensorName_);
+          }
+          onChanged();
+        }
+        if (!other.outputTensorName_.isEmpty()) {
+          if (outputTensorName_.isEmpty()) {
+            outputTensorName_ = other.outputTensorName_;
+            bitField0_ = (bitField0_ & ~0x00000800);
+          } else {
+            ensureOutputTensorNameIsMutable();
+            outputTensorName_.addAll(other.outputTensorName_);
           }
           onChanged();
         }
@@ -2686,6 +2876,194 @@ public final class MapperNamespace {
   checkByteStringIsUtf8(value);
         ensureOutputBooleanNameIsMutable();
         outputBooleanName_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private org.nd4j.shade.protobuf.LazyStringList inputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureInputTensorNameIsMutable() {
+        if (!((bitField0_ & 0x00000400) != 0)) {
+          inputTensorName_ = new org.nd4j.shade.protobuf.LazyStringArrayList(inputTensorName_);
+          bitField0_ |= 0x00000400;
+         }
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public org.nd4j.shade.protobuf.ProtocolStringList
+          getInputTensorNameList() {
+        return inputTensorName_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public int getInputTensorNameCount() {
+        return inputTensorName_.size();
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public java.lang.String getInputTensorName(int index) {
+        return inputTensorName_.get(index);
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public org.nd4j.shade.protobuf.ByteString
+          getInputTensorNameBytes(int index) {
+        return inputTensorName_.getByteString(index);
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public Builder setInputTensorName(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureInputTensorNameIsMutable();
+        inputTensorName_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public Builder addInputTensorName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureInputTensorNameIsMutable();
+        inputTensorName_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public Builder addAllInputTensorName(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureInputTensorNameIsMutable();
+        org.nd4j.shade.protobuf.AbstractMessageLite.Builder.addAll(
+            values, inputTensorName_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public Builder clearInputTensorName() {
+        inputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000400);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string inputTensorName = 13;</code>
+       */
+      public Builder addInputTensorNameBytes(
+          org.nd4j.shade.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureInputTensorNameIsMutable();
+        inputTensorName_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private org.nd4j.shade.protobuf.LazyStringList outputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureOutputTensorNameIsMutable() {
+        if (!((bitField0_ & 0x00000800) != 0)) {
+          outputTensorName_ = new org.nd4j.shade.protobuf.LazyStringArrayList(outputTensorName_);
+          bitField0_ |= 0x00000800;
+         }
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public org.nd4j.shade.protobuf.ProtocolStringList
+          getOutputTensorNameList() {
+        return outputTensorName_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public int getOutputTensorNameCount() {
+        return outputTensorName_.size();
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public java.lang.String getOutputTensorName(int index) {
+        return outputTensorName_.get(index);
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public org.nd4j.shade.protobuf.ByteString
+          getOutputTensorNameBytes(int index) {
+        return outputTensorName_.getByteString(index);
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public Builder setOutputTensorName(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureOutputTensorNameIsMutable();
+        outputTensorName_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public Builder addOutputTensorName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureOutputTensorNameIsMutable();
+        outputTensorName_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public Builder addAllOutputTensorName(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureOutputTensorNameIsMutable();
+        org.nd4j.shade.protobuf.AbstractMessageLite.Builder.addAll(
+            values, outputTensorName_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public Builder clearOutputTensorName() {
+        outputTensorName_ = org.nd4j.shade.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000800);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string outputTensorName = 14;</code>
+       */
+      public Builder addOutputTensorNameBytes(
+          org.nd4j.shade.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureOutputTensorNameIsMutable();
+        outputTensorName_.add(value);
         onChanged();
         return this;
       }
@@ -3935,7 +4313,7 @@ public final class MapperNamespace {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014mapper.proto\022\013org.nd4j.ir\"\266\002\n\013MappingR" +
+      "\n\014mapper.proto\022\013org.nd4j.ir\"\351\002\n\013MappingR" +
       "ule\022\020\n\010ruleName\030\001 \001(\t\022\024\n\014functionName\030\002 " +
       "\001(\t\022\033\n\023inputStringAttrName\030\003 \003(\t\022\034\n\024outp" +
       "utStringAttrName\030\004 \003(\t\022\024\n\014inputIntName\030\005" +
@@ -3943,13 +4321,14 @@ public final class MapperNamespace {
       "tName\030\007 \003(\t\022\027\n\017outputFloatName\030\010 \003(\t\022\027\n\017" +
       "inputDoubleName\030\t \003(\t\022\030\n\020outputDoubleNam" +
       "e\030\n \003(\t\022\030\n\020inputBooleanName\030\013 \003(\t\022\031\n\021out" +
-      "putBooleanName\030\014 \003(\t\"b\n\021MapperDeclaratio" +
-      "n\022\025\n\rframeworkName\030\001 \001(\t\022\016\n\006opName\030\002 \001(\t" +
-      "\022&\n\004rule\030\003 \003(\0132\030.org.nd4j.ir.MappingRule" +
-      "*b\n\nOpListType\022\010\n\004TARG\020\000\022\010\n\004IARG\020\001\022\010\n\004BA" +
-      "RG\020\002\022\014\n\010DTYPEARG\020\003\022\014\n\010INPUTARG\020\004\022\r\n\tOUTP" +
-      "UTARG\020\005\022\013\n\007AXISARG\020\006B\021B\017MapperNamespaceb" +
-      "\006proto3"
+      "putBooleanName\030\014 \003(\t\022\027\n\017inputTensorName\030" +
+      "\r \003(\t\022\030\n\020outputTensorName\030\016 \003(\t\"b\n\021Mappe" +
+      "rDeclaration\022\025\n\rframeworkName\030\001 \001(\t\022\016\n\006o" +
+      "pName\030\002 \001(\t\022&\n\004rule\030\003 \003(\0132\030.org.nd4j.ir." +
+      "MappingRule*b\n\nOpListType\022\010\n\004TARG\020\000\022\010\n\004I" +
+      "ARG\020\001\022\010\n\004BARG\020\002\022\014\n\010DTYPEARG\020\003\022\014\n\010INPUTAR" +
+      "G\020\004\022\r\n\tOUTPUTARG\020\005\022\013\n\007AXISARG\020\006B\021B\017Mappe" +
+      "rNamespaceb\006proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3960,7 +4339,7 @@ public final class MapperNamespace {
     internal_static_org_nd4j_ir_MappingRule_fieldAccessorTable = new
       org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_nd4j_ir_MappingRule_descriptor,
-        new java.lang.String[] { "RuleName", "FunctionName", "InputStringAttrName", "OutputStringAttrName", "InputIntName", "OutputIntName", "InputFloatName", "OutputFloatName", "InputDoubleName", "OutputDoubleName", "InputBooleanName", "OutputBooleanName", });
+        new java.lang.String[] { "RuleName", "FunctionName", "InputStringAttrName", "OutputStringAttrName", "InputIntName", "OutputIntName", "InputFloatName", "OutputFloatName", "InputDoubleName", "OutputDoubleName", "InputBooleanName", "OutputBooleanName", "InputTensorName", "OutputTensorName", });
     internal_static_org_nd4j_ir_MapperDeclaration_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_org_nd4j_ir_MapperDeclaration_fieldAccessorTable = new

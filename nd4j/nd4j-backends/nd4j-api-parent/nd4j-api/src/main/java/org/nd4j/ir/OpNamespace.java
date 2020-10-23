@@ -63,17 +63,17 @@ public final class OpNamespace {
     org.nd4j.ir.TensorNamespace.DataType getDataTypeValue();
 
     /**
-     * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+     * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
      */
-    boolean hasInputvalue();
+    boolean hasInputValue();
     /**
-     * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+     * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
      */
-    org.nd4j.ir.TensorNamespace.TensorProto getInputvalue();
+    org.nd4j.ir.TensorNamespace.TensorProto getInputValue();
     /**
-     * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+     * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
      */
-    org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder getInputvalueOrBuilder();
+    org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder getInputValueOrBuilder();
 
     /**
      * <code>.org.nd4j.ir.TensorProto outputValue = 9;</code>
@@ -96,6 +96,11 @@ public final class OpNamespace {
      * <code>.org.nd4j.ir.ArgDescriptor.ArgType argType = 10;</code>
      */
     org.nd4j.ir.OpNamespace.ArgDescriptor.ArgType getArgType();
+
+    /**
+     * <code>int32 argIndex = 11;</code>
+     */
+    int getArgIndex();
   }
   /**
    * Protobuf type {@code org.nd4j.ir.ArgDescriptor}
@@ -184,13 +189,13 @@ public final class OpNamespace {
             }
             case 66: {
               org.nd4j.ir.TensorNamespace.TensorProto.Builder subBuilder = null;
-              if (inputvalue_ != null) {
-                subBuilder = inputvalue_.toBuilder();
+              if (inputValue_ != null) {
+                subBuilder = inputValue_.toBuilder();
               }
-              inputvalue_ = input.readMessage(org.nd4j.ir.TensorNamespace.TensorProto.parser(), extensionRegistry);
+              inputValue_ = input.readMessage(org.nd4j.ir.TensorNamespace.TensorProto.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(inputvalue_);
-                inputvalue_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(inputValue_);
+                inputValue_ = subBuilder.buildPartial();
               }
 
               break;
@@ -212,6 +217,11 @@ public final class OpNamespace {
               int rawValue = input.readEnum();
 
               argType_ = rawValue;
+              break;
+            }
+            case 88: {
+
+              argIndex_ = input.readInt32();
               break;
             }
             default: {
@@ -495,24 +505,24 @@ public final class OpNamespace {
     }
 
     public static final int INPUTVALUE_FIELD_NUMBER = 8;
-    private org.nd4j.ir.TensorNamespace.TensorProto inputvalue_;
+    private org.nd4j.ir.TensorNamespace.TensorProto inputValue_;
     /**
-     * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+     * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
      */
-    public boolean hasInputvalue() {
-      return inputvalue_ != null;
+    public boolean hasInputValue() {
+      return inputValue_ != null;
     }
     /**
-     * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+     * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
      */
-    public org.nd4j.ir.TensorNamespace.TensorProto getInputvalue() {
-      return inputvalue_ == null ? org.nd4j.ir.TensorNamespace.TensorProto.getDefaultInstance() : inputvalue_;
+    public org.nd4j.ir.TensorNamespace.TensorProto getInputValue() {
+      return inputValue_ == null ? org.nd4j.ir.TensorNamespace.TensorProto.getDefaultInstance() : inputValue_;
     }
     /**
-     * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+     * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
      */
-    public org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder getInputvalueOrBuilder() {
-      return getInputvalue();
+    public org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder getInputValueOrBuilder() {
+      return getInputValue();
     }
 
     public static final int OUTPUTVALUE_FIELD_NUMBER = 9;
@@ -553,6 +563,15 @@ public final class OpNamespace {
       return result == null ? org.nd4j.ir.OpNamespace.ArgDescriptor.ArgType.UNRECOGNIZED : result;
     }
 
+    public static final int ARGINDEX_FIELD_NUMBER = 11;
+    private int argIndex_;
+    /**
+     * <code>int32 argIndex = 11;</code>
+     */
+    public int getArgIndex() {
+      return argIndex_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -588,14 +607,17 @@ public final class OpNamespace {
       if (dataTypeValue_ != org.nd4j.ir.TensorNamespace.DataType.UNDEFINED.getNumber()) {
         output.writeEnum(7, dataTypeValue_);
       }
-      if (inputvalue_ != null) {
-        output.writeMessage(8, getInputvalue());
+      if (inputValue_ != null) {
+        output.writeMessage(8, getInputValue());
       }
       if (outputValue_ != null) {
         output.writeMessage(9, getOutputValue());
       }
       if (argType_ != org.nd4j.ir.OpNamespace.ArgDescriptor.ArgType.FLOAT.getNumber()) {
         output.writeEnum(10, argType_);
+      }
+      if (argIndex_ != 0) {
+        output.writeInt32(11, argIndex_);
       }
       unknownFields.writeTo(output);
     }
@@ -633,9 +655,9 @@ public final class OpNamespace {
         size += org.nd4j.shade.protobuf.CodedOutputStream
           .computeEnumSize(7, dataTypeValue_);
       }
-      if (inputvalue_ != null) {
+      if (inputValue_ != null) {
         size += org.nd4j.shade.protobuf.CodedOutputStream
-          .computeMessageSize(8, getInputvalue());
+          .computeMessageSize(8, getInputValue());
       }
       if (outputValue_ != null) {
         size += org.nd4j.shade.protobuf.CodedOutputStream
@@ -644,6 +666,10 @@ public final class OpNamespace {
       if (argType_ != org.nd4j.ir.OpNamespace.ArgDescriptor.ArgType.FLOAT.getNumber()) {
         size += org.nd4j.shade.protobuf.CodedOutputStream
           .computeEnumSize(10, argType_);
+      }
+      if (argIndex_ != 0) {
+        size += org.nd4j.shade.protobuf.CodedOutputStream
+          .computeInt32Size(11, argIndex_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -675,10 +701,10 @@ public final class OpNamespace {
       if (getBoolValue()
           != other.getBoolValue()) return false;
       if (dataTypeValue_ != other.dataTypeValue_) return false;
-      if (hasInputvalue() != other.hasInputvalue()) return false;
-      if (hasInputvalue()) {
-        if (!getInputvalue()
-            .equals(other.getInputvalue())) return false;
+      if (hasInputValue() != other.hasInputValue()) return false;
+      if (hasInputValue()) {
+        if (!getInputValue()
+            .equals(other.getInputValue())) return false;
       }
       if (hasOutputValue() != other.hasOutputValue()) return false;
       if (hasOutputValue()) {
@@ -686,6 +712,8 @@ public final class OpNamespace {
             .equals(other.getOutputValue())) return false;
       }
       if (argType_ != other.argType_) return false;
+      if (getArgIndex()
+          != other.getArgIndex()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -715,9 +743,9 @@ public final class OpNamespace {
           getBoolValue());
       hash = (37 * hash) + DATATYPEVALUE_FIELD_NUMBER;
       hash = (53 * hash) + dataTypeValue_;
-      if (hasInputvalue()) {
+      if (hasInputValue()) {
         hash = (37 * hash) + INPUTVALUE_FIELD_NUMBER;
-        hash = (53 * hash) + getInputvalue().hashCode();
+        hash = (53 * hash) + getInputValue().hashCode();
       }
       if (hasOutputValue()) {
         hash = (37 * hash) + OUTPUTVALUE_FIELD_NUMBER;
@@ -725,6 +753,8 @@ public final class OpNamespace {
       }
       hash = (37 * hash) + ARGTYPE_FIELD_NUMBER;
       hash = (53 * hash) + argType_;
+      hash = (37 * hash) + ARGINDEX_FIELD_NUMBER;
+      hash = (53 * hash) + getArgIndex();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -872,11 +902,11 @@ public final class OpNamespace {
 
         dataTypeValue_ = 0;
 
-        if (inputvalueBuilder_ == null) {
-          inputvalue_ = null;
+        if (inputValueBuilder_ == null) {
+          inputValue_ = null;
         } else {
-          inputvalue_ = null;
-          inputvalueBuilder_ = null;
+          inputValue_ = null;
+          inputValueBuilder_ = null;
         }
         if (outputValueBuilder_ == null) {
           outputValue_ = null;
@@ -885,6 +915,8 @@ public final class OpNamespace {
           outputValueBuilder_ = null;
         }
         argType_ = 0;
+
+        argIndex_ = 0;
 
         return this;
       }
@@ -919,10 +951,10 @@ public final class OpNamespace {
         result.int64Value_ = int64Value_;
         result.boolValue_ = boolValue_;
         result.dataTypeValue_ = dataTypeValue_;
-        if (inputvalueBuilder_ == null) {
-          result.inputvalue_ = inputvalue_;
+        if (inputValueBuilder_ == null) {
+          result.inputValue_ = inputValue_;
         } else {
-          result.inputvalue_ = inputvalueBuilder_.build();
+          result.inputValue_ = inputValueBuilder_.build();
         }
         if (outputValueBuilder_ == null) {
           result.outputValue_ = outputValue_;
@@ -930,6 +962,7 @@ public final class OpNamespace {
           result.outputValue_ = outputValueBuilder_.build();
         }
         result.argType_ = argType_;
+        result.argIndex_ = argIndex_;
         onBuilt();
         return result;
       }
@@ -1000,14 +1033,17 @@ public final class OpNamespace {
         if (other.dataTypeValue_ != 0) {
           setDataTypeValueValue(other.getDataTypeValueValue());
         }
-        if (other.hasInputvalue()) {
-          mergeInputvalue(other.getInputvalue());
+        if (other.hasInputValue()) {
+          mergeInputValue(other.getInputValue());
         }
         if (other.hasOutputValue()) {
           mergeOutputValue(other.getOutputValue());
         }
         if (other.argType_ != 0) {
           setArgTypeValue(other.getArgTypeValue());
+        }
+        if (other.getArgIndex() != 0) {
+          setArgIndex(other.getArgIndex());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1282,121 +1318,121 @@ public final class OpNamespace {
         return this;
       }
 
-      private org.nd4j.ir.TensorNamespace.TensorProto inputvalue_;
+      private org.nd4j.ir.TensorNamespace.TensorProto inputValue_;
       private org.nd4j.shade.protobuf.SingleFieldBuilderV3<
-          org.nd4j.ir.TensorNamespace.TensorProto, org.nd4j.ir.TensorNamespace.TensorProto.Builder, org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder> inputvalueBuilder_;
+          org.nd4j.ir.TensorNamespace.TensorProto, org.nd4j.ir.TensorNamespace.TensorProto.Builder, org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder> inputValueBuilder_;
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public boolean hasInputvalue() {
-        return inputvalueBuilder_ != null || inputvalue_ != null;
+      public boolean hasInputValue() {
+        return inputValueBuilder_ != null || inputValue_ != null;
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public org.nd4j.ir.TensorNamespace.TensorProto getInputvalue() {
-        if (inputvalueBuilder_ == null) {
-          return inputvalue_ == null ? org.nd4j.ir.TensorNamespace.TensorProto.getDefaultInstance() : inputvalue_;
+      public org.nd4j.ir.TensorNamespace.TensorProto getInputValue() {
+        if (inputValueBuilder_ == null) {
+          return inputValue_ == null ? org.nd4j.ir.TensorNamespace.TensorProto.getDefaultInstance() : inputValue_;
         } else {
-          return inputvalueBuilder_.getMessage();
+          return inputValueBuilder_.getMessage();
         }
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public Builder setInputvalue(org.nd4j.ir.TensorNamespace.TensorProto value) {
-        if (inputvalueBuilder_ == null) {
+      public Builder setInputValue(org.nd4j.ir.TensorNamespace.TensorProto value) {
+        if (inputValueBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          inputvalue_ = value;
+          inputValue_ = value;
           onChanged();
         } else {
-          inputvalueBuilder_.setMessage(value);
+          inputValueBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public Builder setInputvalue(
+      public Builder setInputValue(
           org.nd4j.ir.TensorNamespace.TensorProto.Builder builderForValue) {
-        if (inputvalueBuilder_ == null) {
-          inputvalue_ = builderForValue.build();
+        if (inputValueBuilder_ == null) {
+          inputValue_ = builderForValue.build();
           onChanged();
         } else {
-          inputvalueBuilder_.setMessage(builderForValue.build());
+          inputValueBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public Builder mergeInputvalue(org.nd4j.ir.TensorNamespace.TensorProto value) {
-        if (inputvalueBuilder_ == null) {
-          if (inputvalue_ != null) {
-            inputvalue_ =
-              org.nd4j.ir.TensorNamespace.TensorProto.newBuilder(inputvalue_).mergeFrom(value).buildPartial();
+      public Builder mergeInputValue(org.nd4j.ir.TensorNamespace.TensorProto value) {
+        if (inputValueBuilder_ == null) {
+          if (inputValue_ != null) {
+            inputValue_ =
+              org.nd4j.ir.TensorNamespace.TensorProto.newBuilder(inputValue_).mergeFrom(value).buildPartial();
           } else {
-            inputvalue_ = value;
+            inputValue_ = value;
           }
           onChanged();
         } else {
-          inputvalueBuilder_.mergeFrom(value);
+          inputValueBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public Builder clearInputvalue() {
-        if (inputvalueBuilder_ == null) {
-          inputvalue_ = null;
+      public Builder clearInputValue() {
+        if (inputValueBuilder_ == null) {
+          inputValue_ = null;
           onChanged();
         } else {
-          inputvalue_ = null;
-          inputvalueBuilder_ = null;
+          inputValue_ = null;
+          inputValueBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public org.nd4j.ir.TensorNamespace.TensorProto.Builder getInputvalueBuilder() {
+      public org.nd4j.ir.TensorNamespace.TensorProto.Builder getInputValueBuilder() {
         
         onChanged();
-        return getInputvalueFieldBuilder().getBuilder();
+        return getInputValueFieldBuilder().getBuilder();
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
-      public org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder getInputvalueOrBuilder() {
-        if (inputvalueBuilder_ != null) {
-          return inputvalueBuilder_.getMessageOrBuilder();
+      public org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder getInputValueOrBuilder() {
+        if (inputValueBuilder_ != null) {
+          return inputValueBuilder_.getMessageOrBuilder();
         } else {
-          return inputvalue_ == null ?
-              org.nd4j.ir.TensorNamespace.TensorProto.getDefaultInstance() : inputvalue_;
+          return inputValue_ == null ?
+              org.nd4j.ir.TensorNamespace.TensorProto.getDefaultInstance() : inputValue_;
         }
       }
       /**
-       * <code>.org.nd4j.ir.TensorProto inputvalue = 8;</code>
+       * <code>.org.nd4j.ir.TensorProto inputValue = 8;</code>
        */
       private org.nd4j.shade.protobuf.SingleFieldBuilderV3<
           org.nd4j.ir.TensorNamespace.TensorProto, org.nd4j.ir.TensorNamespace.TensorProto.Builder, org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder> 
-          getInputvalueFieldBuilder() {
-        if (inputvalueBuilder_ == null) {
-          inputvalueBuilder_ = new org.nd4j.shade.protobuf.SingleFieldBuilderV3<
+          getInputValueFieldBuilder() {
+        if (inputValueBuilder_ == null) {
+          inputValueBuilder_ = new org.nd4j.shade.protobuf.SingleFieldBuilderV3<
               org.nd4j.ir.TensorNamespace.TensorProto, org.nd4j.ir.TensorNamespace.TensorProto.Builder, org.nd4j.ir.TensorNamespace.TensorProtoOrBuilder>(
-                  getInputvalue(),
+                  getInputValue(),
                   getParentForChildren(),
                   isClean());
-          inputvalue_ = null;
+          inputValue_ = null;
         }
-        return inputvalueBuilder_;
+        return inputValueBuilder_;
       }
 
       private org.nd4j.ir.TensorNamespace.TensorProto outputValue_;
@@ -1557,6 +1593,32 @@ public final class OpNamespace {
       public Builder clearArgType() {
         
         argType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int argIndex_ ;
+      /**
+       * <code>int32 argIndex = 11;</code>
+       */
+      public int getArgIndex() {
+        return argIndex_;
+      }
+      /**
+       * <code>int32 argIndex = 11;</code>
+       */
+      public Builder setArgIndex(int value) {
+        
+        argIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 argIndex = 11;</code>
+       */
+      public Builder clearArgIndex() {
+        
+        argIndex_ = 0;
         onChanged();
         return this;
       }
@@ -3358,23 +3420,23 @@ public final class OpNamespace {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\267\003" +
+      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\311\003" +
       "\n\rArgDescriptor\022\014\n\004name\030\001 \001(\t\022\022\n\nfloatVa" +
       "lue\030\002 \001(\002\022\023\n\013doubleValue\030\003 \001(\001\022\022\n\nint32V" +
       "alue\030\004 \001(\005\022\022\n\nint64Value\030\005 \001(\003\022\021\n\tboolVa" +
       "lue\030\006 \001(\010\022,\n\rdataTypeValue\030\007 \001(\0162\025.org.n" +
-      "d4j.ir.DataType\022,\n\ninputvalue\030\010 \001(\0132\030.or" +
+      "d4j.ir.DataType\022,\n\ninputValue\030\010 \001(\0132\030.or" +
       "g.nd4j.ir.TensorProto\022-\n\013outputValue\030\t \001" +
       "(\0132\030.org.nd4j.ir.TensorProto\0223\n\007argType\030" +
       "\n \001(\0162\".org.nd4j.ir.ArgDescriptor.ArgTyp" +
-      "e\"t\n\007ArgType\022\t\n\005FLOAT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005I" +
-      "NT32\020\002\022\t\n\005INT64\020\003\022\010\n\004BOOL\020\004\022\r\n\tDATA_TYPE" +
-      "\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021\n\rOUTPUT_TENSOR\020\007\"" +
-      "O\n\014OpDescriptor\022\014\n\004name\030\001 \001(\t\0221\n\rargDesc" +
-      "riptor\030\002 \003(\0132\032.org.nd4j.ir.ArgDescriptor" +
-      "\"=\n\020OpDescriptorList\022)\n\006opList\030\001 \003(\0132\031.o" +
-      "rg.nd4j.ir.OpDescriptorB\rB\013OpNamespaceb\006" +
-      "proto3"
+      "e\022\020\n\010argIndex\030\013 \001(\005\"t\n\007ArgType\022\t\n\005FLOAT\020" +
+      "\000\022\n\n\006DOUBLE\020\001\022\t\n\005INT32\020\002\022\t\n\005INT64\020\003\022\010\n\004B" +
+      "OOL\020\004\022\r\n\tDATA_TYPE\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021" +
+      "\n\rOUTPUT_TENSOR\020\007\"O\n\014OpDescriptor\022\014\n\004nam" +
+      "e\030\001 \001(\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4" +
+      "j.ir.ArgDescriptor\"=\n\020OpDescriptorList\022)" +
+      "\n\006opList\030\001 \003(\0132\031.org.nd4j.ir.OpDescripto" +
+      "rB\rB\013OpNamespaceb\006proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3386,7 +3448,7 @@ public final class OpNamespace {
     internal_static_org_nd4j_ir_ArgDescriptor_fieldAccessorTable = new
       org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_nd4j_ir_ArgDescriptor_descriptor,
-        new java.lang.String[] { "Name", "FloatValue", "DoubleValue", "Int32Value", "Int64Value", "BoolValue", "DataTypeValue", "Inputvalue", "OutputValue", "ArgType", });
+        new java.lang.String[] { "Name", "FloatValue", "DoubleValue", "Int32Value", "Int64Value", "BoolValue", "DataTypeValue", "InputValue", "OutputValue", "ArgType", "ArgIndex", });
     internal_static_org_nd4j_ir_OpDescriptor_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_org_nd4j_ir_OpDescriptor_fieldAccessorTable = new

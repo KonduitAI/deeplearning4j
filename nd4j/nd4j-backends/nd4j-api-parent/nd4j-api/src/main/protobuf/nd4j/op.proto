@@ -23,10 +23,11 @@ message ArgDescriptor {
   int64 int64Value = 5;
   bool boolValue  = 6;
   DataType dataTypeValue = 7;
-  TensorProto inputvalue = 8;
+  TensorProto inputValue = 8;
   TensorProto outputValue = 9;
-
   ArgType argType = 10;
+  int32 argIndex = 11;
+
 }
 
 //Op descriptor

@@ -16,6 +16,8 @@ message MappingRule {
   repeated string outputDoubleName = 10;
   repeated string  inputBooleanName = 11;
   repeated string outputBooleanName = 12;
+  repeated string inputTensorName = 13;
+  repeated string outputTensorName = 14;
 }
 
 
