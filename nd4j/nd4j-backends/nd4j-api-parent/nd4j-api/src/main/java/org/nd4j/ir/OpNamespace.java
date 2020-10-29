@@ -101,6 +101,16 @@ public final class OpNamespace {
      * <code>int32 argIndex = 11;</code>
      */
     int getArgIndex();
+
+    /**
+     * <code>string stringValue = 12;</code>
+     */
+    java.lang.String getStringValue();
+    /**
+     * <code>string stringValue = 12;</code>
+     */
+    org.nd4j.shade.protobuf.ByteString
+        getStringValueBytes();
   }
   /**
    * Protobuf type {@code org.nd4j.ir.ArgDescriptor}
@@ -118,6 +128,7 @@ public final class OpNamespace {
       name_ = "";
       dataTypeValue_ = 0;
       argType_ = 0;
+      stringValue_ = "";
     }
 
     @java.lang.Override
@@ -224,6 +235,12 @@ public final class OpNamespace {
               argIndex_ = input.readInt32();
               break;
             }
+            case 98: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              stringValue_ = s;
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -293,6 +310,10 @@ public final class OpNamespace {
        * <code>OUTPUT_TENSOR = 7;</code>
        */
       OUTPUT_TENSOR(7),
+      /**
+       * <code>STRING = 8;</code>
+       */
+      STRING(8),
       UNRECOGNIZED(-1),
       ;
 
@@ -328,6 +349,10 @@ public final class OpNamespace {
        * <code>OUTPUT_TENSOR = 7;</code>
        */
       public static final int OUTPUT_TENSOR_VALUE = 7;
+      /**
+       * <code>STRING = 8;</code>
+       */
+      public static final int STRING_VALUE = 8;
 
 
       public final int getNumber() {
@@ -356,6 +381,7 @@ public final class OpNamespace {
           case 5: return DATA_TYPE;
           case 6: return INPUT_TENSOR;
           case 7: return OUTPUT_TENSOR;
+          case 8: return STRING;
           default: return null;
         }
       }
@@ -572,6 +598,40 @@ public final class OpNamespace {
       return argIndex_;
     }
 
+    public static final int STRINGVALUE_FIELD_NUMBER = 12;
+    private volatile java.lang.Object stringValue_;
+    /**
+     * <code>string stringValue = 12;</code>
+     */
+    public java.lang.String getStringValue() {
+      java.lang.Object ref = stringValue_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        org.nd4j.shade.protobuf.ByteString bs = 
+            (org.nd4j.shade.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        stringValue_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string stringValue = 12;</code>
+     */
+    public org.nd4j.shade.protobuf.ByteString
+        getStringValueBytes() {
+      java.lang.Object ref = stringValue_;
+      if (ref instanceof java.lang.String) {
+        org.nd4j.shade.protobuf.ByteString b = 
+            org.nd4j.shade.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        stringValue_ = b;
+        return b;
+      } else {
+        return (org.nd4j.shade.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -618,6 +678,9 @@ public final class OpNamespace {
       }
       if (argIndex_ != 0) {
         output.writeInt32(11, argIndex_);
+      }
+      if (!getStringValueBytes().isEmpty()) {
+        org.nd4j.shade.protobuf.GeneratedMessageV3.writeString(output, 12, stringValue_);
       }
       unknownFields.writeTo(output);
     }
@@ -671,6 +734,9 @@ public final class OpNamespace {
         size += org.nd4j.shade.protobuf.CodedOutputStream
           .computeInt32Size(11, argIndex_);
       }
+      if (!getStringValueBytes().isEmpty()) {
+        size += org.nd4j.shade.protobuf.GeneratedMessageV3.computeStringSize(12, stringValue_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -714,6 +780,8 @@ public final class OpNamespace {
       if (argType_ != other.argType_) return false;
       if (getArgIndex()
           != other.getArgIndex()) return false;
+      if (!getStringValue()
+          .equals(other.getStringValue())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -755,6 +823,8 @@ public final class OpNamespace {
       hash = (53 * hash) + argType_;
       hash = (37 * hash) + ARGINDEX_FIELD_NUMBER;
       hash = (53 * hash) + getArgIndex();
+      hash = (37 * hash) + STRINGVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getStringValue().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -918,6 +988,8 @@ public final class OpNamespace {
 
         argIndex_ = 0;
 
+        stringValue_ = "";
+
         return this;
       }
 
@@ -963,6 +1035,7 @@ public final class OpNamespace {
         }
         result.argType_ = argType_;
         result.argIndex_ = argIndex_;
+        result.stringValue_ = stringValue_;
         onBuilt();
         return result;
       }
@@ -1044,6 +1117,10 @@ public final class OpNamespace {
         }
         if (other.getArgIndex() != 0) {
           setArgIndex(other.getArgIndex());
+        }
+        if (!other.getStringValue().isEmpty()) {
+          stringValue_ = other.stringValue_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1619,6 +1696,75 @@ public final class OpNamespace {
       public Builder clearArgIndex() {
         
         argIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object stringValue_ = "";
+      /**
+       * <code>string stringValue = 12;</code>
+       */
+      public java.lang.String getStringValue() {
+        java.lang.Object ref = stringValue_;
+        if (!(ref instanceof java.lang.String)) {
+          org.nd4j.shade.protobuf.ByteString bs =
+              (org.nd4j.shade.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          stringValue_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string stringValue = 12;</code>
+       */
+      public org.nd4j.shade.protobuf.ByteString
+          getStringValueBytes() {
+        java.lang.Object ref = stringValue_;
+        if (ref instanceof String) {
+          org.nd4j.shade.protobuf.ByteString b = 
+              org.nd4j.shade.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          stringValue_ = b;
+          return b;
+        } else {
+          return (org.nd4j.shade.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string stringValue = 12;</code>
+       */
+      public Builder setStringValue(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        stringValue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string stringValue = 12;</code>
+       */
+      public Builder clearStringValue() {
+        
+        stringValue_ = getDefaultInstance().getStringValue();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string stringValue = 12;</code>
+       */
+      public Builder setStringValueBytes(
+          org.nd4j.shade.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        stringValue_ = value;
         onChanged();
         return this;
       }
@@ -3420,7 +3566,7 @@ public final class OpNamespace {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\311\003" +
+      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\353\003" +
       "\n\rArgDescriptor\022\014\n\004name\030\001 \001(\t\022\022\n\nfloatVa" +
       "lue\030\002 \001(\002\022\023\n\013doubleValue\030\003 \001(\001\022\022\n\nint32V" +
       "alue\030\004 \001(\005\022\022\n\nint64Value\030\005 \001(\003\022\021\n\tboolVa" +
@@ -3429,14 +3575,15 @@ public final class OpNamespace {
       "g.nd4j.ir.TensorProto\022-\n\013outputValue\030\t \001" +
       "(\0132\030.org.nd4j.ir.TensorProto\0223\n\007argType\030" +
       "\n \001(\0162\".org.nd4j.ir.ArgDescriptor.ArgTyp" +
-      "e\022\020\n\010argIndex\030\013 \001(\005\"t\n\007ArgType\022\t\n\005FLOAT\020" +
-      "\000\022\n\n\006DOUBLE\020\001\022\t\n\005INT32\020\002\022\t\n\005INT64\020\003\022\010\n\004B" +
-      "OOL\020\004\022\r\n\tDATA_TYPE\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021" +
-      "\n\rOUTPUT_TENSOR\020\007\"O\n\014OpDescriptor\022\014\n\004nam" +
-      "e\030\001 \001(\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4" +
-      "j.ir.ArgDescriptor\"=\n\020OpDescriptorList\022)" +
-      "\n\006opList\030\001 \003(\0132\031.org.nd4j.ir.OpDescripto" +
-      "rB\rB\013OpNamespaceb\006proto3"
+      "e\022\020\n\010argIndex\030\013 \001(\005\022\023\n\013stringValue\030\014 \001(\t" +
+      "\"\200\001\n\007ArgType\022\t\n\005FLOAT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005I" +
+      "NT32\020\002\022\t\n\005INT64\020\003\022\010\n\004BOOL\020\004\022\r\n\tDATA_TYPE" +
+      "\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021\n\rOUTPUT_TENSOR\020\007\022" +
+      "\n\n\006STRING\020\010\"O\n\014OpDescriptor\022\014\n\004name\030\001 \001(" +
+      "\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4j.ir.A" +
+      "rgDescriptor\"=\n\020OpDescriptorList\022)\n\006opLi" +
+      "st\030\001 \003(\0132\031.org.nd4j.ir.OpDescriptorB\rB\013O" +
+      "pNamespaceb\006proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3448,7 +3595,7 @@ public final class OpNamespace {
     internal_static_org_nd4j_ir_ArgDescriptor_fieldAccessorTable = new
       org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_nd4j_ir_ArgDescriptor_descriptor,
-        new java.lang.String[] { "Name", "FloatValue", "DoubleValue", "Int32Value", "Int64Value", "BoolValue", "DataTypeValue", "InputValue", "OutputValue", "ArgType", "ArgIndex", });
+        new java.lang.String[] { "Name", "FloatValue", "DoubleValue", "Int32Value", "Int64Value", "BoolValue", "DataTypeValue", "InputValue", "OutputValue", "ArgType", "ArgIndex", "StringValue", });
     internal_static_org_nd4j_ir_OpDescriptor_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_org_nd4j_ir_OpDescriptor_fieldAccessorTable = new

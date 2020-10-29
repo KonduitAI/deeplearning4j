@@ -79,6 +79,14 @@ the mapping rules for a particular framework.
 Doing this will allow us to share logic between mappers and making 1 implementation of 
 mapping possible by calling associated getter methods for concepts like data types and nodes.
 
+## Serialization 
+
+In order to persist rules using protobuf, all rules will know how to serialize themselves.
+A simple serialize() method is implemented which covers conversion using
+interface methods up to the user to implement which describes how to persist the protobuf 
+representation. This applies to any of the relevant functionality such as rules and processes.
+
+
 
 ## Custom types
 
