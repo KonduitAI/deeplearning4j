@@ -33,6 +33,14 @@ The interpreter has built in implementations of the defined functions
 for the desired transforms.
 
 
+## Import process
+
+An import process is defined for an overall framework.
+It maps input graphs to samediff graphs using
+specified mapping processes for op names and frameworks.
+An import process is all that is needed to create a graph.
+Below are the needed concepts for an import process to implement. 
+
 
 ## Graph creation 
 
@@ -48,6 +56,12 @@ The op descriptor is converted to a CustomOp which is then added to the graph vi
 This handles declarative graph creation setting dependencies up. Delegation of the graph structure
 creation to the existing Samediff library enables the scope of this interpreter to be focused on 
 mapping operations.
+
+## Custom Sub graphs
+
+One common use case is mapping sub graphs to custom layers. A custom layer can be thought of as a sequence  of operations.
+In order to map this, a named process can be created. Generally, if you know what ops the sub graph is made of,
+you only need to declare a set of rules based on the rules that map individual ops in the existing framework.
 
 ## Consequences
 ### Advantages

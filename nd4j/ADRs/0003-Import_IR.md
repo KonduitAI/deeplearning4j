@@ -16,7 +16,7 @@ vs. how other frameworks represent their models.
 Keras, Tensorflow, and Pytorch use an attribute based format with names. Interop
 between Onnx ,Tensorflow, and Keras tends to follow the following formula:
 
-1. Map names to equivalent names in other framework for each operation
+1. Map names to equivalent names in the other framework for each operation
    configuration. Names being both op names and associated attributes of the
    operations such as in Conv2D where you have strides, kernel sizes.
 2. Map input/output tensors to the equivalent tensor type in each framework.
@@ -90,8 +90,10 @@ samediff/nd4j operations to this format.
 We use a translation layer that handles mapping from attributes to the ordered
 arguments approach reflected in samediff/nd4j.
 
-For each operation, we define a mapper to/from this attribute format to the
+For each operation, we define a mapping process to/from this attribute format to the
 order based execution format.
+
+A separate but similar set of rules are used for mapping ndarrays.
 
 This attribute based format is an Intermediary Representation that we then
 "compile" to the equivalent calls in libnd4j.

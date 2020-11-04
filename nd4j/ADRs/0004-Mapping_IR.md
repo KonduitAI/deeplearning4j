@@ -40,6 +40,9 @@ We implement a mapping process framework that defines transforms on an input fil
 A MappingProcess defines a list of MappingRules which represent a sequence of transformations
 on each attribute of an op definition.
 
+To assist in mapping, a mapping context with needed information like rule arguments
+for transformation, current node, and whole graph are used as input.
+
 The input is a protobuf file for a specific framework and the output is an op descriptor
 described [here](./0003-Import_IR.md).
 
@@ -68,6 +71,7 @@ Below are the needed common types for mapping:
 5. IRAttrValue: An attribute value
 6. IROpDef: An op definition for the IR
 7. IRDataType: A data type
+8. IRGraph: A graph abstraction
 
 Each one of these types is a wrapper around a specific framework's input types
 of the equivalent concepts.
@@ -82,7 +86,7 @@ mapping possible by calling associated getter methods for concepts like data typ
 ## Serialization 
 
 In order to persist rules using protobuf, all rules will know how to serialize themselves.
-A simple serialize() method is implemented which covers conversion using
+A simple serialize() and load() methods are implemented which covers conversion using
 interface methods up to the user to implement which describes how to persist the protobuf 
 representation. This applies to any of the relevant functionality such as rules and processes.
 
@@ -94,7 +98,7 @@ Some types will  not map 1 to 1 or are directly applicable to nd4j.
 In order to combat this, when an unknown type is discovered during mapping,
 adapter functions for specific types must be specified.
 
-Supported type include:
+Supported types include:
 
 1. Long/Int
 2. Double/Float
@@ -103,7 +107,6 @@ Supported type include:
 5. Bytes
 6. NDArrays
 
-On a case by case basis, this should be registered as a mapper.
 
 An example:
 
