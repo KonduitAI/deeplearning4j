@@ -1858,6 +1858,15 @@ public final class OpNamespace {
      */
     org.nd4j.ir.OpNamespace.ArgDescriptorOrBuilder getArgDescriptorOrBuilder(
         int index);
+
+    /**
+     * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+     */
+    int getOpDeclarationTypeValue();
+    /**
+     * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+     */
+    org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType getOpDeclarationType();
   }
   /**
    * <pre>
@@ -1878,6 +1887,7 @@ public final class OpNamespace {
     private OpDescriptor() {
       name_ = "";
       argDescriptor_ = java.util.Collections.emptyList();
+      opDeclarationType_ = 0;
     }
 
     @java.lang.Override
@@ -1926,6 +1936,12 @@ public final class OpNamespace {
                   input.readMessage(org.nd4j.ir.OpNamespace.ArgDescriptor.parser(), extensionRegistry));
               break;
             }
+            case 24: {
+              int rawValue = input.readEnum();
+
+              opDeclarationType_ = rawValue;
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -1959,6 +1975,185 @@ public final class OpNamespace {
       return org.nd4j.ir.OpNamespace.internal_static_org_nd4j_ir_OpDescriptor_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.nd4j.ir.OpNamespace.OpDescriptor.class, org.nd4j.ir.OpNamespace.OpDescriptor.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code org.nd4j.ir.OpDescriptor.OpDeclarationType}
+     */
+    public enum OpDeclarationType
+        implements org.nd4j.shade.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>CUSTOM_OP_IMPL = 0;</code>
+       */
+      CUSTOM_OP_IMPL(0),
+      /**
+       * <code>BOOLEAN_OP_IMPL = 1;</code>
+       */
+      BOOLEAN_OP_IMPL(1),
+      /**
+       * <code>LIST_OP_IMPL = 2;</code>
+       */
+      LIST_OP_IMPL(2),
+      /**
+       * <code>LOGIC_OP_IMPL = 3;</code>
+       */
+      LOGIC_OP_IMPL(3),
+      /**
+       * <code>OP_IMPL = 4;</code>
+       */
+      OP_IMPL(4),
+      /**
+       * <code>DIVERGENT_OP_IMPL = 6;</code>
+       */
+      DIVERGENT_OP_IMPL(6),
+      /**
+       * <code>CONFIGURABLE_OP_IMPL = 7;</code>
+       */
+      CONFIGURABLE_OP_IMPL(7),
+      /**
+       * <code>REDUCTION_OP_IMPL = 8;</code>
+       */
+      REDUCTION_OP_IMPL(8),
+      /**
+       * <code>BROADCASTABLE_OP_IMPL = 9;</code>
+       */
+      BROADCASTABLE_OP_IMPL(9),
+      /**
+       * <code>BROADCASTABLE_BOOL_OP_IMPL = 10;</code>
+       */
+      BROADCASTABLE_BOOL_OP_IMPL(10),
+      /**
+       * <code>LEGACY_XYZ = 11;</code>
+       */
+      LEGACY_XYZ(11),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>CUSTOM_OP_IMPL = 0;</code>
+       */
+      public static final int CUSTOM_OP_IMPL_VALUE = 0;
+      /**
+       * <code>BOOLEAN_OP_IMPL = 1;</code>
+       */
+      public static final int BOOLEAN_OP_IMPL_VALUE = 1;
+      /**
+       * <code>LIST_OP_IMPL = 2;</code>
+       */
+      public static final int LIST_OP_IMPL_VALUE = 2;
+      /**
+       * <code>LOGIC_OP_IMPL = 3;</code>
+       */
+      public static final int LOGIC_OP_IMPL_VALUE = 3;
+      /**
+       * <code>OP_IMPL = 4;</code>
+       */
+      public static final int OP_IMPL_VALUE = 4;
+      /**
+       * <code>DIVERGENT_OP_IMPL = 6;</code>
+       */
+      public static final int DIVERGENT_OP_IMPL_VALUE = 6;
+      /**
+       * <code>CONFIGURABLE_OP_IMPL = 7;</code>
+       */
+      public static final int CONFIGURABLE_OP_IMPL_VALUE = 7;
+      /**
+       * <code>REDUCTION_OP_IMPL = 8;</code>
+       */
+      public static final int REDUCTION_OP_IMPL_VALUE = 8;
+      /**
+       * <code>BROADCASTABLE_OP_IMPL = 9;</code>
+       */
+      public static final int BROADCASTABLE_OP_IMPL_VALUE = 9;
+      /**
+       * <code>BROADCASTABLE_BOOL_OP_IMPL = 10;</code>
+       */
+      public static final int BROADCASTABLE_BOOL_OP_IMPL_VALUE = 10;
+      /**
+       * <code>LEGACY_XYZ = 11;</code>
+       */
+      public static final int LEGACY_XYZ_VALUE = 11;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static OpDeclarationType valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static OpDeclarationType forNumber(int value) {
+        switch (value) {
+          case 0: return CUSTOM_OP_IMPL;
+          case 1: return BOOLEAN_OP_IMPL;
+          case 2: return LIST_OP_IMPL;
+          case 3: return LOGIC_OP_IMPL;
+          case 4: return OP_IMPL;
+          case 6: return DIVERGENT_OP_IMPL;
+          case 7: return CONFIGURABLE_OP_IMPL;
+          case 8: return REDUCTION_OP_IMPL;
+          case 9: return BROADCASTABLE_OP_IMPL;
+          case 10: return BROADCASTABLE_BOOL_OP_IMPL;
+          case 11: return LEGACY_XYZ;
+          default: return null;
+        }
+      }
+
+      public static org.nd4j.shade.protobuf.Internal.EnumLiteMap<OpDeclarationType>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final org.nd4j.shade.protobuf.Internal.EnumLiteMap<
+          OpDeclarationType> internalValueMap =
+            new org.nd4j.shade.protobuf.Internal.EnumLiteMap<OpDeclarationType>() {
+              public OpDeclarationType findValueByNumber(int number) {
+                return OpDeclarationType.forNumber(number);
+              }
+            };
+
+      public final org.nd4j.shade.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final org.nd4j.shade.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final org.nd4j.shade.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return org.nd4j.ir.OpNamespace.OpDescriptor.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final OpDeclarationType[] VALUES = values();
+
+      public static OpDeclarationType valueOf(
+          org.nd4j.shade.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private OpDeclarationType(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:org.nd4j.ir.OpDescriptor.OpDeclarationType)
     }
 
     public static final int NAME_FIELD_NUMBER = 1;
@@ -2030,6 +2225,23 @@ public final class OpNamespace {
       return argDescriptor_.get(index);
     }
 
+    public static final int OPDECLARATIONTYPE_FIELD_NUMBER = 3;
+    private int opDeclarationType_;
+    /**
+     * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+     */
+    public int getOpDeclarationTypeValue() {
+      return opDeclarationType_;
+    }
+    /**
+     * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+     */
+    public org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType getOpDeclarationType() {
+      @SuppressWarnings("deprecation")
+      org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType result = org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType.valueOf(opDeclarationType_);
+      return result == null ? org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2050,6 +2262,9 @@ public final class OpNamespace {
       for (int i = 0; i < argDescriptor_.size(); i++) {
         output.writeMessage(2, argDescriptor_.get(i));
       }
+      if (opDeclarationType_ != org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType.CUSTOM_OP_IMPL.getNumber()) {
+        output.writeEnum(3, opDeclarationType_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2065,6 +2280,10 @@ public final class OpNamespace {
       for (int i = 0; i < argDescriptor_.size(); i++) {
         size += org.nd4j.shade.protobuf.CodedOutputStream
           .computeMessageSize(2, argDescriptor_.get(i));
+      }
+      if (opDeclarationType_ != org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType.CUSTOM_OP_IMPL.getNumber()) {
+        size += org.nd4j.shade.protobuf.CodedOutputStream
+          .computeEnumSize(3, opDeclarationType_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2085,6 +2304,7 @@ public final class OpNamespace {
           .equals(other.getName())) return false;
       if (!getArgDescriptorList()
           .equals(other.getArgDescriptorList())) return false;
+      if (opDeclarationType_ != other.opDeclarationType_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2102,6 +2322,8 @@ public final class OpNamespace {
         hash = (37 * hash) + ARGDESCRIPTOR_FIELD_NUMBER;
         hash = (53 * hash) + getArgDescriptorList().hashCode();
       }
+      hash = (37 * hash) + OPDECLARATIONTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + opDeclarationType_;
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2248,6 +2470,8 @@ public final class OpNamespace {
         } else {
           argDescriptorBuilder_.clear();
         }
+        opDeclarationType_ = 0;
+
         return this;
       }
 
@@ -2285,6 +2509,7 @@ public final class OpNamespace {
         } else {
           result.argDescriptor_ = argDescriptorBuilder_.build();
         }
+        result.opDeclarationType_ = opDeclarationType_;
         onBuilt();
         return result;
       }
@@ -2362,6 +2587,9 @@ public final class OpNamespace {
               argDescriptorBuilder_.addAllMessages(other.argDescriptor_);
             }
           }
+        }
+        if (other.opDeclarationType_ != 0) {
+          setOpDeclarationTypeValue(other.getOpDeclarationTypeValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2700,6 +2928,51 @@ public final class OpNamespace {
           argDescriptor_ = null;
         }
         return argDescriptorBuilder_;
+      }
+
+      private int opDeclarationType_ = 0;
+      /**
+       * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+       */
+      public int getOpDeclarationTypeValue() {
+        return opDeclarationType_;
+      }
+      /**
+       * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+       */
+      public Builder setOpDeclarationTypeValue(int value) {
+        opDeclarationType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+       */
+      public org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType getOpDeclarationType() {
+        @SuppressWarnings("deprecation")
+        org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType result = org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType.valueOf(opDeclarationType_);
+        return result == null ? org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+       */
+      public Builder setOpDeclarationType(org.nd4j.ir.OpNamespace.OpDescriptor.OpDeclarationType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        opDeclarationType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.org.nd4j.ir.OpDescriptor.OpDeclarationType opDeclarationType = 3;</code>
+       */
+      public Builder clearOpDeclarationType() {
+        
+        opDeclarationType_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3579,11 +3852,19 @@ public final class OpNamespace {
       "\"\200\001\n\007ArgType\022\t\n\005FLOAT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005I" +
       "NT32\020\002\022\t\n\005INT64\020\003\022\010\n\004BOOL\020\004\022\r\n\tDATA_TYPE" +
       "\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021\n\rOUTPUT_TENSOR\020\007\022" +
-      "\n\n\006STRING\020\010\"O\n\014OpDescriptor\022\014\n\004name\030\001 \001(" +
-      "\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4j.ir.A" +
-      "rgDescriptor\"=\n\020OpDescriptorList\022)\n\006opLi" +
-      "st\030\001 \003(\0132\031.org.nd4j.ir.OpDescriptorB\rB\013O" +
-      "pNamespaceb\006proto3"
+      "\n\n\006STRING\020\010\"\233\003\n\014OpDescriptor\022\014\n\004name\030\001 \001" +
+      "(\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4j.ir." +
+      "ArgDescriptor\022F\n\021opDeclarationType\030\003 \001(\016" +
+      "2+.org.nd4j.ir.OpDescriptor.OpDeclaratio" +
+      "nType\"\201\002\n\021OpDeclarationType\022\022\n\016CUSTOM_OP" +
+      "_IMPL\020\000\022\023\n\017BOOLEAN_OP_IMPL\020\001\022\020\n\014LIST_OP_" +
+      "IMPL\020\002\022\021\n\rLOGIC_OP_IMPL\020\003\022\013\n\007OP_IMPL\020\004\022\025" +
+      "\n\021DIVERGENT_OP_IMPL\020\006\022\030\n\024CONFIGURABLE_OP" +
+      "_IMPL\020\007\022\025\n\021REDUCTION_OP_IMPL\020\010\022\031\n\025BROADC" +
+      "ASTABLE_OP_IMPL\020\t\022\036\n\032BROADCASTABLE_BOOL_" +
+      "OP_IMPL\020\n\022\016\n\nLEGACY_XYZ\020\013\"=\n\020OpDescripto" +
+      "rList\022)\n\006opList\030\001 \003(\0132\031.org.nd4j.ir.OpDe" +
+      "scriptorB\rB\013OpNamespaceb\006proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3601,7 +3882,7 @@ public final class OpNamespace {
     internal_static_org_nd4j_ir_OpDescriptor_fieldAccessorTable = new
       org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_nd4j_ir_OpDescriptor_descriptor,
-        new java.lang.String[] { "Name", "ArgDescriptor", });
+        new java.lang.String[] { "Name", "ArgDescriptor", "OpDeclarationType", });
     internal_static_org_nd4j_ir_OpDescriptorList_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_org_nd4j_ir_OpDescriptorList_fieldAccessorTable = new

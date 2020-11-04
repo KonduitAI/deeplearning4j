@@ -34,8 +34,24 @@ message ArgDescriptor {
 
 //Op descriptor
 message OpDescriptor {
+  enum OpDeclarationType {
+      CUSTOM_OP_IMPL = 0;
+      BOOLEAN_OP_IMPL = 1;
+      LIST_OP_IMPL = 2;
+      LOGIC_OP_IMPL = 3;
+      OP_IMPL = 4;
+      DIVERGENT_OP_IMPL = 6;
+      CONFIGURABLE_OP_IMPL = 7;
+      REDUCTION_OP_IMPL = 8;
+      BROADCASTABLE_OP_IMPL = 9;
+      BROADCASTABLE_BOOL_OP_IMPL = 10;
+      LEGACY_XYZ = 11;
+  }
+
+
   string name = 1;
   repeated ArgDescriptor argDescriptor = 2;
+  OpDeclarationType opDeclarationType = 3;
 }
 
 message OpDescriptorList {
