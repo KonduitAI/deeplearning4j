@@ -29,6 +29,7 @@ message ArgDescriptor {
   ArgType argType = 10;
   int32 argIndex = 11;
   string stringValue = 12;
+  bool argOptional = 13;
 
 }
 

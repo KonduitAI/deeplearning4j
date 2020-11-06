@@ -111,6 +111,11 @@ public final class OpNamespace {
      */
     org.nd4j.shade.protobuf.ByteString
         getStringValueBytes();
+
+    /**
+     * <code>bool argOptional = 13;</code>
+     */
+    boolean getArgOptional();
   }
   /**
    * Protobuf type {@code org.nd4j.ir.ArgDescriptor}
@@ -239,6 +244,11 @@ public final class OpNamespace {
               java.lang.String s = input.readStringRequireUtf8();
 
               stringValue_ = s;
+              break;
+            }
+            case 104: {
+
+              argOptional_ = input.readBool();
               break;
             }
             default: {
@@ -632,6 +642,15 @@ public final class OpNamespace {
       }
     }
 
+    public static final int ARGOPTIONAL_FIELD_NUMBER = 13;
+    private boolean argOptional_;
+    /**
+     * <code>bool argOptional = 13;</code>
+     */
+    public boolean getArgOptional() {
+      return argOptional_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -681,6 +700,9 @@ public final class OpNamespace {
       }
       if (!getStringValueBytes().isEmpty()) {
         org.nd4j.shade.protobuf.GeneratedMessageV3.writeString(output, 12, stringValue_);
+      }
+      if (argOptional_ != false) {
+        output.writeBool(13, argOptional_);
       }
       unknownFields.writeTo(output);
     }
@@ -737,6 +759,10 @@ public final class OpNamespace {
       if (!getStringValueBytes().isEmpty()) {
         size += org.nd4j.shade.protobuf.GeneratedMessageV3.computeStringSize(12, stringValue_);
       }
+      if (argOptional_ != false) {
+        size += org.nd4j.shade.protobuf.CodedOutputStream
+          .computeBoolSize(13, argOptional_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -782,6 +808,8 @@ public final class OpNamespace {
           != other.getArgIndex()) return false;
       if (!getStringValue()
           .equals(other.getStringValue())) return false;
+      if (getArgOptional()
+          != other.getArgOptional()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -825,6 +853,9 @@ public final class OpNamespace {
       hash = (53 * hash) + getArgIndex();
       hash = (37 * hash) + STRINGVALUE_FIELD_NUMBER;
       hash = (53 * hash) + getStringValue().hashCode();
+      hash = (37 * hash) + ARGOPTIONAL_FIELD_NUMBER;
+      hash = (53 * hash) + org.nd4j.shade.protobuf.Internal.hashBoolean(
+          getArgOptional());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -990,6 +1021,8 @@ public final class OpNamespace {
 
         stringValue_ = "";
 
+        argOptional_ = false;
+
         return this;
       }
 
@@ -1036,6 +1069,7 @@ public final class OpNamespace {
         result.argType_ = argType_;
         result.argIndex_ = argIndex_;
         result.stringValue_ = stringValue_;
+        result.argOptional_ = argOptional_;
         onBuilt();
         return result;
       }
@@ -1121,6 +1155,9 @@ public final class OpNamespace {
         if (!other.getStringValue().isEmpty()) {
           stringValue_ = other.stringValue_;
           onChanged();
+        }
+        if (other.getArgOptional() != false) {
+          setArgOptional(other.getArgOptional());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1765,6 +1802,32 @@ public final class OpNamespace {
   checkByteStringIsUtf8(value);
         
         stringValue_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean argOptional_ ;
+      /**
+       * <code>bool argOptional = 13;</code>
+       */
+      public boolean getArgOptional() {
+        return argOptional_;
+      }
+      /**
+       * <code>bool argOptional = 13;</code>
+       */
+      public Builder setArgOptional(boolean value) {
+        
+        argOptional_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool argOptional = 13;</code>
+       */
+      public Builder clearArgOptional() {
+        
+        argOptional_ = false;
         onChanged();
         return this;
       }
@@ -3839,7 +3902,7 @@ public final class OpNamespace {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\353\003" +
+      "\n\010op.proto\022\013org.nd4j.ir\032\014tensor.proto\"\200\004" +
       "\n\rArgDescriptor\022\014\n\004name\030\001 \001(\t\022\022\n\nfloatVa" +
       "lue\030\002 \001(\002\022\023\n\013doubleValue\030\003 \001(\001\022\022\n\nint32V" +
       "alue\030\004 \001(\005\022\022\n\nint64Value\030\005 \001(\003\022\021\n\tboolVa" +
@@ -3849,22 +3912,23 @@ public final class OpNamespace {
       "(\0132\030.org.nd4j.ir.TensorProto\0223\n\007argType\030" +
       "\n \001(\0162\".org.nd4j.ir.ArgDescriptor.ArgTyp" +
       "e\022\020\n\010argIndex\030\013 \001(\005\022\023\n\013stringValue\030\014 \001(\t" +
-      "\"\200\001\n\007ArgType\022\t\n\005FLOAT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005I" +
-      "NT32\020\002\022\t\n\005INT64\020\003\022\010\n\004BOOL\020\004\022\r\n\tDATA_TYPE" +
-      "\020\005\022\020\n\014INPUT_TENSOR\020\006\022\021\n\rOUTPUT_TENSOR\020\007\022" +
-      "\n\n\006STRING\020\010\"\233\003\n\014OpDescriptor\022\014\n\004name\030\001 \001" +
-      "(\t\0221\n\rargDescriptor\030\002 \003(\0132\032.org.nd4j.ir." +
-      "ArgDescriptor\022F\n\021opDeclarationType\030\003 \001(\016" +
-      "2+.org.nd4j.ir.OpDescriptor.OpDeclaratio" +
-      "nType\"\201\002\n\021OpDeclarationType\022\022\n\016CUSTOM_OP" +
-      "_IMPL\020\000\022\023\n\017BOOLEAN_OP_IMPL\020\001\022\020\n\014LIST_OP_" +
-      "IMPL\020\002\022\021\n\rLOGIC_OP_IMPL\020\003\022\013\n\007OP_IMPL\020\004\022\025" +
-      "\n\021DIVERGENT_OP_IMPL\020\006\022\030\n\024CONFIGURABLE_OP" +
-      "_IMPL\020\007\022\025\n\021REDUCTION_OP_IMPL\020\010\022\031\n\025BROADC" +
-      "ASTABLE_OP_IMPL\020\t\022\036\n\032BROADCASTABLE_BOOL_" +
-      "OP_IMPL\020\n\022\016\n\nLEGACY_XYZ\020\013\"=\n\020OpDescripto" +
-      "rList\022)\n\006opList\030\001 \003(\0132\031.org.nd4j.ir.OpDe" +
-      "scriptorB\rB\013OpNamespaceb\006proto3"
+      "\022\023\n\013argOptional\030\r \001(\010\"\200\001\n\007ArgType\022\t\n\005FLO" +
+      "AT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005INT32\020\002\022\t\n\005INT64\020\003\022\010" +
+      "\n\004BOOL\020\004\022\r\n\tDATA_TYPE\020\005\022\020\n\014INPUT_TENSOR\020" +
+      "\006\022\021\n\rOUTPUT_TENSOR\020\007\022\n\n\006STRING\020\010\"\233\003\n\014OpD" +
+      "escriptor\022\014\n\004name\030\001 \001(\t\0221\n\rargDescriptor" +
+      "\030\002 \003(\0132\032.org.nd4j.ir.ArgDescriptor\022F\n\021op" +
+      "DeclarationType\030\003 \001(\0162+.org.nd4j.ir.OpDe" +
+      "scriptor.OpDeclarationType\"\201\002\n\021OpDeclara" +
+      "tionType\022\022\n\016CUSTOM_OP_IMPL\020\000\022\023\n\017BOOLEAN_" +
+      "OP_IMPL\020\001\022\020\n\014LIST_OP_IMPL\020\002\022\021\n\rLOGIC_OP_" +
+      "IMPL\020\003\022\013\n\007OP_IMPL\020\004\022\025\n\021DIVERGENT_OP_IMPL" +
+      "\020\006\022\030\n\024CONFIGURABLE_OP_IMPL\020\007\022\025\n\021REDUCTIO" +
+      "N_OP_IMPL\020\010\022\031\n\025BROADCASTABLE_OP_IMPL\020\t\022\036" +
+      "\n\032BROADCASTABLE_BOOL_OP_IMPL\020\n\022\016\n\nLEGACY" +
+      "_XYZ\020\013\"=\n\020OpDescriptorList\022)\n\006opList\030\001 \003" +
+      "(\0132\031.org.nd4j.ir.OpDescriptorB\rB\013OpNames" +
+      "paceb\006proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3876,7 +3940,7 @@ public final class OpNamespace {
     internal_static_org_nd4j_ir_ArgDescriptor_fieldAccessorTable = new
       org.nd4j.shade.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_nd4j_ir_ArgDescriptor_descriptor,
-        new java.lang.String[] { "Name", "FloatValue", "DoubleValue", "Int32Value", "Int64Value", "BoolValue", "DataTypeValue", "InputValue", "OutputValue", "ArgType", "ArgIndex", "StringValue", });
+        new java.lang.String[] { "Name", "FloatValue", "DoubleValue", "Int32Value", "Int64Value", "BoolValue", "DataTypeValue", "InputValue", "OutputValue", "ArgType", "ArgIndex", "StringValue", "ArgOptional", });
     internal_static_org_nd4j_ir_OpDescriptor_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_org_nd4j_ir_OpDescriptor_fieldAccessorTable = new
