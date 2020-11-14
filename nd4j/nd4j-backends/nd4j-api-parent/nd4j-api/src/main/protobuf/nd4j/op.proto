@@ -47,6 +47,7 @@ message OpDescriptor {
       BROADCASTABLE_OP_IMPL = 9;
       BROADCASTABLE_BOOL_OP_IMPL = 10;
       LEGACY_XYZ = 11;
+      PLATFORM_IMPL = 12;
   }
 
 

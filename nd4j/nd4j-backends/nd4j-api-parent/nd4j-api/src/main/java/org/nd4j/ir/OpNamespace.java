@@ -2089,6 +2089,10 @@ public final class OpNamespace {
        * <code>LEGACY_XYZ = 11;</code>
        */
       LEGACY_XYZ(11),
+      /**
+       * <code>PLATFORM_IMPL = 12;</code>
+       */
+      PLATFORM_IMPL(12),
       UNRECOGNIZED(-1),
       ;
 
@@ -2136,6 +2140,10 @@ public final class OpNamespace {
        * <code>LEGACY_XYZ = 11;</code>
        */
       public static final int LEGACY_XYZ_VALUE = 11;
+      /**
+       * <code>PLATFORM_IMPL = 12;</code>
+       */
+      public static final int PLATFORM_IMPL_VALUE = 12;
 
 
       public final int getNumber() {
@@ -2167,6 +2175,7 @@ public final class OpNamespace {
           case 9: return BROADCASTABLE_OP_IMPL;
           case 10: return BROADCASTABLE_BOOL_OP_IMPL;
           case 11: return LEGACY_XYZ;
+          case 12: return PLATFORM_IMPL;
           default: return null;
         }
       }
@@ -3915,20 +3924,20 @@ public final class OpNamespace {
       "\022\023\n\013argOptional\030\r \001(\010\"\200\001\n\007ArgType\022\t\n\005FLO" +
       "AT\020\000\022\n\n\006DOUBLE\020\001\022\t\n\005INT32\020\002\022\t\n\005INT64\020\003\022\010" +
       "\n\004BOOL\020\004\022\r\n\tDATA_TYPE\020\005\022\020\n\014INPUT_TENSOR\020" +
-      "\006\022\021\n\rOUTPUT_TENSOR\020\007\022\n\n\006STRING\020\010\"\233\003\n\014OpD" +
+      "\006\022\021\n\rOUTPUT_TENSOR\020\007\022\n\n\006STRING\020\010\"\256\003\n\014OpD" +
       "escriptor\022\014\n\004name\030\001 \001(\t\0221\n\rargDescriptor" +
       "\030\002 \003(\0132\032.org.nd4j.ir.ArgDescriptor\022F\n\021op" +
       "DeclarationType\030\003 \001(\0162+.org.nd4j.ir.OpDe" +
-      "scriptor.OpDeclarationType\"\201\002\n\021OpDeclara" +
+      "scriptor.OpDeclarationType\"\224\002\n\021OpDeclara" +
       "tionType\022\022\n\016CUSTOM_OP_IMPL\020\000\022\023\n\017BOOLEAN_" +
       "OP_IMPL\020\001\022\020\n\014LIST_OP_IMPL\020\002\022\021\n\rLOGIC_OP_" +
       "IMPL\020\003\022\013\n\007OP_IMPL\020\004\022\025\n\021DIVERGENT_OP_IMPL" +
       "\020\006\022\030\n\024CONFIGURABLE_OP_IMPL\020\007\022\025\n\021REDUCTIO" +
       "N_OP_IMPL\020\010\022\031\n\025BROADCASTABLE_OP_IMPL\020\t\022\036" +
       "\n\032BROADCASTABLE_BOOL_OP_IMPL\020\n\022\016\n\nLEGACY" +
-      "_XYZ\020\013\"=\n\020OpDescriptorList\022)\n\006opList\030\001 \003" +
-      "(\0132\031.org.nd4j.ir.OpDescriptorB\rB\013OpNames" +
-      "paceb\006proto3"
+      "_XYZ\020\013\022\021\n\rPLATFORM_IMPL\020\014\"=\n\020OpDescripto" +
+      "rList\022)\n\006opList\030\001 \003(\0132\031.org.nd4j.ir.OpDe" +
+      "scriptorB\rB\013OpNamespaceb\006proto3"
     };
     descriptor = org.nd4j.shade.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
