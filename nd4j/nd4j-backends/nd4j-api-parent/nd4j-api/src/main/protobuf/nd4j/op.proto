@@ -30,7 +30,7 @@ message ArgDescriptor {
   int32 argIndex = 11;
   string stringValue = 12;
   bool argOptional = 13;
-
+  bool convertBoolToInt = 14;
 }
 
 //Op descriptor
