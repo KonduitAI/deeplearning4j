@@ -31,6 +31,7 @@ message ArgDescriptor {
   string stringValue = 12;
   bool argOptional = 13;
   bool convertBoolToInt = 14;
+  bool isArray = 15;
 }
 
 //Op descriptor
