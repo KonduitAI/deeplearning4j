@@ -257,7 +257,7 @@ public class TFGraphMapper {
                         }
 
 
-                        org.tensorflow.framework.DataType tfDtype = attrMap.get("dtype").getType();
+                        org.tensorflow.framework.DataType  tfDtype = attrMap.get("dtype").getType();
                         org.nd4j.linalg.api.buffer.DataType dt = convertType(tfDtype);
                         sd.placeHolder(name, dt, shape);
                     } else {
