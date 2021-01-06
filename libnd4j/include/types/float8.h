@@ -66,7 +66,7 @@ namespace sd {
     };
 
 
-    float cpu_quarter2float(quarter b) {
+    _CUDA_HD float cpu_quarter2float(quarter b) {
         unsigned sign = ((b.x >> 7) & 1);
         unsigned exponent = ((b.x >> 4) & 0x7);
         unsigned mantissa = ((b.x & 0xf) << 19);
@@ -96,7 +96,7 @@ namespace sd {
 
 
 
-    quarter cpu_float2quarter_rn(float f)
+    _CUDA_HD quarter cpu_float2quarter_rn(float f)
     {
         quarter ret;
 
@@ -154,30 +154,30 @@ namespace sd {
     }
 
 
-    float8::float8() {
+    _CUDA_HD float8::float8() {
         data = cpu_float2quarter_rn(0.0f);
     }
 
     template <class T>
-    float8::float8(const T& rhs) {
+    _CUDA_HD float8::float8(const T& rhs) {
         assign(rhs);
     }
 
     template <class T>
-    float8& float8::operator=(const T& rhs) {
+    _CUDA_HD float8& float8::operator=(const T& rhs) {
         assign(rhs); return *this;
     }
 
 
-    float8::operator float() const {
+    _CUDA_HD float8::operator float() const {
         return cpu_quarter2float(data);
     }
 
-    void float8::assign(double rhs) {
+    _CUDA_HD void float8::assign(double rhs) {
         assign((float)rhs);
     }
 
-    void float8::assign(float rhs) {
+    _CUDA_HD void float8::assign(float rhs) {
         data = cpu_float2quarter_rn(rhs);
     }
 }

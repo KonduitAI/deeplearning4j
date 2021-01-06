@@ -51,11 +51,11 @@ namespace sd {
 
 //////////////////// IMPLEMENTATIONS
 
-    float _CUDA_HD cpu_uint162float(uint16_t data) {
+    _CUDA_HD float _CUDA_HD cpu_uint162float(uint16_t data) {
         return static_cast<float>(data);
     }
 
-    uint16_t _CUDA_HD cpu_float2uint16(float data) {
+    _CUDA_HD uint16_t _CUDA_HD cpu_float2uint16(float data) {
         auto t = static_cast<int>(data);
         if (t > 65536 ) t = 65536;
         if (t < 0) t = 0;
