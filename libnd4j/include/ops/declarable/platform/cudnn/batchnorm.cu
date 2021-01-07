@@ -73,27 +73,27 @@ static void batchnormCUDNN(const LaunchContext* context,
      // input descriptor
     cudnnTensorDescriptor_t x;
     cudnnCreateTensorDescriptor(&x);
-    if(input->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(x, format, dataType, xRank, xShape.data());
-    else
+    // if(input->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(x, format, dataType, xRank, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(x, dataType, xRank, xShape.data(), xStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for input failed", err);
 
     // output descriptor
     cudnnTensorDescriptor_t z;
     cudnnCreateTensorDescriptor(&z);
-    if(output->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(z, format, dataType, xRank, xShape.data());
-    else
+    // if(output->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(z, format, dataType, xRank, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(z, dataType, xRank, xShape.data(), zStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for output failed", err);
 
     // mean, variance, gamma and beta descriptor, the same descriptor for all of them
     cudnnTensorDescriptor_t params;
     cudnnCreateTensorDescriptor(&params);
-    if(mean->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(params, format, dataType, xRank, paramsShape.data());
-    else
+    // if(mean->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(params, format, dataType, xRank, paramsShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(params, dataType, xRank, paramsShape.data(), paramsStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for mean/variance/gamma/beta failed", err);
 
@@ -170,36 +170,36 @@ static void batchnormBpCUDNN(const LaunchContext* context,
      // input descriptor
     cudnnTensorDescriptor_t x;
     cudnnCreateTensorDescriptor(&x);
-    if(input->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(x, format, dataType, xRank, xShape.data());
-    else
+    // if(input->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(x, format, dataType, xRank, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(x, dataType, xRank, xShape.data(), xStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for input failed", err);
 
     // gradO descriptor
     cudnnTensorDescriptor_t dz;
     cudnnCreateTensorDescriptor(&dz);
-    if(gradO->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(dz, format, dataType, xRank, xShape.data());
-    else
+    // if(gradO->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(dz, format, dataType, xRank, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(dz, dataType, xRank, xShape.data(), dzStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for gradO failed", err);
 
     // gradI descriptor
     cudnnTensorDescriptor_t dx;
     cudnnCreateTensorDescriptor(&dx);
-    if(input->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(dx, format, dataType, xRank, xShape.data());
-    else
+    // if(input->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(dx, format, dataType, xRank, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(dx, dataType, xRank, xShape.data(), dxStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for gradI failed", err);
 
     // mean, variance, gamma, gradG and gradB descriptor, the same descriptor for all of them
     cudnnTensorDescriptor_t params;
     cudnnCreateTensorDescriptor(&params);
-    if(mean->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(params, format, dataType, xRank, paramsShape.data());
-    else
+    // if(mean->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(params, format, dataType, xRank, paramsShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(params, dataType, xRank, paramsShape.data(), paramsStrides.data());
     if (err != 0) throw sd::cuda_exception::build("batchnormBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for mean/variance/gamma/gradG/gradB failed", err);
 

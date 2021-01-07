@@ -272,18 +272,18 @@ void pooling3dCUDNN(const LaunchContext* context,
     // input descriptor
     cudnnTensorDescriptor_t x;
     cudnnCreateTensorDescriptor(&x);
-    if(input->ews() == 1 && input->ordering() == 'c')
-        err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape);
-    else
+    // if(input->ews() == 1 && input->ordering() == 'c')
+    //     err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape);
+    // else
         err = cudnnSetTensorNdDescriptor(x, cudnnDataType(input->dataType()), numDims, xShape, xStrides);
     if (err != 0) throw sd::cuda_exception::build("pooling3dCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for input failed", err);
 
     // output descriptor
     cudnnTensorDescriptor_t z;
     cudnnCreateTensorDescriptor(&z);
-    if(output->ews() == 1 && output->ordering() == 'c')
-        err = cudnnSetTensorNdDescriptorEx(z, format, cudnnDataType(output->dataType()), numDims, zShape);
-    else
+    // if(output->ews() == 1 && output->ordering() == 'c')
+    //     err = cudnnSetTensorNdDescriptorEx(z, format, cudnnDataType(output->dataType()), numDims, zShape);
+    // else
         err = cudnnSetTensorNdDescriptor(z, cudnnDataType(output->dataType()), numDims, zShape, zStrides);
     if (err != 0) throw sd::cuda_exception::build("pooling3dCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for output failed", err);
 
@@ -347,18 +347,18 @@ void pooling3dBpCUDNN(const LaunchContext* context,
     // input and gradI descriptor
     cudnnTensorDescriptor_t x;
     cudnnCreateTensorDescriptor(&x);
-    if(input->ews() == 1 && input->ordering() == 'c')
-        err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape);
-    else
+    // if(input->ews() == 1 && input->ordering() == 'c')
+    //     err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape);
+    // else
         err = cudnnSetTensorNdDescriptor(x, cudnnDataType(input->dataType()), numDims, xShape, xStrides);
     if (err != 0) throw sd::cuda_exception::build("pooling3dBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for input/gradI failed", err);
 
     // gradO descriptor
     cudnnTensorDescriptor_t dz;
     cudnnCreateTensorDescriptor(&dz);
-    if(gradO->ews() == 1 && gradO->ordering() == 'c')
-        err = cudnnSetTensorNdDescriptorEx(dz, format, cudnnDataType(gradO->dataType()), numDims, dzShape);
-    else
+    // if(gradO->ews() == 1 && gradO->ordering() == 'c')
+    //     err = cudnnSetTensorNdDescriptorEx(dz, format, cudnnDataType(gradO->dataType()), numDims, dzShape);
+    // else
         err = cudnnSetTensorNdDescriptor(dz, cudnnDataType(gradO->dataType()), numDims, dzShape, dzStrides);
     if (err != 0) throw sd::cuda_exception::build("pooling3dBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for gradO failed", err);
 

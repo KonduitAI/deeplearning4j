@@ -59,15 +59,15 @@ static void conv3dCUDNN(const LaunchContext* context,
 
     const std::vector<int> xStrides = {(int)input->strideAt(0), (int)input->strideAt(1), (int)input->strideAt(2), (int)input->strideAt(3), (int)input->strideAt(4)};
     const std::vector<int> zStrides = {(int)output->strideAt(0), (int)output->strideAt(1), (int)output->strideAt(2), (int)output->strideAt(3), (int)output->strideAt(4)};
-
+    const std::vector<int> bStrides   = {oC, 1, 1, 1, 1};           
     cudnnTensorFormat_t format = isNCDHW ? CUDNN_TENSOR_NCHW : CUDNN_TENSOR_NHWC;
 
     // input descriptor
     cudnnTensorDescriptor_t x;
     cudnnCreateTensorDescriptor(&x);
-    if(input->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape.data());
-    else
+    // if(input->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(x, cudnnDataType(input->dataType()), numDims, xShape.data(), xStrides.data());
     if (err != 0) throw sd::cuda_exception::build("conv3dCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for input failed", err);
 
@@ -80,9 +80,9 @@ static void conv3dCUDNN(const LaunchContext* context,
     // output descriptor
     cudnnTensorDescriptor_t z;
     cudnnCreateTensorDescriptor(&z);
-    if(output->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(z, format, cudnnDataType(output->dataType()), numDims, zShape.data());
-    else
+    // if(output->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(z, format, cudnnDataType(output->dataType()), numDims, zShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(z, cudnnDataType(output->dataType()), numDims, zShape.data(), zStrides.data());
     if (err != 0) throw sd::cuda_exception::build("conv3dCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for output failed", err);
 
@@ -127,7 +127,8 @@ static void conv3dCUDNN(const LaunchContext* context,
 
         cudnnTensorDescriptor_t b;
         cudnnCreateTensorDescriptor(&b);
-        err = cudnnSetTensorNdDescriptorEx(b, /*format*/CUDNN_TENSOR_NCHW, cudnnDataType(bias->dataType()), numDims, bShape.data());
+        //err = cudnnSetTensorNdDescriptorEx(b, /*format*/CUDNN_TENSOR_NCHW, cudnnDataType(bias->dataType()), numDims, bShape.data());
+        err = cudnnSetTensorNdDescriptor(b, cudnnDataType(bias->dataType()), numDims, bShape.data(), bStrides.data());
         if (err != 0) throw sd::cuda_exception::build("conv3dCUDNN: cudnnSetTensorNdDescriptor for bias failed", err);
         err = cudnnAddTensor(*handle, alpha, b, bias->specialBuffer(), alpha, z, output->specialBuffer());
         if (err != 0) throw sd::cuda_exception::build("conv3dCUDNN: cudnnAddTensor bias failed", err);
@@ -172,39 +173,42 @@ static void conv3dBpCUDNN(const LaunchContext* context,
     const std::vector<int> xShape  = {bS, iC, iD, iH, iW};
     const std::vector<int> dzShape = {bS, oC, oD, oH, oW};
     const std::vector<int> wShape  = {oC, iC, kD, kH, kW};
-    const std::vector<int> dbShape = {1, (int)(isNCDHW ? oC : 1), 1, 1, (int)(isNCDHW ? 1 : oC)};
+    int l4 = (int)(isNCDHW ? 1 : oC);
+    int l1 = (int)(isNCDHW ? oC : 1);
+    const std::vector<int> dbShape = {1, l1, 1, 1, l4};
 
     const std::vector<int> xStrides  = {(int)input->strideAt(0), (int)input->strideAt(1), (int)input->strideAt(2), (int)input->strideAt(3), (int)input->strideAt(4)};
     const std::vector<int> dxStrides = {(int)gradI->strideAt(0), (int)gradI->strideAt(1), (int)gradI->strideAt(2), (int)gradI->strideAt(3), (int)gradI->strideAt(4)};
     const std::vector<int> dzStrides = {(int)gradO->strideAt(0), (int)gradO->strideAt(1), (int)gradO->strideAt(2), (int)gradO->strideAt(3), (int)gradO->strideAt(4)};
 
+    const std::vector<int> dbStrides = {l1*l4, l4, l4, l4, 1};
     cudnnTensorFormat_t format = isNCDHW ? CUDNN_TENSOR_NCHW : CUDNN_TENSOR_NHWC;
     cudnnTensorFormat_t formatW = 0 == wFormat ? format : (1 == wFormat ? CUDNN_TENSOR_NCHW : CUDNN_TENSOR_NHWC);
 
     // input descriptor
     cudnnTensorDescriptor_t x;
     cudnnCreateTensorDescriptor(&x);
-    if(input->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape.data());
-    else
+    // if(input->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(x, format, cudnnDataType(input->dataType()), numDims, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(x, cudnnDataType(input->dataType()), numDims, xShape.data(), xStrides.data());
     if (err != 0) throw sd::cuda_exception::build("conv3dBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for input failed", err);
 
     // gradO descriptor
     cudnnTensorDescriptor_t dz;
     cudnnCreateTensorDescriptor(&dz);
-    if(gradO->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(dz, format, cudnnDataType(gradO->dataType()), numDims, dzShape.data());
-    else
+    // if(gradO->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(dz, format, cudnnDataType(gradO->dataType()), numDims, dzShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(dz, cudnnDataType(gradO->dataType()), numDims, dzShape.data(), dzStrides.data());
     if (err != 0) throw sd::cuda_exception::build("conv3dBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for gradO failed", err);
 
     // gradI descriptor
     cudnnTensorDescriptor_t dx;
     cudnnCreateTensorDescriptor(&dx);
-    if(gradI->ews() == 1)
-        err = cudnnSetTensorNdDescriptorEx(dx, format, cudnnDataType(gradI->dataType()), numDims, xShape.data());
-    else
+    // if(gradI->ews() == 1)
+    //     err = cudnnSetTensorNdDescriptorEx(dx, format, cudnnDataType(gradI->dataType()), numDims, xShape.data());
+    // else
         err = cudnnSetTensorNdDescriptor(dx, cudnnDataType(gradI->dataType()), numDims, xShape.data(), dxStrides.data());
     if (err != 0) throw sd::cuda_exception::build("conv3dBpCUDNN: cudnnSetTensorNdDescriptor/cudnnSetTensorNdDescriptorEx for gradI failed", err);
 
@@ -266,7 +270,8 @@ static void conv3dBpCUDNN(const LaunchContext* context,
 
         cudnnTensorDescriptor_t db;
         cudnnCreateTensorDescriptor(&db);
-        err = cudnnSetTensorNdDescriptorEx(db, format, cudnnDataType(gradB->dataType()), numDims, dbShape.data());
+        //err = cudnnSetTensorNdDescriptorEx(db, format, cudnnDataType(gradB->dataType()), numDims, dbShape.data());
+        err = cudnnSetTensorNdDescriptor(db, cudnnDataType(gradB->dataType()), numDims, dbShape.data(), dbStrides.data());
         if (err != 0) throw sd::cuda_exception::build("conv3dBpCUDNN: cudnnSetTensorNdDescriptor for gradB failed", err);
 
         err = cudnnConvolutionBackwardBias(*handle, alpha, dz, gradO->specialBuffer(), beta, db, gradB->specialBuffer());
