@@ -64,7 +64,7 @@
 #pragma once
 #ifndef OP_BOILERPLATE_HH
 #define OP_BOILERPLATE_HH
-
+#include <system/Gpudef.h>
 #include <system/openmp_pragmas.h>
 #include <system/type_boilerplate.h>
 #include <exceptions/allocation_exception.h>
@@ -1557,22 +1557,6 @@
 #define FORCEINLINE inline 
 #endif
 
-
-#ifdef __CUDACC__
-
-#define _CUDA_H  __host__
-#define _CUDA_D __device__
-#define _CUDA_G __global__
-#define _CUDA_HD __host__ __device__
-
-#else
-
-#define _CUDA_H
-#define _CUDA_D
-#define _CUDA_G
-#define _CUDA_HD
-
-#endif // CUDACC
 
 #define CHECK_ALLOC(PTR, MSG, BYTES) if (PTR == nullptr) { throw sd::allocation_exception::build(MSG, BYTES); };
 

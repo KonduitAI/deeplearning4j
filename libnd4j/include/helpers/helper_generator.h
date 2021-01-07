@@ -329,7 +329,7 @@ namespace sd {
                 }
             }
 #endif
-            void rewindH(Nd4jLong numberOfElements) {
+            _CUDA_HD void rewindH(Nd4jLong numberOfElements) {
                 Nd4jLong newPos = this->getOffset() + numberOfElements;
                 if (newPos > this->getSize()) {
                     generation += newPos / this->size;

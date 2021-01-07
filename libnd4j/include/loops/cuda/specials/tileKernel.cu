@@ -64,7 +64,7 @@ namespace sd {
     template<typename T>
     void tileKernelH(void const *inputBuffer, Nd4jLong const* inputShape, void *outputBuffer, Nd4jLong const* outputShape, Nd4jLong resultLength, cudaStream_t *stream) {
         dim3 launchDims(256, 512, 8192);
-        tileKernel<T> << < launchDims.x, launchDims.y, launchDims.z, *stream>>>(inputBuffer, inputShape, outputBuffer, outputShape, resultLength);
+        tileKernel<T> <<<launchDims.x, launchDims.y, launchDims.z, *stream>>>(inputBuffer, inputShape, outputBuffer, outputShape, resultLength);
     }
 
     BUILD_SINGLE_TEMPLATE(template void tileKernelH, (void const* inputBuffer, Nd4jLong const* inputShape, void* outputBuffer, Nd4jLong const* outputShape, Nd4jLong resultLength, cudaStream_t *stream), LIBND4J_TYPES);

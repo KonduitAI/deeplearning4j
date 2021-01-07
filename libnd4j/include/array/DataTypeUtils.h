@@ -65,7 +65,7 @@ namespace sd {
 
         // returns the difference between 1.0 and the next representable value of the given floating-point type
         template <typename T>
-        FORCEINLINE static T eps();
+        _CUDA_HD FORCEINLINE static T eps();
 
         FORCEINLINE static _CUDA_HD size_t sizeOf(DataType type);
         FORCEINLINE static _CUDA_HD size_t sizeOf(const Nd4jLong* shapeInfo);
@@ -113,23 +113,23 @@ namespace sd {
         return Environment::getInstance().defaultFloatDataType();
     }
 
-    FORCEINLINE bool DataTypeUtils::isR(sd::DataType dataType) {
+    _CUDA_HD FORCEINLINE bool DataTypeUtils::isR(sd::DataType dataType) {
         return dataType == sd::DataType::FLOAT32 || dataType == sd::DataType::BFLOAT16 || dataType == sd::DataType::HALF || dataType == sd::DataType::DOUBLE;
     }
 
-    FORCEINLINE bool DataTypeUtils::isB(sd::DataType dataType) {
+    _CUDA_HD FORCEINLINE bool DataTypeUtils::isB(sd::DataType dataType) {
         return dataType == sd::DataType::BOOL;
     }
 
-    FORCEINLINE bool DataTypeUtils::isS(sd::DataType dataType) {
+    _CUDA_HD FORCEINLINE bool DataTypeUtils::isS(sd::DataType dataType) {
         return dataType == sd::DataType::UTF8 || dataType == sd::DataType::UTF16 || dataType == sd::DataType::UTF32;
     }
 
-    FORCEINLINE bool DataTypeUtils::isZ(sd::DataType dataType) {
+    _CUDA_HD FORCEINLINE bool DataTypeUtils::isZ(sd::DataType dataType) {
         return !isR(dataType) && !isB(dataType) && !isS(dataType);
     }
 
-    FORCEINLINE bool DataTypeUtils::isU(sd::DataType dataType) {
+    _CUDA_HD FORCEINLINE bool DataTypeUtils::isU(sd::DataType dataType) {
         return dataType == sd::DataType::UINT8 || dataType == sd::DataType::UINT16 || dataType == sd::DataType::UINT32 || dataType == sd::DataType::UINT64;
     }
 
@@ -183,12 +183,12 @@ FORCEINLINE sd::DataType DataTypeUtils::pickPairwiseResultType(const Nd4jLong* s
 }
 
 ///////////////////////////////////////////////////////////////////
-FORCEINLINE size_t DataTypeUtils::sizeOf(DataType type) {
+_CUDA_HD FORCEINLINE size_t DataTypeUtils::sizeOf(DataType type) {
     return sizeOfElement(type);
 }
 
 ///////////////////////////////////////////////////////////////////
-FORCEINLINE size_t DataTypeUtils::sizeOf(const Nd4jLong* shapeInfo) {
+_CUDA_HD FORCEINLINE size_t DataTypeUtils::sizeOf(const Nd4jLong* shapeInfo) {
     return sizeOfElement(ArrayOptions::dataType(shapeInfo));
 }
 

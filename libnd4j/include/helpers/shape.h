@@ -2295,7 +2295,7 @@ INLINEDEF _CUDA_HD Nd4jLong indexOffset(Nd4jLong index, const Nd4jLong* lShapeIn
         return numOfNonUnity == 1;
     }
 
-    INLINEDEF _CUDA_H Nd4jLong const* detachShape(Nd4jLong const* originalShape) {
+    INLINEDEF _CUDA_HD Nd4jLong const* detachShape(Nd4jLong const* originalShape) {
         Nd4jLong *newShape = new Nd4jLong[shape::shapeInfoLength(originalShape)];
         memcpy(newShape, originalShape, shape::shapeInfoByteLength(originalShape));
 
@@ -2303,7 +2303,7 @@ INLINEDEF _CUDA_HD Nd4jLong indexOffset(Nd4jLong index, const Nd4jLong* lShapeIn
     }
 
 
-    INLINEDEF _CUDA_H Nd4jLong* copyShape(Nd4jLong const* originalShape) {
+    INLINEDEF _CUDA_HD Nd4jLong* copyShape(Nd4jLong const* originalShape) {
         Nd4jLong *newShape = new Nd4jLong[shape::shapeInfoLength(originalShape)];
         memcpy(newShape, originalShape, shape::shapeInfoByteLength(originalShape));
 
@@ -4217,7 +4217,7 @@ INLINEDEF _CUDA_HD bool reshapeC(const Nd4jLong* oldShapeInfo, Nd4jLong* newShap
 }
 
 
-    INLINEDEF _CUDA_H bool canReshape(const int oldRank, Nd4jLong* oldShape, const int newRank, Nd4jLong* newShapeOf, bool isFOrder) {
+    INLINEDEF _CUDA_HD bool canReshape(const int oldRank, Nd4jLong* oldShape, const int newRank, Nd4jLong* newShapeOf, bool isFOrder) {
         Nd4jLong oldnd;
         Nd4jLong* oldDims = shape::copyOf(oldRank, shape::shapeOf(oldShape));
         Nd4jLong* oldStrides = shape::copyOf(oldRank, shape::stride(oldShape));

@@ -63,7 +63,7 @@ __global__ void rgbToYuvCuda(const void* vx, const Nd4jLong* xShapeInfo, const N
 template<typename T>
 linkage void rgbToYuvCudaLauncher(const int blocksPerGrid, const int threadsPerBlock, const cudaStream_t* stream, const void* vx, const Nd4jLong* xShapeInfo, const Nd4jLong* xTadOffsets, void* vz, const Nd4jLong* zShapeInfo, const Nd4jLong* zTadOffsets, const Nd4jLong numOfTads, const int dimC) {
 
-    rgbToYuvCuda<T> << <blocksPerGrid, threadsPerBlock, 256, * stream >> > (vx, xShapeInfo, xTadOffsets, vz, zShapeInfo, zTadOffsets, numOfTads, dimC);
+    rgbToYuvCuda<T> <<<blocksPerGrid, threadsPerBlock, 256, * stream >>>(vx, xShapeInfo, xTadOffsets, vz, zShapeInfo, zTadOffsets, numOfTads, dimC);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ __global__ void yuvToRgbCuda(const void* vx, const Nd4jLong* xShapeInfo, const N
 template<typename T>
 linkage void yuvToRgbCudaLauncher(const int blocksPerGrid, const int threadsPerBlock, const cudaStream_t* stream, const void* vx, const Nd4jLong* xShapeInfo, const Nd4jLong* xTadOffsets, void* vz, const Nd4jLong* zShapeInfo, const Nd4jLong* zTadOffsets, const Nd4jLong numOfTads, const int dimC) {
 
-    yuvToRgbCuda<T> << <blocksPerGrid, threadsPerBlock, 256, * stream >> > (vx, xShapeInfo, xTadOffsets, vz, zShapeInfo, zTadOffsets, numOfTads, dimC);
+    yuvToRgbCuda<T> <<<blocksPerGrid, threadsPerBlock, 256, * stream >>> (vx, xShapeInfo, xTadOffsets, vz, zShapeInfo, zTadOffsets, numOfTads, dimC);
 }
 
 ///////////////////////////////////////////////////////////////////

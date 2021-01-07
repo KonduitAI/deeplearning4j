@@ -26,12 +26,11 @@
 #include <cfloat>
 #include <iosfwd>
 #include <iostream>
-
+#include <system/Gpudef.h>
 // support for half precision conversion
 #ifdef __INTEL_COMPILER
 #include <emmintrin.h>
 #endif
-
 
 #ifdef __CUDACC__
 #define local_def inline __host__ __device__
@@ -41,6 +40,17 @@
 #define local_def inline
 #elif __GNUC__
 #define local_def inline
+#endif
+
+#if defined(__clang__) && defined(__CUDA__)
+  static inline _CUDA_H bool local_isnan(const float& rhs) { return false; }
+  static inline _CUDA_D bool local_isnan(const float& rhs) { return ::isnan(rhs); }
+#else 
+  #if !defined(__CUDA_ARCH__)
+    static inline _CUDA_H bool local_isnan(const float& rhs) { return false; }
+  #else
+    static inline _CUDA_D bool local_isnan(const float& rhs) { return ::isnan(rhs); }
+  #endif
 #endif
 
 //namespace sd
@@ -53,10 +63,10 @@
         // struct isNumericType { static bool const value = std::is_same<double, typename std::decay<T>::type>::value || std::is_same<float, typename std::decay<T>::type>::value || std::is_same<int, typename std::decay<T>::type>::value || std::is_same<unsigned int, typename std::decay<T>::type>::value || std::is_same<long long, typename std::decay<T>::type>::value || std::is_same<unsigned long long, typename std::decay<T>::type>::value || std::is_same<long int, typename std::decay<T>::type>::value || std::is_same<long unsigned int, typename std::decay<T>::type>::value || std::is_same<int8_t, typename std::decay<T>::type>::value || std::is_same<uint8_t, typename std::decay<T>::type>::value || std::is_same<int16_t, typename std::decay<T>::type>::value || std::is_same<uint16_t, typename std::decay<T>::type>::value || std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<float16, T>::value;; };
 
     public:
-        int16_t _data;
+        int16_t _data ;
 
         local_def bfloat16() {
-            _data = 0;
+            //_data = 0;
         }
 
         template <typename T, typename = typename std::enable_if<isNumericType<T>::value>::type>
@@ -84,12 +94,11 @@
         }
 
         local_def bfloat16& operator=(const float& rhs) {
-            #ifdef __CUDACC__
-            if(::isnan(rhs)) {
+
+            if(local_isnan(rhs)) {
                 _data = bfloat16::nan();
                 return *this;
             }
-            #endif
             auto x = *reinterpret_cast<int32_t*>(& const_cast<float&>(rhs));
             uint32_t lsb = (x >> 16) & 1;
             uint32_t rounding_bias = 0x7fff + lsb;

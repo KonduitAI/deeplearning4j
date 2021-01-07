@@ -20,7 +20,7 @@
 #include <cuda.h>
 
 #include <system/buffer.h>
-
+#include <algorithm>
 
 #include <loops/transform_any.h>
 #include <loops/reduce_bool.h>
@@ -60,11 +60,11 @@ int maxThreads = 512;
 bool allowedP2P = false;
 bool supportedP2P = false;
 #ifdef __ND4J_EXPERIMENTAL__
-bool experimentalSupport = true;
+#define ND4J_EXPERIMENTAL_VAL true
 #else
-bool experimentalSupport = false;
+#define ND4J_EXPERIMENTAL_VAL false
 #endif
-
+bool experimentalSupport = ND4J_EXPERIMENTAL_VAL;
 int minThreads = 32;
 
 __constant__ char deviceConstantMemory[49152];
@@ -2189,7 +2189,7 @@ void prescanArrayRecursive(Nd4jPointer *extras, int *dZ, int *dX, int numElement
 
     // setup execution parameters
     // if NP2, we process the last block separately
-    dim3 grid(max(1, numBlocks - np2LastBlock), 1, 1);
+    dim3 grid(std::max(1, numBlocks - np2LastBlock), 1, 1);
     dim3 threads(numThreads, 1, 1);
     dim3 gridOnes(1, 1, 1);
     dim3 threadsOnes(numThreadsLastBlock, 1, 1);

@@ -21,13 +21,14 @@
 #include <iosfwd>
 #include <iostream>
 #include <system/pointercast.h>
+#include <system/Gpudef.h>
 #if defined(__INTEL_COMPILER) || defined(SD_F16C)
     #include <immintrin.h>
 #endif
 
 struct bfloat16;
 
-#ifdef __CUDACC__
+#if defined(__CUDACC__)
 #include <cuda_fp16.h>
 
 #if CUDA_VERSION_MAJOR != 8
@@ -35,19 +36,19 @@ struct bfloat16;
 
 struct ihalf : public __half {
     public:
-        __host__ __device__ ihalf() : half() {
+        _CUDA_HD ihalf() : half() {
             //
         }
 
-        inline __host__ __device__ unsigned short * getXP() {
+        inline _CUDA_HD unsigned short * getXP() {
            return &this->__x;
         }
 
-        inline __host__ __device__ unsigned short getX() const  {
+        inline _CUDA_HD unsigned short getX() const  {
             return this->__x;
         }
 
-        inline __host__ __device__ void assign(const half f) {
+        inline _CUDA_HD void assign(const half f) {
             this->__x = ((__half_raw *) &f)->x;
         }
 };
@@ -55,19 +56,19 @@ struct ihalf : public __half {
 #else
 struct ihalf : public __half {
     public:
-        __host__ __device__ ihalf() : half() {
+        _CUDA_HD ihalf() : half() {
             //
         }
 
-        inline __host__ __device__ unsigned short * getXP() {
+        inline _CUDA_HD unsigned short * getXP() {
             return &this->x;
         }
 
-        inline __host__ __device__ unsigned short getX() const {
+        inline _CUDA_HD unsigned short getX() const {
             return this->x;
         }
 
-        inline __host__ __device__ void assign(const half f) {
+        inline _CUDA_HD void assign(const half f) {
             this->x = ((__half *) &f)->x;
         }
 };
@@ -93,7 +94,7 @@ typedef __half ihalf;
 #endif // CUDA
 
 #ifdef __CUDACC__
-#define local_def inline __host__ __device__
+#define local_def inline _CUDA_HD
 #elif _MSC_VER
 #define local_def inline
 #elif __clang__
@@ -232,25 +233,11 @@ struct float16 {
 
     public:
         ihalf data;
-        local_def float16() { *data.getXP() = 0; }
+
 
         template <typename T, typename = typename std::enable_if<isNumericType<T>::value || std::is_same<bfloat16, T>::value>::type>
         local_def float16(const T& rhs) {
             *this = rhs;
-        }
-
-        local_def float16(const half& rhs) {
-        #ifdef __CUDACC__
-            data.assign(rhs);
-        #endif
-        }
-
-        local_def operator float() const {
-            #ifdef __CUDA_ARCH__
-            return __half2float(data);
-            #else
-            return cpu_ihalf2float(data);
-            #endif
         }
 
         local_def explicit operator bool() const {
@@ -266,23 +253,52 @@ struct float16 {
             return static_cast<T>(static_cast<float>(*this));
         }
 
-        local_def float16& operator=(const float& rhs) {
-            #ifdef __CUDA_ARCH__
-            auto t = __float2half_rn(rhs);
-            auto b = *(data.getXP());
-
-            #if CUDA_VERSION_MAJOR == 8
-            *(data.getXP()) = t;
-            #else
-            data.assign(t);
-            #endif
-
-            #else
-            data = cpu_float2ihalf_rn(rhs);
-            #endif
-
-            return *this;
-        }
+#if defined(__clang__) && defined(__CUDA__) 
+    _CUDA_H float16() { *data.getXP() = 0; }
+    _CUDA_D float16() {   }
+    _CUDA_H float16(const half& rhs) { }
+    _CUDA_H operator float() const { return cpu_ihalf2float(data); }
+    _CUDA_H float16& operator=(const float& rhs) {
+        data = cpu_float2ihalf_rn(rhs); 
+        return *this;
+    }
+    _CUDA_D float16(const half& rhs) { data.assign(rhs); }
+    _CUDA_D operator float() const { return __half2float(data); }
+    _CUDA_D float16& operator=(const float& rhs) { 
+        auto t = __float2half_rn(rhs);
+        auto b = *(data.getXP());
+    #if CUDA_VERSION_MAJOR == 8
+        *(data.getXP()) = t;
+    #else
+        data.assign(t);
+    #endif
+        return *this;
+    }
+#else
+  #if !defined(__CUDA_ARCH__)
+    _CUDA_H float16() { *data.getXP() = 0; }
+    _CUDA_H float16(const half& rhs) { }
+    _CUDA_H operator float() const { return cpu_ihalf2float(data); }
+    _CUDA_H float16& operator=(const float& rhs) {
+        data = cpu_float2ihalf_rn(rhs); 
+        return *this;
+    }
+  #else
+    _CUDA_D float16() {   }
+    _CUDA_D float16(const half& rhs) { data.assign(rhs);  }
+    _CUDA_D operator float() const { return __half2float(data); }
+    _CUDA_D float16 & operator=(const float& rhs) { 
+        auto t = __float2half_rn(rhs);
+        auto b = *(data.getXP());
+    #if CUDA_VERSION_MAJOR == 8
+        *(data.getXP()) = t;
+    #else
+        data.assign(t);
+    #endif
+        return *this;
+    }
+  #endif
+#endif
 
         local_def float16& operator=(const unsigned short rhs) {
             *data.getXP() = rhs;
