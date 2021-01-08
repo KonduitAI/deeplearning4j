@@ -10,7 +10,7 @@ try:
 except:
     pass
 print("____"+cwd)
-HIP_CMD = "/home/rgurbanov/HIPIFY/bin/./hipify-clang"
+HIP_CMD = "hipify-clang"
 HIP_ARGS = ["--cuda-path=/usr/local/cuda",
             "--skip-excluded-preprocessor-conditional-blocks"]
 pattern = re.compile(r"-o\s.*\.(cu|cpp)\.o")
@@ -28,7 +28,6 @@ exclude_dirs = [
     "/blasbuild/cuda/tests_cpu/googletest-build/googletest"
 ]
 
-
 def gen_cmd(cmd, fileX):
     cmd = cmd.replace("-c "+fileX, "")
     for rpl in replace_str:
@@ -39,7 +38,6 @@ def gen_cmd(cmd, fileX):
     cmd = pattern_arch.sub("", cmd)
     args = [HIP_CMD]+HIP_ARGS+[fileX, "--"] + cmd.split()
     return args
-
 
 def hipify_clang_call(args):
     process = subprocess.Popen(args,
@@ -57,6 +55,19 @@ def hipify(params):
         with open("hip_errors/"+fileX.replace(cwd, "").replace("/", "_")+".txt", "w") as fw:
             fw.write(call_str+"\n\n")
             fw.write(err)
+    prefix_dir = os.path.dirname(fileX)
+    #replace words in prefix
+    prefix_dir = prefix_dir.replace("/cuda","/hip")
+    prefix_dir = prefix_dir.replace("/cudnn","/hipdnn")
+    prefix_dir = prefix_dir.replace("/layers_tests","/hip_layers_tests")
+    if os.path.exists(prefix_dir)==False:
+        try:
+            os.makedirs(prefix_dir)
+        except:
+            pass
+    hip_file = fileX+".hip"
+    if os.path.exists(hip_file):
+        os.replace(hip_file,os.path.join(prefix_dir,os.path.basename(hip_file)))
 
 js= None
 with open("blasbuild/cuda/compile_commands.json") as f:
