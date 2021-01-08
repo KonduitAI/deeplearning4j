@@ -69,11 +69,14 @@ namespace functions {
             double M3;
             double M4;
             double bias;
-
+#if defined(__clang__) && defined(__CUDA__)
+            //do not initialize (initialization is not supported for __shared__ variables)
+            _CUDA_HD SummaryStatsData() {}
+#else
             _CUDA_HD SummaryStatsData() {
                 initialize();
             }
-
+#endif
             // initialize to the identity element
 
             _CUDA_HD void initialize() {

@@ -22,8 +22,14 @@
 
 namespace sd {
     BlasVersionHelper::BlasVersionHelper() {
+#if defined(__clang__) && defined(__CUDA__)
+        _blasMajorVersion = 0;
+        _blasMinorVersion = 0;
+        _blasPatchVersion = 0;
+#else
         _blasMajorVersion = __CUDACC_VER_MAJOR__;
         _blasMinorVersion = __CUDACC_VER_MINOR__;
         _blasPatchVersion = __CUDACC_VER_BUILD__;
+#endif
     }
 }

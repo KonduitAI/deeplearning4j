@@ -254,9 +254,7 @@ struct float16 {
         }
 
 #if defined(__clang__) && defined(__CUDA__) 
-    _CUDA_H float16() { *data.getXP() = 0; }
-    _CUDA_D float16() {   }
-    _CUDA_H float16(const half& rhs) { }
+    _CUDA_HD float16() { }
     _CUDA_H operator float() const { return cpu_ihalf2float(data); }
     _CUDA_H float16& operator=(const float& rhs) {
         data = cpu_float2ihalf_rn(rhs); 
@@ -277,7 +275,6 @@ struct float16 {
 #else
   #if !defined(__CUDA_ARCH__)
     _CUDA_H float16() { *data.getXP() = 0; }
-    _CUDA_H float16(const half& rhs) { }
     _CUDA_H operator float() const { return cpu_ihalf2float(data); }
     _CUDA_H float16& operator=(const float& rhs) {
         data = cpu_float2ihalf_rn(rhs); 
