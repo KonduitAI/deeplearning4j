@@ -12,16 +12,32 @@ option(SD_BUILD_TESTS "Build tests" OFF)
 option(SD_STATIC_LIB "Build static library" OFF)
 option(SD_SHARED_LIB "Build shared library" ON)
 option(SD_SANITIZE "Enable Address Sanitizer" ON)
-
+option(SD_HIP "Use hip files" OFF)
 option(FLATBUFFERS_BUILD_FLATC "Enable the build of the flatbuffers compiler" OFF)
 set(FLATBUFFERS_BUILD_FLATC "OFF" CACHE STRING "Hack to disable flatc build" FORCE)
 
 set(CMAKE_CXX_STANDARD 11)
 
-
 include(GenCompilation)
 
-if (SD_CUDA)
+if (SD_HIP)
+if(NOT DEFINED HIP_PATH)
+    if(NOT DEFINED ENV{HIP_PATH})
+        set(HIP_PATH "/opt/rocm-4.0.0/hip" CACHE PATH "Path to which HIP has been installed")
+    else()
+        set(HIP_PATH $ENV{HIP_PATH} CACHE PATH "Path to which HIP has been installed")
+    endif()
+endif()
+set(CMAKE_MODULE_PATH "${HIP_PATH}/cmake" ${CMAKE_MODULE_PATH})
+
+find_package(HIP QUIET)
+if(HIP_FOUND)
+    message(STATUS "Found HIP: " ${HIP_VERSION})
+else()
+    message(FATAL_ERROR "Could not find HIP. Ensure that HIP is either installed in /opt/rocm/hip or the variable HIP_PATH is set to point to the right location.")
+endif()
+    set(DEFAULT_ENGINE "samediff::ENGINE_HIP")
+elseif (SD_CUDA)
     enable_language(CUDA)
     set(CMAKE_CUDA_STANDARD 11)
 
@@ -180,27 +196,27 @@ if (${HELPERS_mkldnn})
     set(MKLDNN dnnl)
 endif()
 
+if (${HELPERS_hipdnn})
+    if (NOT SD_HIP)
+      message(FATAL_ERROR "Can't build hipDNN on non-HIP platform")
+    endif()
+    EXECUTE_PROCESS(COMMAND ${HIP_PATH}/bin/hipconfig -P OUTPUT_VARIABLE HIP_PLATFORM)
+    IF(${HIP_PLATFORM} MATCHES "hcc")
+      find_package(MIOpen REQUIRED)
+      include_directories(${MIOpen_INCLUDE_DIRS})
+    ELSE()
+      find_package(CuDNN REQUIRED)
+      include_directories(${CuDNN_INCLUDE_DIRS})
+    ENDIF()
+
+endif()
 
 if (${HELPERS_cudnn})
     if (NOT SD_CUDA)
         message(FATAL_ERROR "Can't build cuDNN on non-CUDA platform")
     endif()
 
-    set(CUDNN_ROOT_DIR "" CACHE PATH "Folder contains NVIDIA cuDNN")
-
-    SET(CUDNN_LIBNAME "cudnn")
-    find_path(CUDNN_INCLUDE_DIR cudnn.h
-            HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
-            PATH_SUFFIXES cuda/include include)
-
-    find_library(CUDNN_LIBRARY ${CUDNN_LIBNAME}
-            HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
-            PATH_SUFFIXES lib lib64 cuda/lib cuda/lib64 lib/x64)
-
-    #find_library(CULIBOS_LIBRARY ${CULIBOS_LIBNAME}
-    #        HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
-    #        PATH_SUFFIXES lib lib64 cuda/lib cuda/lib64 lib/x64)
-
+    find_package(CuDNN REQUIRED)
 
     if (CUDNN_LIBRARY)
         set(HAVE_CUDNN true)
