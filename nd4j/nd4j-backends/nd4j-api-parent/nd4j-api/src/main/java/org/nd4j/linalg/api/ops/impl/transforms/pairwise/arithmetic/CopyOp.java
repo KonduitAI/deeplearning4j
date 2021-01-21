@@ -20,7 +20,6 @@ import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.imports.NoOpNameFoundException;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.api.ops.BaseTransformOp;
 import org.nd4j.linalg.api.ops.BaseTransformSameOp;
 
 import java.util.List;
@@ -78,7 +77,7 @@ public class CopyOp extends BaseTransformSameOp {
 
     @Override
     public String[] tensorflowNames() {
-        return new String[]{"Copy","DeepCopy","CopyHost"};
+        return new String[]{"Copy"};
     }
 
     @Override

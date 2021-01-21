@@ -19,13 +19,12 @@
  //
 #ifndef LIBND4J_LOOPCOORDSHELPER_H
 #define LIBND4J_LOOPCOORDSHELPER_H
-#include <vector>
+
 #include <cstddef>
 #include <type_traits>
 #include <utility>
 #include <system/pointercast.h>
 #include <system/op_boilerplate.h>
-#include <helpers/shape.h>
 namespace sd {
 
 #if defined(__GNUC__)
@@ -126,7 +125,7 @@ namespace sd {
 	}
 
 
-	FORCEINLINE zip_size_t offset_from_coords(const Nd4jLong* x_strides, const Nd4jLong* z_strides, const Nd4jLong* coords, const Nd4jLong& rank) {
+	FORCEINLINE zip_size_t offset_from_coords(const Nd4jLong*& x_strides, const Nd4jLong*& z_strides, const Nd4jLong* coords, const Nd4jLong& rank) {
 
 		zip_size_t offset = { 0,0 };
 		size_t rank_4 = rank & -4;
@@ -641,7 +640,7 @@ namespace sd {
 			first_end = ind;
 			first_begin = 0;
 			//nd4j_printf("rffrr ss & %d ind-- %d %d\n", first_rank, first_begin, first_end);
-			//squash output rank 
+			//squash output rank
 			if (first_squash && first_rank > 1) {
 
 				if (order == 'c') {
@@ -661,7 +660,7 @@ namespace sd {
 					first_begin = first_end - first_rank;
 				}
 				else {
-					//squash fortran 
+					//squash fortran
 					int uniq_ind = 0;
 					for (int i = 1; i < first_end; i++) {
 						if (new_strides[i] == new_bases[uniq_ind] * new_strides[uniq_ind]) {

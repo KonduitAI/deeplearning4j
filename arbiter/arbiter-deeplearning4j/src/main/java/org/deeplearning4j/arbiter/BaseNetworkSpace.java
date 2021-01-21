@@ -31,7 +31,11 @@ import org.deeplearning4j.arbiter.optimize.serde.jackson.YamlMapper;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.api.layers.LayerConstraint;
-import org.deeplearning4j.nn.conf.*;
+import org.deeplearning4j.nn.conf.BackpropType;
+import org.deeplearning4j.nn.conf.ConvolutionMode;
+import org.deeplearning4j.nn.conf.GradientNormalization;
+import org.deeplearning4j.nn.conf.InputPreProcessor;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.distribution.Distribution;
 import org.deeplearning4j.nn.conf.dropout.Dropout;
 import org.deeplearning4j.nn.conf.dropout.IDropout;
@@ -44,7 +48,11 @@ import org.nd4j.linalg.learning.config.IUpdater;
 import org.nd4j.shade.jackson.annotation.JsonTypeInfo;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is an abstract ParameterSpace for both MultiLayerNetworks (MultiLayerSpace) and ComputationGraph (ComputationGraphSpace)
@@ -187,19 +195,19 @@ public abstract class BaseNetworkSpace<T> extends AbstractParameterSpace<T> {
         if (allParamConstraints != null){
             List<LayerConstraint> c = allParamConstraints.getValue(values);
             if(c != null){
-                builder.constrainAllParameters(c.toArray(new LayerConstraint[c.size()]));
+                builder.constrainAllParameters(c.toArray(new LayerConstraint[0]));
             }
         }
         if (weightConstraints != null){
             List<LayerConstraint> c = weightConstraints.getValue(values);
             if(c != null){
-                builder.constrainWeights(c.toArray(new LayerConstraint[c.size()]));
+                builder.constrainWeights(c.toArray(new LayerConstraint[0]));
             }
         }
         if (biasConstraints != null){
             List<LayerConstraint> c = biasConstraints.getValue(values);
             if(c != null){
-                builder.constrainBias(c.toArray(new LayerConstraint[c.size()]));
+                builder.constrainBias(c.toArray(new LayerConstraint[0]));
             }
         }
 
@@ -226,7 +234,7 @@ public abstract class BaseNetworkSpace<T> extends AbstractParameterSpace<T> {
                 out.add(next);
             } else {
                 Map<String, ParameterSpace> m = next.getNestedSpaces();
-                ParameterSpace[] arr = m.values().toArray(new ParameterSpace[m.size()]);
+                ParameterSpace[] arr = m.values().toArray(new ParameterSpace[0]);
                 for (int i = arr.length - 1; i >= 0; i--) {
                     stack.add(arr[i]);
                 }

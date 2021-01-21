@@ -32,15 +32,28 @@ import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.CustomOp;
 import org.nd4j.linalg.api.ops.DynamicCustomOp;
-import org.nd4j.linalg.api.ops.impl.indexaccum.IAMax;
-import org.nd4j.linalg.api.ops.impl.indexaccum.IAMin;
+import org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgAmax;
+import org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgAmin;
 import org.nd4j.linalg.api.ops.impl.loss.SoftmaxCrossEntropyWithLogitsLoss;
 import org.nd4j.linalg.api.ops.impl.reduce.Moments;
 import org.nd4j.linalg.api.ops.impl.reduce.NormalizeMoments;
 import org.nd4j.linalg.api.ops.impl.reduce.SufficientStatistics;
-import org.nd4j.linalg.api.ops.impl.reduce.floating.*;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.AMean;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.Entropy;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.Mean;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.Norm1;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.Norm2;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.NormMax;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.ShannonEntropy;
+import org.nd4j.linalg.api.ops.impl.reduce.floating.SquaredNorm;
 import org.nd4j.linalg.api.ops.impl.reduce.same.ASum;
-import org.nd4j.linalg.api.ops.impl.reduce3.*;
+import org.nd4j.linalg.api.ops.impl.reduce3.CosineDistance;
+import org.nd4j.linalg.api.ops.impl.reduce3.CosineSimilarity;
+import org.nd4j.linalg.api.ops.impl.reduce3.Dot;
+import org.nd4j.linalg.api.ops.impl.reduce3.EuclideanDistance;
+import org.nd4j.linalg.api.ops.impl.reduce3.HammingDistance;
+import org.nd4j.linalg.api.ops.impl.reduce3.JaccardDistance;
+import org.nd4j.linalg.api.ops.impl.reduce3.ManhattanDistance;
 import org.nd4j.linalg.api.ops.impl.summarystats.StandardDeviation;
 import org.nd4j.linalg.api.ops.impl.transforms.custom.SoftMax;
 import org.nd4j.linalg.checkutil.NDArrayCreationUtil;
@@ -863,12 +876,12 @@ public class ReductionOpValidation extends BaseOpValidation {
                         break;
                     case 2:
                         reduce = sd.math().iamax(s, dim);
-                        exp = Nd4j.getExecutioner().exec(new IAMax(in.dup(), dim));
+                        exp = Nd4j.getExecutioner().exec(new ArgAmax(in.dup(), dim))[0];
                         name = "iamax";
                         break;
                     case 3:
                         reduce = sd.math().iamin(s, dim);
-                        exp = Nd4j.getExecutioner().exec(new IAMin(in.dup(), dim));
+                        exp = Nd4j.getExecutioner().exec(new ArgAmin(in.dup(), dim))[0];
                         name = "iamin";
                         break;
                     case 4:

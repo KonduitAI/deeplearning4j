@@ -22,7 +22,6 @@ import org.nd4j.imports.NoOpNameFoundException;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.BaseScalarOp;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,11 +82,11 @@ public class Pow extends BaseScalarOp {
 
     @Override
     public String tensorflowName() {
-        throw new NoOpNameFoundException("No TensorFlow op found for " + getClass().getSimpleName());
+        return "Pow";
     }
 
     @Override
-    public List<SDVariable> doDiff(List<SDVariable> i_v1) {        
+    public List<SDVariable> doDiff(List<SDVariable> i_v1) {
         SDVariable g = new PowDerivative(sameDiff, arg(), false, this.pow).outputVariable().mul(i_v1.get(0));
         return Collections.singletonList(g);
     }

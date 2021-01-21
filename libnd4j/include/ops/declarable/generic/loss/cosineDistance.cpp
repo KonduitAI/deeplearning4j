@@ -143,7 +143,7 @@ DECLARE_SHAPE_FN(cosine_distance_loss) {
  	// evaluate output shapeInfo
     Nd4jLong const* outShapeInfo = nullptr;
     if(INT_ARG(0) != 0) 			// in this case output is scalar
-        outShapeInfo = ConstantShapeHelper::getInstance()->scalarShapeInfo(outType);
+        outShapeInfo = ConstantShapeHelper::getInstance().scalarShapeInfo(outType);
     else { 							// in this case output has the same shape as labels reduced  by dim axis
 
     	std::vector<int> dimensions = {dim};
@@ -216,7 +216,7 @@ CUSTOM_OP_IMPL(cosine_distance_loss_grad, 3, 3, false, 0, 2) {
 			else {
 				if(weights != weightsBroad) {
 					std::vector<int> axesToReduceAlong = ShapeUtils::evalBroadcastBackwardAxis(weights->shapeInfo(), weightsBroad->shapeInfo());
-					E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true, false, false);
+					E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true);
 				}
 				else
 					dLdw->assign(E);
@@ -249,7 +249,7 @@ CUSTOM_OP_IMPL(cosine_distance_loss_grad, 3, 3, false, 0, 2) {
 
 					if(weights != weightsBroad) {
 						std::vector<int> axesToReduceAlong = ShapeUtils::evalBroadcastBackwardAxis(weights->shapeInfo(), weightsBroad->shapeInfo());
-						((E * sum - (E * *weightsBroad).reduceNumber(reduce::Sum)) / (sum*sum)).reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true, false, false);
+						((E * sum - (E * *weightsBroad).reduceNumber(reduce::Sum)) / (sum*sum)).reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true);
 					}
 					else
 						dLdw->assign((E * sum - (E * *weightsBroad).reduceNumber(reduce::Sum)) / (sum*sum));
@@ -284,7 +284,7 @@ CUSTOM_OP_IMPL(cosine_distance_loss_grad, 3, 3, false, 0, 2) {
 
 					if(weights != weightsBroad) {
 						std::vector<int> axesToReduceAlong = ShapeUtils::evalBroadcastBackwardAxis(weights->shapeInfo(), weightsBroad->shapeInfo());
-						E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true, false, false);
+						E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true);
 						*dLdw /= numOfNonZeroWeights;
 					}
 					else

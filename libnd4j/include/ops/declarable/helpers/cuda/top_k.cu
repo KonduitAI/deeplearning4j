@@ -38,15 +38,12 @@ __global__ static void inTopKCuda(const void* vx, const Nd4jLong* xShapeInfo,
     const auto y = reinterpret_cast<const Y*>(vy);
           auto z = reinterpret_cast<bool*>(vz);
 
-    __shared__ uint* sharedMem;
+    __shared__ uint sharedMem[CUDA_BLOCK_SIZE];
     __shared__ X elemToCompare;
     __shared__ const X* xTad;
     __shared__ Nd4jLong idx, xTadLen;
 
     if (threadIdx.x == 0) {
-        extern __shared__ unsigned char shmem[];
-        sharedMem = reinterpret_cast<uint*>(shmem);
-
         xTadLen = shape::length(xTadShapeInfo);
 
         xTad = reinterpret_cast<const X*>(vx) + xTadOffsets[blockIdx.x];
@@ -91,11 +88,11 @@ int inTopKFunctor(sd::LaunchContext * context, const NDArray* predictions, const
 
     PointersManager manager(context, "in_top_k");
 
-    const auto packX = sd::ConstantTadHelper::getInstance()->tadForDimensions(predictions->shapeInfo(), {1});
+    const auto packX = sd::ConstantTadHelper::getInstance().tadForDimensions(predictions->shapeInfo(), {1});
 
-    const int threadsPerBlock = MAX_NUM_THREADS;
+    const int threadsPerBlock = CUDA_BLOCK_SIZE;
     const int blocksPerGrid = static_cast<int>(packX.numberOfTads());
-    const int sharedMem = sizeof(uint) * threadsPerBlock + 128;
+    const int sharedMem = 1024;
 
     const auto xType = predictions->dataType();
     const auto yType = targets->dataType();
@@ -243,9 +240,9 @@ int inTopKFunctor(sd::LaunchContext * context, const NDArray* predictions, const
     template <typename X, typename Y>
     static int topKFunctor_(sd::LaunchContext * context, const NDArray* input, NDArray* values, NDArray* indices, const uint k, bool needSort) {
 
-        auto packX = ConstantTadHelper::getInstance()->tadForDimensions(input->shapeInfo(), {input->rankOf() - 1});
-        auto packI = ConstantTadHelper::getInstance()->tadForDimensions(indices->shapeInfo(), {input->rankOf() - 1});
-        auto packZ = ConstantTadHelper::getInstance()->tadForDimensions(values->shapeInfo(), {input->rankOf() - 1});
+        auto packX = ConstantTadHelper::getInstance().tadForDimensions(input->shapeInfo(), {input->rankOf() - 1});
+        auto packI = ConstantTadHelper::getInstance().tadForDimensions(indices->shapeInfo(), {input->rankOf() - 1});
+        auto packZ = ConstantTadHelper::getInstance().tadForDimensions(values->shapeInfo(), {input->rankOf() - 1});
 
         auto tadLength = shape::length(packX.primaryShapeInfo());
 

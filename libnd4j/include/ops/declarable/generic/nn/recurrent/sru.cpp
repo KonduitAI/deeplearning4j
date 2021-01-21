@@ -127,7 +127,7 @@ DECLARE_SHAPE_FN(sru) {
     ShapeUtils::updateStridesAndType(newShapeInfo1, xShapeInfo, shape::order(xShapeInfo));
     ShapeDescriptor descriptor(newShapeInfo1);
     RELEASE(newShapeInfo1, block.getWorkspace());
-    auto result = ConstantShapeHelper::getInstance()->createShapeInfo(descriptor);
+    auto result = ConstantShapeHelper::getInstance().createShapeInfo(descriptor);
     return SHAPELIST(result, result);
 }
 
@@ -278,8 +278,8 @@ CUSTOM_OP_IMPL(sru_bp, 8, 4, true, 0, 0) {
         gradX->applyBroadcast(broadcast::Multiply, {0,1}, *mask, *gradX);  // apply mask
 
     // gradB
-    auto temp3 = gradBias->reduceAlongDimension(reduce::Sum, {0,2}, false, true);    // [1 x 2K]
-    gradB->assign(temp3);
+    auto gradB2 = gradB->reshape(gradB->ordering(), {2*K});
+    gradBias->reduceAlongDimension(reduce::Sum, gradB2, {0,2});    // [1 x 2K]
 
     // gradW [bS x 3K x K]
     x->permutei({0, 2, 1});                                               // [bS x N x K]
@@ -311,7 +311,7 @@ DECLARE_SHAPE_FN(sru_bp) {
     ShapeDescriptor descriptor3(ArrayOptions::dataType(inShape), order, {1, 2 * inSize});
     ShapeDescriptor descriptor4(ArrayOptions::dataType(inShape), order, {bS, inSize});
 
-    return SHAPELIST(ConstantShapeHelper::getInstance()->createShapeInfo(descriptor1), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor2), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor3), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor4));
+    return SHAPELIST(ConstantShapeHelper::getInstance().createShapeInfo(descriptor1), ConstantShapeHelper::getInstance().createShapeInfo(descriptor2), ConstantShapeHelper::getInstance().createShapeInfo(descriptor3), ConstantShapeHelper::getInstance().createShapeInfo(descriptor4));
 }
 
 
@@ -396,7 +396,7 @@ DECLARE_SHAPE_FN(sru_bi) {
     char order = shape::order(xShapeInfo);
 
     ShapeDescriptor descriptor(ArrayOptions::dataType(xShapeInfo), order, {time, bS, 2 * inSize});
-    auto result = ConstantShapeHelper::getInstance()->createShapeInfo(descriptor);
+    auto result = ConstantShapeHelper::getInstance().createShapeInfo(descriptor);
     return SHAPELIST(result, result);
 }
 
@@ -505,7 +505,7 @@ DECLARE_SHAPE_FN(sru_bi_bp) {
     ShapeDescriptor descriptor3(ArrayOptions::dataType(xShapeInfo), order, {4 * inSize});
     ShapeDescriptor descriptor4(ArrayOptions::dataType(xShapeInfo), order, {bS, 2 * inSize});
 
-    return SHAPELIST(ConstantShapeHelper::getInstance()->createShapeInfo(descriptor1), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor2), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor3), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor4));
+    return SHAPELIST(ConstantShapeHelper::getInstance().createShapeInfo(descriptor1), ConstantShapeHelper::getInstance().createShapeInfo(descriptor2), ConstantShapeHelper::getInstance().createShapeInfo(descriptor3), ConstantShapeHelper::getInstance().createShapeInfo(descriptor4));
 }
 
 }
@@ -771,7 +771,7 @@ DECLARE_SHAPE_FN(sru_bi_bp) {
 
 //     ShapeUtils::updateStridesAndType(newShapeInfo1, inShape, order);
 
-//     auto result = ConstantShapeHelper::getInstance()->createShapeInfo(ShapeDescriptor(newShapeInfo1));
+//     auto result = ConstantShapeHelper::getInstance().createShapeInfo(ShapeDescriptor(newShapeInfo1));
 //     RELEASE(newShapeInfo1, block.getWorkspace());
 //     return SHAPELIST(result, result);
 // }
@@ -935,5 +935,5 @@ DECLARE_SHAPE_FN(sru_bi_bp) {
 //     ShapeDescriptor descriptor3(ArrayOptions::dataType(inShape), order, {1, 2 * inSize});
 //     ShapeDescriptor descriptor4(ArrayOptions::dataType(inShape), order, {bS, inSize});
 
-//     return SHAPELIST(ConstantShapeHelper::getInstance()->createShapeInfo(descriptor1), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor2), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor3), ConstantShapeHelper::getInstance()->createShapeInfo(descriptor4));
+//     return SHAPELIST(ConstantShapeHelper::getInstance().createShapeInfo(descriptor1), ConstantShapeHelper::getInstance().createShapeInfo(descriptor2), ConstantShapeHelper::getInstance().createShapeInfo(descriptor3), ConstantShapeHelper::getInstance().createShapeInfo(descriptor4));
 // }

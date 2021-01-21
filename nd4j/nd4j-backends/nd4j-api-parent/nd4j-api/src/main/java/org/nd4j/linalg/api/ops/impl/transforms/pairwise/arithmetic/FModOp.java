@@ -20,7 +20,6 @@ import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.imports.NoOpNameFoundException;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.api.ops.BaseTransformOp;
 import org.nd4j.linalg.api.ops.BaseTransformSameOp;
 import org.nd4j.linalg.api.ops.impl.transforms.pairwise.arithmetic.bp.FloorModBpOp;
 
@@ -79,7 +78,7 @@ public class FModOp extends BaseTransformSameOp {
 
     @Override
     public String tensorflowName() {
-        throw new NoOpNameFoundException();
+        return "FloorMod";
     }
 
     @Override

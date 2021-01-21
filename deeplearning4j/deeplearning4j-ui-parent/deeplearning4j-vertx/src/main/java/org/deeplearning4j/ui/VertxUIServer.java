@@ -32,32 +32,42 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.deeplearning4j.common.config.DL4JClassLoading;
+import org.deeplearning4j.common.config.DL4JSystemProperties;
+import org.deeplearning4j.common.util.DL4JFileUtils;
 import org.deeplearning4j.core.storage.StatsStorage;
 import org.deeplearning4j.core.storage.StatsStorageEvent;
 import org.deeplearning4j.core.storage.StatsStorageListener;
 import org.deeplearning4j.core.storage.StatsStorageRouter;
-import org.deeplearning4j.common.config.DL4JSystemProperties;
 import org.deeplearning4j.exception.DL4JException;
 import org.deeplearning4j.ui.api.Route;
 import org.deeplearning4j.ui.api.UIModule;
 import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.i18n.I18NProvider;
+import org.deeplearning4j.ui.model.storage.FileStatsStorage;
+import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage;
+import org.deeplearning4j.ui.model.storage.impl.QueueStatsStorageListener;
 import org.deeplearning4j.ui.module.SameDiffModule;
 import org.deeplearning4j.ui.module.convolutional.ConvolutionalListenerModule;
 import org.deeplearning4j.ui.module.defaultModule.DefaultModule;
 import org.deeplearning4j.ui.module.remote.RemoteReceiverModule;
 import org.deeplearning4j.ui.module.train.TrainModule;
 import org.deeplearning4j.ui.module.tsne.TsneModule;
-import org.deeplearning4j.ui.model.storage.FileStatsStorage;
-import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage;
-import org.deeplearning4j.ui.model.storage.impl.QueueStatsStorageListener;
-import org.deeplearning4j.common.util.DL4JFileUtils;
 import org.nd4j.common.function.Function;
 import org.nd4j.common.primitives.Pair;
 
 import java.io.File;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -75,7 +85,8 @@ public class VertxUIServer extends AbstractVerticle implements UIServer {
     private static Function<String, StatsStorage> statsStorageProvider;
 
     private static Integer instancePort;
-    private static Thread autoStopThread;
+    @Getter
+    private static Thread shutdownHook;
 
     /**
      * Get (and, initialize if necessary) the UI server. This synchronous function will wait until the server started.
@@ -188,19 +199,17 @@ public class VertxUIServer extends AbstractVerticle implements UIServer {
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(VertxUIServer.class.getName(), promise);
 
-        Thread currentThread = Thread.currentThread();
-        VertxUIServer.autoStopThread = new Thread(() -> {
-            try {
-                currentThread.join();
-                if (VertxUIServer.instance != null && !VertxUIServer.instance.isStopped()) {
-                    log.info("Deeplearning4j UI server is auto-stopping after thread (name: {}) died.",
-                            currentThread.getName());
+        VertxUIServer.shutdownHook = new Thread(() -> {
+            if (VertxUIServer.instance != null && !VertxUIServer.instance.isStopped()) {
+                log.info("Deeplearning4j UI server is auto-stopping in shutdown hook.");
+                try {
                     instance.stop();
+                } catch (InterruptedException e) {
+                    log.error("Interrupted stopping of Deeplearning4j UI server in shutdown hook.", e);
                 }
-            } catch (InterruptedException e) {
-                log.error("Deeplearning4j UI server auto-stop thread was interrupted.", e);
             }
         });
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 
 
@@ -385,7 +394,6 @@ public class VertxUIServer extends AbstractVerticle implements UIServer {
                                 + server.actualPort(), result.cause()));
                     }
                 });
-        VertxUIServer.autoStopThread.start();
     }
 
     private List<String> extractArgsFromRoute(String path, RoutingContext rc) {
@@ -404,8 +412,7 @@ public class VertxUIServer extends AbstractVerticle implements UIServer {
     }
 
     private void modulesViaServiceLoader(List<UIModule> uiModules) {
-
-        ServiceLoader<UIModule> sl = ServiceLoader.load(UIModule.class);
+        ServiceLoader<UIModule> sl = DL4JClassLoading.loadService(UIModule.class);
         Iterator<UIModule> iter = sl.iterator();
 
         if (!iter.hasNext()) {
@@ -413,19 +420,19 @@ public class VertxUIServer extends AbstractVerticle implements UIServer {
         }
 
         while (iter.hasNext()) {
-            UIModule m = iter.next();
-            Class<?> c = m.getClass();
+            UIModule module = iter.next();
+            Class<?> moduleClass = module.getClass();
             boolean foundExisting = false;
             for (UIModule mExisting : uiModules) {
-                if (mExisting.getClass() == c) {
+                if (mExisting.getClass() == moduleClass) {
                     foundExisting = true;
                     break;
                 }
             }
 
             if (!foundExisting) {
-                log.debug("Loaded UI module via service loader: {}", m.getClass());
-                uiModules.add(m);
+                log.debug("Loaded UI module via service loader: {}", module.getClass());
+                uiModules.add(module);
             }
         }
     }

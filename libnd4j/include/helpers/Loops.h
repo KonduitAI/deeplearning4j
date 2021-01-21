@@ -273,6 +273,8 @@ namespace sd {
 
         const Nd4jLong zLen = shape::length(zShapeInfo);
         const uint tadLen = static_cast<uint>(shape::length(tadShapeInfo));
+        const int xRank = shape::rank(xShapeInfo);
+        const int zRank = shape::rank(zShapeInfo);
 
         const uint tadEws = shape::elementWiseStride(tadShapeInfo);
         const uint zEws = shape::elementWiseStride(zShapeInfo);
@@ -516,7 +518,6 @@ namespace sd {
             auto span = samediff::Span::build(threadId, numThreads, 0, len, 1);
             int64_t start = span.startX(), stop = span.stopX();
 
-#pragma omp parallel for
             for (auto i = start; i < stop; i++)
                 z[i] = OpType::op(x[i], extraParams);
         }
@@ -530,7 +531,6 @@ namespace sd {
             auto span = samediff::Span::build(threadId, numThreads, 0, len, 1);
             int64_t start = span.startX(), stop = span.stopX();
 
-#pragma omp parallel for
             for (auto i = start; i < stop; i++)
                 z[i * zEws] = OpType::op(x[i * xEws], extraParams);
         }
@@ -546,14 +546,12 @@ namespace sd {
             int64_t start = span.startX(), stop = span.stopX();
 
             if (zEws > 1) {
-#pragma omp parallel for
                 for (auto i = start; i < stop; i++) {
                     const auto xOffset = shape::indexOffset(i, xShapeInfo, castXShapeInfo, canCastX);
                     z[i * zEws] = OpType::op(x[xOffset], extraParams);
                 }
             }
             else {
-#pragma omp parallel for
                 for (auto i = start; i < stop; i++) {
                     const auto xOffset = shape::indexOffset(i, xShapeInfo, castXShapeInfo, canCastX);
                     z[i] = OpType::op(x[xOffset], extraParams);
@@ -566,7 +564,6 @@ namespace sd {
         case LoopKind::RANK1: {
             auto span = samediff::Span::build(threadId, numThreads, 0, len, 1);
 
-#pragma omp parallel for
             for (auto i0 = span.startX(); i0 < span.stopX(); i0++)
                 z[i0 * zStride[0]] = OpType::op(x[i0 * xStride[0]], extraParams);
         }
@@ -580,11 +577,7 @@ namespace sd {
             auto loop = samediff::ThreadsHelper::pickLoop2d(numThreads, uXShape0, uXShape1);
             auto span = samediff::Span2::build(loop, threadId, numThreads, 0, uXShape0, 1, 0, uXShape1, 1);
 
-            auto start_x = span.startX();
-            auto stop_x = span.stopX();
-
-#pragma omp parallel for
-            for (auto i0 = start_x; i0 < stop_x; i0++) {
+            for (auto i0 = span.startX(); i0 < span.stopX(); i0++) {
                 auto z0 = i0 * zStride[0];
                 auto x0 = i0 * xStride[0];
 
@@ -603,15 +596,9 @@ namespace sd {
             auto loop = samediff::ThreadsHelper::pickLoop2d(numThreads, uXShape0, uXShape1);
             auto span = samediff::Span2::build(loop, threadId, numThreads, 0, uXShape0, 1, 0, uXShape1, 1);
 
-            auto start_x = span.startX();
-            auto stop_x = span.stopX();
 
-            auto start_y = span.startY();
-            auto stop_y = span.stopY();
-
-#pragma omp parallel for collapse(2)
-            for (auto i0 = start_x; i0 < stop_x; i0++)
-                for (auto i1 = start_y; i1 < stop_y; i1++) {
+            for (auto i0 = span.startX(); i0 < span.stopX(); i0++)
+                for (auto i1 = span.startY(); i1 < span.stopY(); i1++) {
                     auto z0 = i0 * zStride[0] + i1 * zStride[1];
                     auto x0 = i0 * xStride[0] + i1 * xStride[1];
 
@@ -631,19 +618,9 @@ namespace sd {
             auto loop = samediff::ThreadsHelper::pickLoop3d(numThreads, uXShape0, uXShape1, uXShape2);
             auto span = samediff::Span3::build(loop, threadId, numThreads, 0, uXShape0, 1, 0, uXShape1, 1, 0, uXShape2, 1);
 
-            auto start_x = span.startX();
-            auto stop_x = span.stopX();
-
-            auto start_y = span.startY();
-            auto stop_y = span.stopY();
-
-            auto start_z = span.startZ();
-            auto stop_z = span.stopZ();
-
-#pragma omp parallel for collapse(3)
-            for (auto i0 = start_x; i0 < stop_x; i0++)
-                for (auto i1 = start_y; i1 < stop_y; i1++)
-                    for (auto i2 = start_z; i2 < stop_z; i2++) {
+            for (auto i0 = span.startX(); i0 < span.stopX(); i0++)
+                for (auto i1 = span.startY(); i1 < span.stopY(); i1++)
+                    for (auto i2 = span.startZ(); i2 < span.stopZ(); i2++) {
                         auto x0 = i0 * xStride[0] + i1 * xStride[1] + i2 * xStride[2];
                         auto z0 = i0 * zStride[0] + i1 * zStride[1] + i2 * zStride[2];
 

@@ -17,6 +17,9 @@
 package org.nd4j.linalg.factory;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMax;
+import org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMin;
+import org.nd4j.common.config.ND4JClassLoading;
 import org.nd4j.linalg.factory.ops.*;
 import org.nd4j.shade.guava.primitives.Ints;
 import org.nd4j.shade.guava.primitives.Longs;
@@ -50,8 +53,6 @@ import org.nd4j.linalg.api.ops.Op;
 import org.nd4j.linalg.api.ops.OpContext;
 import org.nd4j.linalg.api.ops.executioner.DefaultOpExecutioner;
 import org.nd4j.linalg.api.ops.executioner.OpExecutioner;
-import org.nd4j.linalg.api.ops.impl.indexaccum.IMax;
-import org.nd4j.linalg.api.ops.impl.indexaccum.IMin;
 import org.nd4j.linalg.api.ops.impl.reduce.Mmul;
 import org.nd4j.linalg.api.ops.impl.scalar.ReplaceNans;
 import org.nd4j.linalg.api.ops.impl.scatter.ScatterUpdate;
@@ -627,16 +628,16 @@ public class Nd4j {
      * @return array of maximum values.
      */
     public static INDArray argMax(INDArray arr, @NonNull int... dimension) {
-        IMax imax = new IMax(arr, dimension);
-        return Nd4j.getExecutioner().exec(imax);
+        val imax = new ArgMax(arr, dimension);
+        return Nd4j.getExecutioner().exec(imax)[0];
     }
 
     /**
      * See {@link #argMax(INDArray, int...)} but return minimum values.
      */
     public static INDArray argMin(INDArray arr, @NonNull int... dimension) {
-        IMin imin = new IMin(arr, dimension);
-        return Nd4j.getExecutioner().exec(imin);
+        val imin = new ArgMin(arr, dimension);
+        return Nd4j.getExecutioner().exec(imin)[0];
     }
 
     /**
@@ -1131,6 +1132,7 @@ public class Nd4j {
             case LONG:
                 return LongIndexer.create((LongPointer) pointer);
             case UINT32:
+                return UIntIndexer.create((IntPointer) pointer);
             case INT:
                 return IntIndexer.create((IntPointer) pointer);
             case UINT16:
@@ -5134,37 +5136,36 @@ public class Nd4j {
             compressDebug = pp.toBoolean(COMPRESSION_DEBUG);
             char ORDER = pp.toChar(ORDER_KEY, NDArrayFactory.C);
 
-            Class<? extends BasicAffinityManager> affinityManagerClazz = (Class<? extends BasicAffinityManager>) Class
-                    .forName(pp.toString(AFFINITY_MANAGER));
+            Class<? extends BasicAffinityManager> affinityManagerClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(AFFINITY_MANAGER));
             affinityManager = affinityManagerClazz.newInstance();
-            Class<? extends NDArrayFactory> ndArrayFactoryClazz = (Class<? extends NDArrayFactory>) Class.forName(
-                    pp.toString(NDARRAY_FACTORY_CLASS));
-            Class<? extends ConvolutionInstance> convolutionInstanceClazz = (Class<? extends ConvolutionInstance>) Class
-                    .forName(pp.toString(CONVOLUTION_OPS, DefaultConvolutionInstance.class.getName()));
+            Class<? extends NDArrayFactory> ndArrayFactoryClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(NDARRAY_FACTORY_CLASS));
+            Class<? extends ConvolutionInstance> convolutionInstanceClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(CONVOLUTION_OPS, DefaultConvolutionInstance.class.getName()));
             String defaultName = pp.toString(DATA_BUFFER_OPS, "org.nd4j.linalg.cpu.nativecpu.buffer.DefaultDataBufferFactory");
-            Class<? extends DataBufferFactory> dataBufferFactoryClazz = (Class<? extends DataBufferFactory>) Class
-                    .forName(pp.toString(DATA_BUFFER_OPS, defaultName));
-            Class<? extends BaseShapeInfoProvider> shapeInfoProviderClazz = (Class<? extends BaseShapeInfoProvider>) Class
-                    .forName(pp.toString(SHAPEINFO_PROVIDER));
+            Class<? extends DataBufferFactory> dataBufferFactoryClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(DATA_BUFFER_OPS, defaultName));
+            Class<? extends BaseShapeInfoProvider> shapeInfoProviderClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(SHAPEINFO_PROVIDER));
 
-            Class<? extends BasicConstantHandler> constantProviderClazz = (Class<? extends BasicConstantHandler>) Class
-                    .forName(pp.toString(CONSTANT_PROVIDER));
+            Class<? extends BasicConstantHandler> constantProviderClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(CONSTANT_PROVIDER));
 
-            Class<? extends BasicMemoryManager> memoryManagerClazz = (Class<? extends BasicMemoryManager>) Class
-                    .forName(pp.toString(MEMORY_MANAGER));
+            Class<? extends BasicMemoryManager> memoryManagerClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(MEMORY_MANAGER));
 
             allowsOrder = backend.allowsOrder();
             String rand = pp.toString(RANDOM_PROVIDER, DefaultRandom.class.getName());
-            Class<? extends org.nd4j.linalg.api.rng.Random> randomClazz = (Class<? extends org.nd4j.linalg.api.rng.Random>) Class.forName(rand);
+            Class<? extends org.nd4j.linalg.api.rng.Random> randomClazz = ND4JClassLoading.loadClassByName(rand);
             randomFactory = new RandomFactory(randomClazz);
 
-            Class<? extends MemoryWorkspaceManager> workspaceManagerClazz = (Class<? extends MemoryWorkspaceManager>) Class
-                    .forName(pp.toString(WORKSPACE_MANAGER));
+            Class<? extends MemoryWorkspaceManager> workspaceManagerClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(WORKSPACE_MANAGER));
 
-            Class<? extends BlasWrapper> blasWrapperClazz = (Class<? extends BlasWrapper>) Class
-                    .forName(pp.toString(BLAS_OPS));
+            Class<? extends BlasWrapper> blasWrapperClazz = ND4JClassLoading.loadClassByName(pp.toString(BLAS_OPS));
             String clazzName = pp.toString(DISTRIBUTION, DefaultDistributionFactory.class.getName());
-            Class<? extends DistributionFactory> distributionFactoryClazz = (Class<? extends DistributionFactory>) Class.forName(clazzName);
+            Class<? extends DistributionFactory> distributionFactoryClazz = ND4JClassLoading.loadClassByName(clazzName);
 
 
             memoryManager = memoryManagerClazz.newInstance();
@@ -5172,8 +5173,8 @@ public class Nd4j {
             shapeInfoProvider = shapeInfoProviderClazz.newInstance();
             workspaceManager = workspaceManagerClazz.newInstance();
 
-            Class<? extends OpExecutioner> opExecutionerClazz = (Class<? extends OpExecutioner>) Class
-                    .forName(pp.toString(OP_EXECUTIONER, DefaultOpExecutioner.class.getName()));
+            Class<? extends OpExecutioner> opExecutionerClazz = ND4JClassLoading
+                    .loadClassByName(pp.toString(OP_EXECUTIONER, DefaultOpExecutioner.class.getName()));
 
             OP_EXECUTIONER_INSTANCE = opExecutionerClazz.newInstance();
             Constructor c2 = ndArrayFactoryClazz.getConstructor(DataType.class, char.class);
@@ -5196,7 +5197,7 @@ public class Nd4j {
                 OP_EXECUTIONER_INSTANCE.printEnvironmentInformation();
             }
 
-            val actions = ServiceLoader.load(EnvironmentalAction.class);
+            val actions = ND4JClassLoading.loadService(EnvironmentalAction.class);
             val mappedActions = new HashMap<String, EnvironmentalAction>();
             for (val a: actions) {
                 if (!mappedActions.containsKey(a.targetVariable()))

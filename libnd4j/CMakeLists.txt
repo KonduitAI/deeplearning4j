@@ -177,6 +177,23 @@ if(NOT SD_CUDA)
     endif()
 endif()
 
+#arm-compute entry
+if(${HELPERS_armcompute})
+ find_package(ARMCOMPUTE REQUIRED)
+
+ if(ARMCOMPUTE_FOUND)
+    message("Found ARMCOMPUTE: ${ARMCOMPUTE_LIBRARIES}")
+    set(HAVE_ARMCOMPUTE 1)
+    # Add preprocessor definition for ARM Compute NEON 
+    add_definitions(-DARMCOMPUTENEON_ENABLED)
+    #build our library with neon support
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=neon")
+    include_directories(${ARMCOMPUTE_INCLUDE})
+    message("----${ARMCOMPUTE_INCLUDE}---")
+ endif()
+
+endif()
+ 
 
 # new mkl-dnn entry
 if (${HELPERS_mkldnn})
@@ -217,10 +234,7 @@ if (${HELPERS_cudnn})
 
     set(CUDNN_ROOT_DIR "" CACHE PATH "Folder contains NVIDIA cuDNN")
 
-    # FIXME: we don't want static library in master
     SET(CUDNN_LIBNAME "cudnn")
-    SET(CULIBOS_LIBNAME "culibos")
-
     find_path(CUDNN_INCLUDE_DIR cudnn.h
             HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
             PATH_SUFFIXES cuda/include include)
@@ -229,14 +243,14 @@ if (${HELPERS_cudnn})
             HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
             PATH_SUFFIXES lib lib64 cuda/lib cuda/lib64 lib/x64)
 
-    find_library(CULIBOS_LIBRARY ${CULIBOS_LIBNAME}
-            HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
-            PATH_SUFFIXES lib lib64 cuda/lib cuda/lib64 lib/x64)
+    #find_library(CULIBOS_LIBRARY ${CULIBOS_LIBNAME}
+    #        HINTS ${CUDNN_ROOT_DIR} ${CUDA_TOOLKIT_ROOT_DIR}
+    #        PATH_SUFFIXES lib lib64 cuda/lib cuda/lib64 lib/x64)
 
 
     if (CUDNN_LIBRARY)
         set(HAVE_CUDNN true)
-        set(CUDNN ${CUDNN_LIBRARY} ${CULIBOS_LIBRARY})
+        set(CUDNN ${CUDNN_LIBRARY})
     else()
         message(FATAL_ERROR "Unable to find cuDNN")
     endif()
@@ -301,7 +315,6 @@ set(CPACK_PACKAGE_VERSION_MINOR "8")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "libnd4j")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 
 # Determine distribution and release — may require redhat-lsb-core installed on CentOS / RH

@@ -18,8 +18,6 @@
 
 package org.nd4j.autodiff.samediff.ops;
 
-import static org.nd4j.autodiff.samediff.ops.SDValidation.isSameType;
-
 import java.lang.String;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
@@ -1875,7 +1873,7 @@ public class SDMath extends SDOps {
   public SDVariable iamax(SDVariable in, int... dimensions) {
     SDValidation.validateNumerical("iamax", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    return new org.nd4j.linalg.api.ops.impl.indexaccum.IAMax(sd,in, false, dimensions).outputVariable();
+    return new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMax(sd,in, false, dimensions).outputVariable();
   }
 
   /**
@@ -1890,7 +1888,7 @@ public class SDMath extends SDOps {
   public SDVariable iamax(String name, SDVariable in, int... dimensions) {
     SDValidation.validateNumerical("iamax", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.IAMax(sd,in, false, dimensions).outputVariable();
+    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMax(sd,in, false, dimensions).outputVariable();
     return sd.updateVariableNameAndReference(out, name);
   }
 
@@ -1906,7 +1904,7 @@ public class SDMath extends SDOps {
   public SDVariable iamax(SDVariable in, boolean keepDims, int... dimensions) {
     SDValidation.validateNumerical("iamax", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    return new org.nd4j.linalg.api.ops.impl.indexaccum.IAMax(sd,in, keepDims, dimensions).outputVariable();
+    return new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMax(sd,in, keepDims, dimensions).outputVariable();
   }
 
   /**
@@ -1922,7 +1920,7 @@ public class SDMath extends SDOps {
   public SDVariable iamax(String name, SDVariable in, boolean keepDims, int... dimensions) {
     SDValidation.validateNumerical("iamax", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.IAMax(sd,in, keepDims, dimensions).outputVariable();
+    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMax(sd,in, keepDims, dimensions).outputVariable();
     return sd.updateVariableNameAndReference(out, name);
   }
 
@@ -1937,7 +1935,7 @@ public class SDMath extends SDOps {
   public SDVariable iamin(SDVariable in, int... dimensions) {
     SDValidation.validateNumerical("iamin", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    return new org.nd4j.linalg.api.ops.impl.indexaccum.IAMin(sd,in, false, dimensions).outputVariable();
+    return new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMin(sd,in, false, dimensions).outputVariable();
   }
 
   /**
@@ -1952,7 +1950,7 @@ public class SDMath extends SDOps {
   public SDVariable iamin(String name, SDVariable in, int... dimensions) {
     SDValidation.validateNumerical("iamin", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.IAMin(sd,in, false, dimensions).outputVariable();
+    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMin(sd,in, false, dimensions).outputVariable();
     return sd.updateVariableNameAndReference(out, name);
   }
 
@@ -1968,7 +1966,7 @@ public class SDMath extends SDOps {
   public SDVariable iamin(SDVariable in, boolean keepDims, int... dimensions) {
     SDValidation.validateNumerical("iamin", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    return new org.nd4j.linalg.api.ops.impl.indexaccum.IAMin(sd,in, keepDims, dimensions).outputVariable();
+    return new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMin(sd,in, keepDims, dimensions).outputVariable();
   }
 
   /**
@@ -1984,7 +1982,7 @@ public class SDMath extends SDOps {
   public SDVariable iamin(String name, SDVariable in, boolean keepDims, int... dimensions) {
     SDValidation.validateNumerical("iamin", "in", in);
     Preconditions.checkArgument(dimensions.length >= 1, "dimensions has incorrect size/length. Expected: dimensions.length >= 1, got %s", dimensions.length);
-    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.IAMin(sd,in, keepDims, dimensions).outputVariable();
+    SDVariable out =  new org.nd4j.linalg.api.ops.impl.indexaccum.custom.ArgMin(sd,in, keepDims, dimensions).outputVariable();
     return sd.updateVariableNameAndReference(out, name);
   }
 

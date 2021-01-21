@@ -27,7 +27,7 @@
 #include <system/op_enums.h>
 
 namespace samediff {
-    class ND4J_EXPORT ThreadsHelper { 
+    class ND4J_EXPORT ThreadsHelper {
     public:
         static int numberOfThreads(int maxThreads, uint64_t numberOfElements);
         static int numberOfThreads2d(int maxThreads, uint64_t iters_x, uint64_t iters_y);
@@ -95,14 +95,6 @@ namespace samediff {
     };
 
     class ND4J_EXPORT Threads {
-#ifdef _OPENMP
-    public:
-    static std::mutex gThreadmutex;
-	static uint64_t _nFreeThreads; 
-    static bool   tryAcquire(int numThreads);
-    static bool   freeThreads(int numThreads);
-#endif   
-
     public:
         /**
          * This function executes 1 dimensional loop for a given number of threads

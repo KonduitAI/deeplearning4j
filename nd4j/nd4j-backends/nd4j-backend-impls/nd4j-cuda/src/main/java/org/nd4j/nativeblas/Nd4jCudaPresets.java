@@ -34,8 +34,12 @@ import org.bytedeco.javacpp.tools.InfoMapper;
                 value = {@Platform(define = "LIBND4J_ALL_OPS", include = {
                         "array/DataType.h",
                         "array/DataBuffer.h",
+                        "array/PointerDeallocator.h",
+                        "array/PointerWrapper.h",
                         "array/ConstantDescriptor.h",
                         "array/ConstantDataBuffer.h",
+                        "array/ConstantShapeBuffer.h",
+                        "array/ConstantOffsetsBuffer.h",
                         "array/TadPack.h",
                         "execution/ErrorReference.h",
                         "execution/Engine.h",
@@ -92,7 +96,9 @@ import org.bytedeco.javacpp.tools.InfoMapper;
                         "array/TadDescriptor.h",
                         "array/TadPack.h",
                         "helpers/DebugInfo.h",
-                        "ops/declarable/CustomOperations.h"},
+                        "ops/declarable/CustomOperations.h",
+                        "build_info.h",
+                    },
                         exclude = {"ops/declarable/headers/activations.h",
                                 "ops/declarable/headers/boolean.h",
                                 "ops/declarable/headers/broadcastable.h",
@@ -131,20 +137,16 @@ public class Nd4jCudaPresets implements LoadEnabled, InfoMapper {
             return;
         }
         int i = 0;
-        String[] libs = {"cudart", "cublasLt", "cublas", "cusolver", "cusparse", "cudnn"};
+        String[] libs = {"cudart", "cublasLt", "cublas", "curand", "cusolver", "cusparse", "cudnn",
+                         "cudnn_ops_infer", "cudnn_ops_train", "cudnn_adv_infer",
+                         "cudnn_adv_train", "cudnn_cnn_infer", "cudnn_cnn_train"};
         for (String lib : libs) {
-            switch (platform) {
-                case "linux-arm64":
-                case "linux-ppc64le":
-                case "linux-x86_64":
-                case "macosx-x86_64":
-                    lib += lib.equals("cudnn") ? "@.7" : lib.equals("cudart") ? "@.10.2" : "@.10";
-                    break;
-                case "windows-x86_64":
-                    lib += lib.equals("cudnn") ? "64_7" : lib.equals("cudart") ? "64_102" : "64_10";
-                    break;
-                default:
-                    continue; // no CUDA
+            if (platform.startsWith("linux")) {
+                lib += lib.startsWith("cudnn") ? "@.8" : lib.equals("curand") || lib.equals("cusolver") ? "@.10" : lib.equals("cudart") ? "@.11.0" : "@.11";
+            } else if (platform.startsWith("windows")) {
+                lib += lib.startsWith("cudnn") ? "64_8" : lib.equals("curand") || lib.equals("cusolver") ? "64_10" : lib.equals("cudart") ? "64_110" : "64_11";
+            } else {
+                continue; // no CUDA
             }
             if (!preloads.contains(lib)) {
                 preloads.add(i++, lib);
@@ -159,13 +161,15 @@ public class Nd4jCudaPresets implements LoadEnabled, InfoMapper {
     public void map(InfoMap infoMap) {
         infoMap.put(new Info("thread_local", "ND4J_EXPORT", "INLINEDEF", "CUBLASWINAPI", "FORCEINLINE",
                              "_CUDA_H", "_CUDA_D", "_CUDA_G", "_CUDA_HD", "LIBND4J_ALL_OPS", "NOT_EXCLUDED").cppTypes().annotations())
-                .put(new Info("NativeOps.h").objectify())
+                .put(new Info("NativeOps.h", "build_info.h").objectify())
                 .put(new Info("OpaqueTadPack").pointerTypes("OpaqueTadPack"))
                 .put(new Info("OpaqueResultWrapper").pointerTypes("OpaqueResultWrapper"))
                 .put(new Info("OpaqueShapeList").pointerTypes("OpaqueShapeList"))
                 .put(new Info("OpaqueVariablesSet").pointerTypes("OpaqueVariablesSet"))
                 .put(new Info("OpaqueVariable").pointerTypes("OpaqueVariable"))
                 .put(new Info("OpaqueConstantDataBuffer").pointerTypes("OpaqueConstantDataBuffer"))
+                .put(new Info("OpaqueConstantShapeBuffer").pointerTypes("OpaqueConstantShapeBuffer"))
+                .put(new Info("OpaqueConstantOffsetsBuffer").pointerTypes("OpaqueConstantOffsetsBuffer"))
                 .put(new Info("OpaqueContext").pointerTypes("OpaqueContext"))
                 .put(new Info("OpaqueRandomGenerator").pointerTypes("OpaqueRandomGenerator"))
                 .put(new Info("OpaqueLaunchContext").pointerTypes("OpaqueLaunchContext"))
@@ -187,7 +191,7 @@ public class Nd4jCudaPresets implements LoadEnabled, InfoMapper {
         infoMap.put(new Info("__CUDACC__", "MAX_UINT", "HAVE_MKLDNN").define(false))
                .put(new Info("__JAVACPP_HACK__", "LIBND4J_ALL_OPS","__CUDABLAS__").define(true))
                .put(new Info("std::initializer_list", "cnpy::NpyArray", "sd::NDArray::applyLambda", "sd::NDArray::applyPairwiseLambda",
-                             "sd::graph::FlatResult", "sd::graph::FlatVariable", "sd::NDArray::subarray").skip())
+                             "sd::graph::FlatResult", "sd::graph::FlatVariable", "sd::NDArray::subarray", "std::shared_ptr", "sd::PointerWrapper", "sd::PointerDeallocator").skip())
                .put(new Info("std::string").annotations("@StdString").valueTypes("BytePointer", "String")
                                            .pointerTypes("@Cast({\"char*\", \"std::string*\"}) BytePointer"))
                 .put(new Info("std::pair<int,int>").pointerTypes("IntIntPair").define())

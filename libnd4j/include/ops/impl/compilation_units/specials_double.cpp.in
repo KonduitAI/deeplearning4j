@@ -19,10 +19,10 @@
 // @author raver119@gmail.com
 //
 
-#include <ops/impl/specials_double.hpp>
-#cmakedefine LIBND4J_TYPE_GEN
-namespace sd {
-    BUILD_DOUBLE_TEMPLATE(template class DoubleMethods, , LIBND4J_TYPES, LIBND4J_TYPES_@FL_TYPE_INDEX@);
+#include "../specials_double.hpp"
 
-    BUILD_DOUBLE_TEMPLATE(template void SpecialTypeConverter::convertGeneric, (Nd4jPointer * extras, void *dx, Nd4jLong N, void *dz), LIBND4J_TYPES, LIBND4J_TYPES_@FL_TYPE_INDEX@);
+namespace sd {
+    BUILD_DOUBLE_TEMPLATE(template class DoubleMethods, , LIBND4J_TYPES, LIBND4J_TYPES_0);
+
+    BUILD_DOUBLE_TEMPLATE(template void SpecialTypeConverter::convertGeneric, (Nd4jPointer * extras, void *dx, Nd4jLong N, void *dz), LIBND4J_TYPES, LIBND4J_TYPES);
 }

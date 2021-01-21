@@ -2,7 +2,12 @@ package org.deeplearning4j.rl4j.learning.sync.support;
 
 import org.deeplearning4j.nn.api.NeuralNetwork;
 import org.deeplearning4j.nn.gradient.Gradient;
-import org.deeplearning4j.rl4j.network.NeuralNet;
+import org.deeplearning4j.rl4j.agent.learning.update.Features;
+import org.deeplearning4j.rl4j.agent.learning.update.FeaturesLabels;
+import org.deeplearning4j.rl4j.agent.learning.update.Gradients;
+import org.deeplearning4j.rl4j.network.CommonOutputNames;
+import org.deeplearning4j.rl4j.network.ITrainableNeuralNet;
+import org.deeplearning4j.rl4j.network.NeuralNetOutput;
 import org.deeplearning4j.rl4j.network.dqn.IDQN;
 import org.deeplearning4j.rl4j.observation.Observation;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -48,16 +53,24 @@ public class MockDQN implements IDQN {
     }
 
     @Override
-    public INDArray output(INDArray batch) {
+    public NeuralNetOutput output(INDArray batch) {
+        NeuralNetOutput result = new NeuralNetOutput();
+        INDArray data = batch;
         if(mult != 1.0) {
-            return batch.dup().muli(mult);
+            data = data.dup().muli(mult);
         }
+        result.put(CommonOutputNames.QValues, data);
 
-        return batch;
+        return result;
     }
 
     @Override
-    public INDArray output(Observation observation) {
+    public NeuralNetOutput output(Features features) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public NeuralNetOutput output(Observation observation) {
         return this.output(observation.getData());
     }
 
@@ -67,18 +80,28 @@ public class MockDQN implements IDQN {
     }
 
     @Override
+    public void fit(FeaturesLabels featuresLabels) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Gradients computeGradients(FeaturesLabels featuresLabels) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void applyGradients(Gradients gradients) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void copyFrom(ITrainableNeuralNet from) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public IDQN clone() {
         return null;
-    }
-
-    @Override
-    public void copy(NeuralNet from) {
-
-    }
-
-    @Override
-    public void copy(IDQN from) {
-
     }
 
     @Override

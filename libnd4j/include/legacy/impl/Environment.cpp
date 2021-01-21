@@ -121,7 +121,7 @@ namespace sd {
          * If this env var is defined - we'll disallow use of platform-specific helpers (mkldnn, cudnn, etc)
          */
         const char* forbid_helpers = std::getenv("SD_FORBID_HELPERS");
-        if (max_master_threads != nullptr) {
+        if (forbid_helpers != nullptr) {
             _allowHelpers = false;
         }
 
@@ -224,11 +224,9 @@ namespace sd {
         _maxDeviceMemory = maxBytes;
     }
 
-    Environment *Environment::getInstance() {
-        if (_instance == 0)
-            _instance = new Environment();
-
-        return _instance;
+    Environment& Environment::getInstance() {
+      static Environment instance;
+      return instance;
     }
 
     bool Environment::isVerbose() {
@@ -363,27 +361,27 @@ namespace sd {
     }
 
     void Environment::setGroupLimit(int group, Nd4jLong numBytes) {
-        sd::memory::MemoryCounter::getInstance()->setGroupLimit((sd::memory::MemoryType) group, numBytes);
+        sd::memory::MemoryCounter::getInstance().setGroupLimit((sd::memory::MemoryType) group, numBytes);
     }
 
     void Environment::setDeviceLimit(int deviceId, Nd4jLong numBytes) {
-        sd::memory::MemoryCounter::getInstance()->setDeviceLimit(deviceId, numBytes);
+        sd::memory::MemoryCounter::getInstance().setDeviceLimit(deviceId, numBytes);
     }
 
     Nd4jLong Environment::getGroupLimit(int group) {
-        return sd::memory::MemoryCounter::getInstance()->groupLimit((sd::memory::MemoryType) group);
+        return sd::memory::MemoryCounter::getInstance().groupLimit((sd::memory::MemoryType) group);
     }
 
     Nd4jLong Environment::getDeviceLimit(int deviceId) {
-        return sd::memory::MemoryCounter::getInstance()->deviceLimit(deviceId);
+        return sd::memory::MemoryCounter::getInstance().deviceLimit(deviceId);
     }
 
     Nd4jLong Environment::getGroupCounter(int group) {
-        return sd::memory::MemoryCounter::getInstance()->allocatedGroup((sd::memory::MemoryType) group);
+        return sd::memory::MemoryCounter::getInstance().allocatedGroup((sd::memory::MemoryType) group);
     }
 
     Nd4jLong Environment::getDeviceCounter(int deviceId) {
-        return sd::memory::MemoryCounter::getInstance()->allocatedDevice(deviceId);
+        return sd::memory::MemoryCounter::getInstance().allocatedDevice(deviceId);
     }
 
     uint64_t Environment::maxPrimaryMemory() {
@@ -393,7 +391,4 @@ namespace sd {
     uint64_t Environment::maxSpecialMemory() {
         return _maxTotalSpecialMemory.load();
     }
-
-    sd::Environment *sd::Environment::_instance = 0;
-
 }

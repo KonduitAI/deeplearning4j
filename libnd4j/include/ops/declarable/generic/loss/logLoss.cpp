@@ -130,9 +130,9 @@ DECLARE_SHAPE_FN(log_loss) {
     Nd4jLong const* outShapeInfo = nullptr;
 
     if(INT_ARG(0) != 0) 			// in this case output is scalar
-    	outShapeInfo = ConstantShapeHelper::getInstance()->scalarShapeInfo(outType);
+    	outShapeInfo = ConstantShapeHelper::getInstance().scalarShapeInfo(outType);
     else 							// in this case output has the same shape as labels and predictions
-    	outShapeInfo = ConstantShapeHelper::getInstance()->createShapeInfo(ShapeDescriptor(outType, shape::order(labelsShapeInfo), shape::shapeOf(labelsShapeInfo), shape::rank(labelsShapeInfo)));
+    	outShapeInfo = ConstantShapeHelper::getInstance().createShapeInfo(ShapeDescriptor(outType, shape::order(labelsShapeInfo), shape::shapeOf(labelsShapeInfo), shape::rank(labelsShapeInfo)));
 
     return SHAPELIST(outShapeInfo);
 }
@@ -197,7 +197,7 @@ CUSTOM_OP_IMPL(log_loss_grad, 3, 3, false, 1, 1) {
 				dLdw->assign(E.reduceNumber(reduce::Sum));
 			else if(weights != weightsBroad) {
 				std::vector<int> axesToReduceAlong = ShapeUtils::evalBroadcastBackwardAxis(weights->shapeInfo(), weightsBroad->shapeInfo());
-				E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true, false, false);
+				E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true);
 			}
 			else
 				dLdw->assign(E);
@@ -228,7 +228,7 @@ CUSTOM_OP_IMPL(log_loss_grad, 3, 3, false, 1, 1) {
 					*dLdw = 0.;
 				else if(weights != weightsBroad) {
 					std::vector<int> axesToReduceAlong = ShapeUtils::evalBroadcastBackwardAxis(weights->shapeInfo(), weightsBroad->shapeInfo());
-					((E * sum - (E * *weightsBroad).reduceNumber(reduce::Sum)) / (sum*sum)).reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true, false, false);
+					((E * sum - (E * *weightsBroad).reduceNumber(reduce::Sum)) / (sum*sum)).reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true);
 				}
 				else
 					dLdw->assign((E * sum - (E * *weightsBroad).reduceNumber(reduce::Sum)) / (sum*sum));
@@ -256,7 +256,7 @@ CUSTOM_OP_IMPL(log_loss_grad, 3, 3, false, 1, 1) {
 					dLdw->assign(E.reduceNumber(reduce::Sum) / numOfNonZeroWeights);
 				else if(weights != weightsBroad) {
 					std::vector<int> axesToReduceAlong = ShapeUtils::evalBroadcastBackwardAxis(weights->shapeInfo(), weightsBroad->shapeInfo());
-					E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true, false, false);
+					E.reduceAlongDimension(reduce::Sum, *dLdw, axesToReduceAlong, true);
 					*dLdw /= numOfNonZeroWeightsScalar;
 				}
 				else

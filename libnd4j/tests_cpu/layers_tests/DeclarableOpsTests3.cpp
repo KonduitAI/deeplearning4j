@@ -186,7 +186,7 @@ TEST_F(DeclarableOpsTests3, Test_Norm_1) {
     auto result0 = op.evaluate({&x}, {0.}, {});
 
     auto z0 = result0.at(0);
-    auto exp0 = x.reduceAlongDimension(reduce::NormFrobenius, empty, false, false);
+    auto exp0 = x.reduceAlongDimension(reduce::NormFrobenius, empty);
     ASSERT_TRUE(exp0.isSameShape(z0));
     ASSERT_TRUE(exp0.equalsTo(z0));
 
@@ -194,7 +194,7 @@ TEST_F(DeclarableOpsTests3, Test_Norm_1) {
     ASSERT_EQ(result1.status(), ND4J_STATUS_OK);
     auto z1 = result1.at(0);
     // z1->printIndexedBuffer("Z1");
-    auto exp1 = x.reduceAlongDimension(reduce::Norm2, dims, false, false);
+    auto exp1 = x.reduceAlongDimension(reduce::Norm2, dims);
     // exp1.printIndexedBuffer("EXP1");
     // z1->printShapeInfo("Z1 shape");
     // exp1.printShapeInfo("EXP1 shape");
@@ -204,7 +204,7 @@ TEST_F(DeclarableOpsTests3, Test_Norm_1) {
     auto result4 = op.evaluate({&x}, {4.}, {1});
 
     auto z4 = result4.at(0);
-    auto exp4= x.reduceAlongDimension(reduce::NormMax, dims, false, false);
+    auto exp4= x.reduceAlongDimension(reduce::NormMax, dims);
     ASSERT_TRUE(exp4.isSameShape(z4));
     ASSERT_TRUE(exp4.equalsTo(z4));
 }
@@ -222,7 +222,7 @@ TEST_F(DeclarableOpsTests3, Test_Norm_2) {
     auto result0 = op.evaluate({&x}, {0}, {});
 
     auto z0 = result0.at(0);
-    auto exp0 = x.reduceAlongDimension(reduce::NormFrobenius, empty, false, false);
+    auto exp0 = x.reduceAlongDimension(reduce::NormFrobenius, empty);
     ASSERT_TRUE(exp0.isSameShape(z0));
     ASSERT_TRUE(exp0.equalsTo(z0));
 
@@ -231,14 +231,14 @@ TEST_F(DeclarableOpsTests3, Test_Norm_2) {
     auto result1 = op.evaluate({&x, &axis}, {1}, {});
 
     auto z1 = result1.at(0);
-    auto exp1 = x.reduceAlongDimension(reduce::Norm2, dims, false, false);
+    auto exp1 = x.reduceAlongDimension(reduce::Norm2, dims);
     ASSERT_TRUE(exp1.isSameShape(z1));
     ASSERT_TRUE(exp1.equalsTo(z1));
 
     auto result4 = op.evaluate({&x, &axis}, {4}, {});
 
     auto z4 = result4.at(0);
-    auto exp4= x.reduceAlongDimension(reduce::NormMax, dims, false, false);
+    auto exp4= x.reduceAlongDimension(reduce::NormMax, dims);
     ASSERT_TRUE(exp4.isSameShape(z4));
     ASSERT_TRUE(exp4.equalsTo(z4));
 
@@ -1945,7 +1945,7 @@ TEST_F(DeclarableOpsTests3, svd_test1) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -1981,7 +1981,7 @@ TEST_F(DeclarableOpsTests3, svd_test2) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2017,7 +2017,7 @@ TEST_F(DeclarableOpsTests3, svd_test3) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2053,7 +2053,7 @@ TEST_F(DeclarableOpsTests3, svd_test4) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2089,7 +2089,7 @@ TEST_F(DeclarableOpsTests3, svd_test5) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2143,7 +2143,7 @@ TEST_F(DeclarableOpsTests3, svd_test6) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2317,7 +2317,7 @@ TEST_F(DeclarableOpsTests3, svd_test7) {
 
     // ASSERT_TRUE(expS.equalsTo(s));
 
-    // if(sd::Environment::getInstance()->isCPU()) {
+    // if(sd::Environment::getInstance().isCPU()) {
     //     ASSERT_TRUE(expU.equalsTo(u));
     //     ASSERT_TRUE(expV.equalsTo(v));
     // }
@@ -2380,7 +2380,7 @@ TEST_F(DeclarableOpsTests3, svd_test9) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2438,7 +2438,7 @@ TEST_F(DeclarableOpsTests3, svd_test10) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }
@@ -2482,7 +2482,7 @@ TEST_F(DeclarableOpsTests3, svd_test11) {
 
     ASSERT_TRUE(expS.equalsTo(s));
 
-    if(sd::Environment::getInstance()->isCPU()) {
+    if(sd::Environment::getInstance().isCPU()) {
         ASSERT_TRUE(expU.equalsTo(u));
         ASSERT_TRUE(expV.equalsTo(v));
     }

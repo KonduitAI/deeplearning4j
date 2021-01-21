@@ -1,10 +1,7 @@
 package org.deeplearning4j.rl4j.agent;
 
 import org.deeplearning4j.rl4j.agent.listener.AgentListener;
-import org.deeplearning4j.rl4j.environment.ActionSchema;
-import org.deeplearning4j.rl4j.environment.Environment;
-import org.deeplearning4j.rl4j.environment.Schema;
-import org.deeplearning4j.rl4j.environment.StepResult;
+import org.deeplearning4j.rl4j.environment.*;
 import org.deeplearning4j.rl4j.observation.Observation;
 import org.deeplearning4j.rl4j.observation.transform.TransformProcess;
 import org.deeplearning4j.rl4j.policy.IPolicy;
@@ -12,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.*;
 import org.nd4j.linalg.factory.Nd4j;
@@ -20,11 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AgentTest {
-
     @Mock Environment environmentMock;
     @Mock TransformProcess transformProcessMock;
     @Mock IPolicy policyMock;
@@ -36,7 +33,7 @@ public class AgentTest {
     @Test
     public void when_buildingWithNullEnvironment_expect_exception() {
         try {
-            Agent.builder(null, null, null).build();
+            new Agent(null, null, null, null, null);
             fail("NullPointerException should have been thrown");
         } catch (NullPointerException exception) {
             String expectedMessage = "environment is marked non-null but is null";
@@ -49,7 +46,7 @@ public class AgentTest {
     @Test
     public void when_buildingWithNullTransformProcess_expect_exception() {
         try {
-            Agent.builder(environmentMock, null, null).build();
+            new Agent(environmentMock, null, null, null, null);
             fail("NullPointerException should have been thrown");
         } catch (NullPointerException exception) {
             String expectedMessage = "transformProcess is marked non-null but is null";
@@ -62,7 +59,7 @@ public class AgentTest {
     @Test
     public void when_buildingWithNullPolicy_expect_exception() {
         try {
-            Agent.builder(environmentMock, transformProcessMock, null).build();
+            new Agent(environmentMock, transformProcessMock, null, null, null);
             fail("NullPointerException should have been thrown");
         } catch (NullPointerException exception) {
             String expectedMessage = "policy is marked non-null but is null";
@@ -73,14 +70,28 @@ public class AgentTest {
     }
 
     @Test
+    public void when_buildingWithNullConfiguration_expect_exception() {
+        try {
+            new Agent(environmentMock, transformProcessMock, policyMock, null, null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException exception) {
+            String expectedMessage = "configuration is marked non-null but is null";
+            String actualMessage = exception.getMessage();
+
+            assertTrue(actualMessage.contains(expectedMessage));
+        }
+    }
+
+    @Test
     public void when_buildingWithInvalidMaxSteps_expect_exception() {
         try {
-            Agent.builder(environmentMock, transformProcessMock, policyMock)
-                    .maxEpisodeSteps(0)
-                    .build();
+            Agent.Configuration configuration = Agent.Configuration.builder()
+                .maxEpisodeSteps(0)
+                .build();
+            new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
             fail("IllegalArgumentException should have been thrown");
         } catch (IllegalArgumentException exception) {
-            String expectedMessage = "maxEpisodeSteps must be greater than 0, got [0]";
+            String expectedMessage = "Configuration: maxEpisodeSteps must be null (no maximum) or greater than 0, got [0]";
             String actualMessage = exception.getMessage();
 
             assertTrue(actualMessage.contains(expectedMessage));
@@ -90,9 +101,8 @@ public class AgentTest {
     @Test
     public void when_buildingWithId_expect_idSetInAgent() {
         // Arrange
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
-                .id("TestAgent")
-                .build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, "TestAgent");
 
         // Assert
         assertEquals("TestAgent", sut.getId());
@@ -102,15 +112,15 @@ public class AgentTest {
     public void when_runIsCalled_expect_agentIsReset() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(new Observation(Nd4j.create(new double[] { 123.0 })));
         when(policyMock.nextAction(any(Observation.class))).thenReturn(1);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
-                .build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         when(listenerMock.onBeforeStep(any(Agent.class), any(Observation.class), anyInt())).thenReturn(AgentListener.ListenerResponse.STOP);
         sut.addListener(listenerMock);
@@ -119,7 +129,7 @@ public class AgentTest {
         sut.run();
 
         // Assert
-        assertEquals(0, sut.getEpisodeStepNumber());
+        assertEquals(0, sut.getEpisodeStepCount());
         verify(transformProcessMock).transform(envResetResult, 0, false);
         verify(policyMock, times(1)).reset();
         assertEquals(0.0, sut.getReward(), 0.00001);
@@ -130,14 +140,15 @@ public class AgentTest {
     public void when_runIsCalled_expect_onBeforeAndAfterEpisodeCalled() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(new Observation(Nd4j.create(new double[] { 123.0 })));
         when(environmentMock.isEpisodeFinished()).thenReturn(true);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock).build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
         Agent spy = Mockito.spy(sut);
 
         // Act
@@ -152,13 +163,14 @@ public class AgentTest {
     public void when_onBeforeEpisodeReturnsStop_expect_performStepAndOnAfterEpisodeNotCalled() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(new Observation(Nd4j.create(new double[] { 123.0 })));
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock).build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         when(listenerMock.onBeforeEpisode(any(Agent.class))).thenReturn(AgentListener.ListenerResponse.STOP);
         sut.addListener(listenerMock);
@@ -179,22 +191,22 @@ public class AgentTest {
     public void when_runIsCalledWithoutMaxStep_expect_agentRunUntilEpisodeIsFinished() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(new Observation(Nd4j.create(new double[] { 123.0 })));
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
-                .build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         final Agent spy = Mockito.spy(sut);
 
         doAnswer(invocation -> {
-            ((Agent)invocation.getMock()).incrementEpisodeStepNumber();
+            ((Agent)invocation.getMock()).incrementEpisodeStepCount();
             return null;
         }).when(spy).performStep();
-        when(environmentMock.isEpisodeFinished()).thenAnswer(invocation -> spy.getEpisodeStepNumber() >= 5 );
+        when(environmentMock.isEpisodeFinished()).thenAnswer(invocation -> spy.getEpisodeStepCount() >= 5 );
 
         // Act
         spy.run();
@@ -209,20 +221,21 @@ public class AgentTest {
     public void when_maxStepsIsReachedBeforeEposideEnds_expect_runTerminated() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(new Observation(Nd4j.create(new double[] { 123.0 })));
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(3)
                 .build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         final Agent spy = Mockito.spy(sut);
 
         doAnswer(invocation -> {
-            ((Agent)invocation.getMock()).incrementEpisodeStepNumber();
+            ((Agent)invocation.getMock()).incrementEpisodeStepCount();
             return null;
         }).when(spy).performStep();
 
@@ -239,14 +252,14 @@ public class AgentTest {
     public void when_initialObservationsAreSkipped_expect_performNoOpAction() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(Observation.SkippedObservation);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
-                .build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         when(listenerMock.onBeforeStep(any(Agent.class), any(Observation.class), any())).thenReturn(AgentListener.ListenerResponse.STOP);
         sut.addListener(listenerMock);
@@ -264,14 +277,14 @@ public class AgentTest {
     public void when_initialObservationsAreSkipped_expect_performNoOpActionAnd() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(Observation.SkippedObservation);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
-                .build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         when(listenerMock.onBeforeStep(any(Agent.class), any(Observation.class), any())).thenReturn(AgentListener.ListenerResponse.STOP);
         sut.addListener(listenerMock);
@@ -289,7 +302,7 @@ public class AgentTest {
     public void when_observationsIsSkipped_expect_performLastAction() {
         // Arrange
         Map<String, Object> envResetResult = new HashMap<>();
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(envResetResult);
         when(environmentMock.step(any(Integer.class))).thenReturn(new StepResult(envResetResult, 0.0, false));
         when(environmentMock.getSchema()).thenReturn(schema);
@@ -297,9 +310,10 @@ public class AgentTest {
         when(policyMock.nextAction(any(Observation.class)))
                 .thenAnswer(invocation -> (int)((Observation)invocation.getArgument(0)).getData().getDouble(0));
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(3)
                 .build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         Agent spy = Mockito.spy(sut);
 
@@ -331,13 +345,14 @@ public class AgentTest {
     @Test
     public void when_onBeforeStepReturnsStop_expect_performStepAndOnAfterEpisodeNotCalled() {
         // Arrange
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(new HashMap<>());
         when(environmentMock.getSchema()).thenReturn(schema);
 
         when(transformProcessMock.transform(any(Map.class), anyInt(), anyBoolean())).thenReturn(new Observation(Nd4j.create(new double[] { 123.0 })));
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock).build();
+        Agent.Configuration configuration = Agent.Configuration.builder().build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         when(listenerMock.onBeforeStep(any(Agent.class), any(Observation.class), any())).thenReturn(AgentListener.ListenerResponse.STOP);
         sut.addListener(listenerMock);
@@ -358,7 +373,7 @@ public class AgentTest {
     @Test
     public void when_observationIsNotSkipped_expect_policyActionIsSentToEnvironment() {
         // Arrange
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(new HashMap<>());
         when(environmentMock.getSchema()).thenReturn(schema);
         when(environmentMock.step(any(Integer.class))).thenReturn(new StepResult(new HashMap<>(), 0.0, false));
@@ -367,9 +382,10 @@ public class AgentTest {
 
         when(policyMock.nextAction(any(Observation.class))).thenReturn(123);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(1)
                 .build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         // Act
         sut.run();
@@ -381,7 +397,7 @@ public class AgentTest {
     @Test
     public void when_stepResultIsReceived_expect_observationAndRewardUpdated() {
         // Arrange
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(new HashMap<>());
         when(environmentMock.getSchema()).thenReturn(schema);
         when(environmentMock.step(any(Integer.class))).thenReturn(new StepResult(new HashMap<>(), 234.0, false));
@@ -390,9 +406,10 @@ public class AgentTest {
 
         when(policyMock.nextAction(any(Observation.class))).thenReturn(123);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(1)
                 .build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
 
         // Act
         sut.run();
@@ -405,7 +422,7 @@ public class AgentTest {
     @Test
     public void when_stepIsDone_expect_onAfterStepAndWithStepResult() {
         // Arrange
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(new HashMap<>());
         when(environmentMock.getSchema()).thenReturn(schema);
         StepResult stepResult = new StepResult(new HashMap<>(), 234.0, false);
@@ -415,9 +432,10 @@ public class AgentTest {
 
         when(policyMock.nextAction(any(Observation.class))).thenReturn(123);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(1)
                 .build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
         Agent spy = Mockito.spy(sut);
 
         // Act
@@ -430,7 +448,7 @@ public class AgentTest {
     @Test
     public void when_onAfterStepReturnsStop_expect_onAfterEpisodeNotCalled() {
         // Arrange
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(new HashMap<>());
         when(environmentMock.getSchema()).thenReturn(schema);
         StepResult stepResult = new StepResult(new HashMap<>(), 234.0, false);
@@ -440,9 +458,10 @@ public class AgentTest {
 
         when(policyMock.nextAction(any(Observation.class))).thenReturn(123);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(1)
                 .build();
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
         when(listenerMock.onAfterStep(any(Agent.class), any(StepResult.class))).thenReturn(AgentListener.ListenerResponse.STOP);
         sut.addListener(listenerMock);
 
@@ -458,7 +477,7 @@ public class AgentTest {
     @Test
     public void when_runIsCalled_expect_onAfterEpisodeIsCalled() {
         // Arrange
-        Schema schema = new Schema(new ActionSchema<>(-1));
+        Schema schema = new Schema(new IntegerActionSchema(0, -1));
         when(environmentMock.reset()).thenReturn(new HashMap<>());
         when(environmentMock.getSchema()).thenReturn(schema);
         StepResult stepResult = new StepResult(new HashMap<>(), 234.0, false);
@@ -468,10 +487,11 @@ public class AgentTest {
 
         when(policyMock.nextAction(any(Observation.class))).thenReturn(123);
 
-        Agent sut = Agent.builder(environmentMock, transformProcessMock, policyMock)
+        Agent.Configuration configuration = Agent.Configuration.builder()
                 .maxEpisodeSteps(1)
                 .build();
-
+        Agent sut = new Agent(environmentMock, transformProcessMock, policyMock, configuration, null);
+        sut.addListener(listenerMock);
         Agent spy = Mockito.spy(sut);
 
         // Act
@@ -479,5 +499,6 @@ public class AgentTest {
 
         // Assert
         verify(spy, times(1)).onAfterEpisode();
+        verify(listenerMock, times(1)).onAfterEpisode(any());
     }
 }

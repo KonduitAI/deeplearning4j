@@ -26,7 +26,6 @@ import org.tensorflow.framework.AttrValue;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.framework.NodeDef;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,12 +82,6 @@ public class DropOutInverted extends BaseRandomOp {
     public String onnxName() {
         return "Dropout";
     }
-
-    @Override
-    public String tensorflowName() {
-        return "Dropout";
-    }
-
 
     @Override
     public List<SDVariable> doDiff(List<SDVariable> f1) {

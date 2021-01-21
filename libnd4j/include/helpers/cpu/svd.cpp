@@ -773,16 +773,10 @@ void SVD<T>::DivideAndConquer(int col1, int col2, int row1W, int col1W, int shif
         auto temp = _u({col1,col1+k+1, col1+k,col1+k+1}, true);
         NDArray q1(temp);
 
-        std::vector<Nd4jLong> idx = {col1,col1+k+1, 0,0};
+        for (int i = col1 + k - 1; i >= col1; --i)
+            _u({col1,col1+k+1, i+1,i+2}, true).assign(_u({col1,col1+k+1, i,i+1}, true));
 
-        for (int i = col1 + k - 1; i >= col1; --i) {
-            idx[2] = i+1;
-            idx[3] = i+2;
-            auto temp = _u(idx, true);      // {col1,col1+k+1, i+1,i+2}
-            idx[2] = i;
-            idx[3] = i+1;
-            temp.assign(_u(idx, true));     // {col1, col1+k+1, i, i+1}
-        }
+        NDArray temp1 = _u({col1+k+1,col1+n+1, col2+1,col2+2}, true);
 
         _u({col1,col1+k+1, col1,col1+1}, true).assign(q1 * c0);
         _u({col1,col1+k+1, col2+1,col2+2}, true).assign(q1 * (-s0));

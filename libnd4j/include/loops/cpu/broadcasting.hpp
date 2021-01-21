@@ -103,7 +103,7 @@ namespace broadcast {
                 auto tadOffsets = xTadOffset;
 
                 if (xTadShapeInfo == nullptr || tadOffsets == nullptr) {
-                    auto tadPack = sd::ConstantTadHelper::getInstance()->tadForDimensions(xShapeInfo, dimension, dimensionLength);
+                    auto tadPack = sd::ConstantTadHelper::getInstance().tadForDimensions(xShapeInfo, dimension, dimensionLength);
 
                     xTadShapeShapeInfo = tadPack.primaryShapeInfo();
                     tadOffsets = tadPack.primaryOffsets();
@@ -396,7 +396,7 @@ namespace broadcast {
             auto tadOffsets = yTadOffset;
 
             if (yTadShapeInfo == nullptr || tadOffsets == nullptr) {
-                auto tadPack = sd::ConstantTadHelper::getInstance()->tadForDimensions(yShapeInfo, dimension, dimensionLength);
+                auto tadPack = sd::ConstantTadHelper::getInstance().tadForDimensions(yShapeInfo, dimension, dimensionLength);
 
                 yTadShapeShapeInfo = tadPack.primaryShapeInfo();
                 tadOffsets = tadPack.primaryOffsets();
@@ -416,7 +416,7 @@ namespace broadcast {
 
             int tadsPerThread = tads / TAD_THRESHOLD;
             int threads = sd::math::nd4j_max<int>(1, tadsPerThread);
-            threads = sd::math::nd4j_min<int>(threads, sd::Environment::getInstance()->maxThreads());
+            threads = sd::math::nd4j_min<int>(threads, sd::Environment::getInstance().maxThreads());
 
             auto yEws = shape::elementWiseStride(yTadShapeShapeInfo);
             auto xEws = shape::elementWiseStride(xShapeInfo);
@@ -773,24 +773,14 @@ static void execDefault(const X *x, const Nd4jLong *xShapeInfo, const Y *y, cons
     const bool xzSameOffsets = shape::haveSameShapeAndStrides(xShapeInfo, zShapeInfo);
     const bool yzSameOffsets = shape::haveSameShapeAndStrides(yShapeInfo, zShapeInfo);
 
-    const int rank = shape::rank(zShapeInfo);   // xRank = yRank = zRank
-
     auto func = PRAGMA_THREADS_FOR{
 
-        int xCoords[MAX_RANK], yCoords[MAX_RANK], zCoords[MAX_RANK];
+        int coords[MAX_RANK];
+        Nd4jLong xOffset, yOffset, zOffset;
 
         for (auto i = start; i < stop; ++i) {
 
-            shape::index2coordsCPU(start, i, zShapeInfo, zCoords);
-
-            for (uint j = 0; j < rank; ++j) {
-                xCoords[j] = shape::sizeAt(xShapeInfo, j) == 1 ? 0 : zCoords[j];
-                yCoords[j] = shape::sizeAt(yShapeInfo, j) == 1 ? 0 : zCoords[j];
-            }
-
-            const auto zOffset = shape::getOffset(zShapeInfo, zCoords);
-            const auto xOffset = xzSameOffsets ? zOffset : shape::getOffset(xShapeInfo, xCoords);
-            const auto yOffset = yzSameOffsets ? zOffset : shape::getOffset(yShapeInfo, yCoords);
+            shape::getOffsetBroadcast(start, i, zShapeInfo, xShapeInfo, yShapeInfo, xzSameOffsets, yzSameOffsets, coords, zOffset, xOffset, yOffset);
 
             z[zOffset] = OpType::op(x[xOffset], y[yOffset]);
         }

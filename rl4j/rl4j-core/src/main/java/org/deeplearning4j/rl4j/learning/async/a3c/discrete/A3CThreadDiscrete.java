@@ -66,7 +66,7 @@ public class A3CThreadDiscrete<OBSERVATION extends Encodable> extends AsyncThrea
 
     @Override
     protected Policy<Integer> getPolicy(IActorCritic net) {
-        return new ACPolicy(net, rnd);
+        return new ACPolicy<OBSERVATION>(net, true, rnd);
     }
 
     /**

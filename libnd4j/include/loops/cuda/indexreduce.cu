@@ -120,12 +120,11 @@ namespace functions {
 
         template <typename X, typename Z>
         template <typename OpType>
-        __device__ void IndexReduce<X, Z>::aggregatePartials(IndexValue<X> **sPartialsRef, Nd4jLong tid, Nd4jLong numElements, void *vextraParams) {
+        __device__ void IndexReduce<X, Z>::aggregatePartials(IndexValue<X> *sPartials, Nd4jLong tid, Nd4jLong numElements, void *vextraParams) {
             // start the shared memory loop on the next power of 2 less
             // than the block size.  If block size is not a power of 2,
             // accumulate the intermediate sums in the remainder range.
             auto extraParams = static_cast<X*>(vextraParams);
-            IndexValue<X> *sPartials = *sPartialsRef;
             Nd4jLong floorPow2 = blockDim.x;
 
             if (floorPow2 & (floorPow2 - 1)) {
@@ -188,15 +187,10 @@ namespace functions {
             auto reductionBuffer = static_cast<X*>(vreductionBuffer);
             auto order = shape::order(xShapeInfo);
             int tid = blockIdx.x * blockDim.x + threadIdx.x;
-            __shared__ volatile int resultScalar;
+            __shared__ volatile bool resultScalar;
 
             //shared memory space for storing intermediate results
-            __shared__ IndexValue<X>* sPartials;
-            if(threadIdx.x == 0) {
-                extern __shared__ unsigned char shmem[];
-                sPartials = reinterpret_cast<IndexValue<X>*>(shmem);
-            }
-            __syncthreads();
+            __shared__ IndexValue<X> sPartials[CUDA_BLOCK_SIZE];
 
             sPartials[threadIdx.x] = OpType::startingIndexValue(dx);
 
@@ -214,17 +208,10 @@ namespace functions {
                     zLen = shape::length(zShapeInfo);
                 else zLen = 1;
 
-                if (dimensionLength == 1) {
-                    if (zLen == 1 && (dimension == nullptr || dimension[0] == MAX_DIMENSION))
-                        resultScalar = 1;
-                    else
-                        resultScalar = 0;
-                }
-                else
-                    resultScalar = 0;
-
                 if (zLen == 1)
-                    resultScalar = 1;
+                    resultScalar = true;
+                else
+                    resultScalar = false;
 
                 xLength = shape::length(xShapeInfo);
             }
@@ -268,7 +255,7 @@ namespace functions {
                         }
 
                         __syncthreads();
-                        aggregatePartials<OpType>(&sPartials, threadIdx.x, sd::math::nd4j_min<int>(blockDim.x, tadLength),extraParams);
+                        aggregatePartials<OpType>(sPartials, threadIdx.x, sd::math::nd4j_min<int>(blockDim.x, tadLength),extraParams);
 
                         __syncthreads();
                         if (threadIdx.x == 0) {
@@ -289,7 +276,7 @@ namespace functions {
                         }
 
                         __syncthreads();
-                        aggregatePartials<OpType>(&sPartials, threadIdx.x, sd::math::nd4j_min<int>(blockDim.x, tadLength),extraParams);
+                        aggregatePartials<OpType>(sPartials, threadIdx.x, sd::math::nd4j_min<int>(blockDim.x, tadLength),extraParams);
 
                         __syncthreads();
                         if (threadIdx.x == 0) {
@@ -320,7 +307,7 @@ namespace functions {
                 sPartials[threadIdx.x] = reduction;
                 __syncthreads();
 
-                aggregatePartials<OpType>(&sPartials, threadIdx.x, sd::math::nd4j_min<int>(blockDim.x, (int) n),extraParams);
+                aggregatePartials<OpType>(sPartials, threadIdx.x, sd::math::nd4j_min<int>(blockDim.x, (int) n),extraParams);
                 __syncthreads();
 
                 if (gridDim.x > 1) {
@@ -352,7 +339,7 @@ namespace functions {
                         }
 
                         __syncthreads();
-                        aggregatePartials<OpType>(&sPartials, threadIdx.x, sd::math::nd4j_min<int>(gridDim.x, blockDim.x),extraParams);
+                        aggregatePartials<OpType>(sPartials, threadIdx.x, sd::math::nd4j_min<int>(gridDim.x, blockDim.x),extraParams);
 
                         __syncthreads();
                         if (tid == 0) {
