@@ -28,7 +28,7 @@ import org.nd4j.nativeblas.Nd4jBlas;
 @Slf4j
 public class CpuBlas extends Nd4jBlas {
 
-    // values from /opt/nec/ve/nlc/2.0.0/include/cblas.h
+    // values from /opt/nec/ve/nlc/2.2.0/include/cblas.h
     static final int CblasRowMajor=101, CblasColMajor=102,
                      CblasNoTrans=111, CblasTrans=112, CblasConjTrans=113,
                      CblasUpper=121, CblasLower=122,
