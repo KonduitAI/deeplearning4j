@@ -28,8 +28,24 @@ namespace sd    {
 namespace ops     {
 namespace helpers {
 
-
-	void ctcLoss(graph::Context& block, const NDArray &logInput, const NDArray &targetLabels, const NDArray &logInputLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex);
+	/**
+	 * @brief Implementation of CTC loss function 
+	 *  References:
+        Connectionist Temporal Classification - Labeling Unsegmented Sequence Data
+        with Recurrent Neural Networks:
+        [Graves et al., 2006](https://dl.acm.org/citation.cfm?id=1143891)
+        ([pdf](http://www.cs.toronto.edu/~graves/icml_2006.pdf))
+	 * 
+	 * @param block Context
+	 * @param logits NDArray {BATCH_LEN, FRAME_LEN, CLASS_LEN }. log softmax of  rnn output. It should include a blank label as well. 
+	 * @param targetLabels NDArray {BATCH_LEN, MAX_TARGET_LEN} 
+	 * @param logitsLengths NDArray {BATCH_LEN} Length of input sequence in logits
+	 * @param targetLabelLengths NDArray {BATCH_LEN} Length of label sequence in labels
+	 * @param logLosses NDArray {BATCH_LEN} or EMPTY. if empty it will be skipped. negative log probabilities of loss
+	 * @param gradients NDArray {BATCH_LEN, FRAME_LEN, CLASS_LEN } or EMPTY. gradients
+	 * @param blankIndex index of the blank label in logits
+	 */
+	void ctcLoss(graph::Context& block, const NDArray &logitsInput, const NDArray &targetLabels, const NDArray &logitsLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex);
 
 }
 }

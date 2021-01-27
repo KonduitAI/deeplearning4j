@@ -388,32 +388,32 @@ namespace sd
 
             template <typename Type, typename IndexType>
             void
-            ctc_loss_(const NDArray &logInput, const NDArray &targetLabels, const NDArray &logInputLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex)
+            ctc_loss_(const NDArray &logits, const NDArray &targetLabels, const NDArray &logitsLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex)
             {
                 // lenT  - input length of T
                 // lenS  - lenght of sequence
                 // lenSB - length with blanks
-                auto lenBatch = logInput.shapeOf()[0];
+                auto lenBatch = logits.shapeOf()[0];
 
-                auto maxLenT = logInput.shapeOf()[1];
-                auto lenK = logInput.shapeOf()[2];
+                auto maxLenT = logits.shapeOf()[1];
+                auto lenK = logits.shapeOf()[2];
                 auto maxLenS = targetLabels.shapeOf()[1];
 
                 // get probability bufer and tagetLabels buffer
-                auto logP = logInput.bufferAsT<Type>();
+                auto logP = logits.bufferAsT<Type>();
                 auto lblPtr = targetLabels.bufferAsT<IndexType>(); 
 
-                auto lenTPtr = logInputLengths.bufferAsT<IndexType>();
+                auto lenTPtr = logitsLengths.bufferAsT<IndexType>();
                 auto lenSPtr = targetLabelLengths.bufferAsT<IndexType>();
 
                 auto batchLbl = targetLabels.stridesOf()[0];
-                auto batchP = logInput.stridesOf()[0];
-                auto incP = logInput.stridesOf()[1];
+                auto batchP = logits.stridesOf()[0];
+                auto incP = logits.stridesOf()[1];
  
                 auto elwiseSLen = targetLabelLengths.stridesOf()[0];
-                auto elwiseT = logInputLengths.stridesOf()[0];
+                auto elwiseT = logitsLengths.stridesOf()[0];
                 auto elwiseS = targetLabels.stridesOf()[1];
-                auto elwiseP = logInput.stridesOf()[2];
+                auto elwiseP = logits.stridesOf()[2];
 
                 int  elwiseLL = 0;
                 Type *logLossPtr = nullptr;
@@ -493,13 +493,13 @@ namespace sd
                 samediff::Threads::parallel_for(func, 0, lenBatch, 1);
             }
 
-           void ctcLoss(graph::Context& block, const NDArray &logInput, const NDArray &targetLabels, const NDArray &logInputLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex){
+           void ctcLoss(graph::Context& block, const NDArray &logits, const NDArray &targetLabels, const NDArray &logitsLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex){
  
-			    BUILD_DOUBLE_SELECTOR(logInput.dataType(), targetLabels.dataType(), ctc_loss_, (logInput, targetLabels, logInputLengths, targetLabelLengths, logLosses, gradients, blankIndex), FLOAT_TYPES, INDEXING_TYPES);
+			    BUILD_DOUBLE_SELECTOR(logits.dataType(), targetLabels.dataType(), ctc_loss_, (logits, targetLabels, logitsLengths, targetLabelLengths, logLosses, gradients, blankIndex), FLOAT_TYPES, INDEXING_TYPES);
 			}
 
 
-			BUILD_DOUBLE_TEMPLATE(template void ctc_loss_, (const NDArray &logInput, const NDArray &targetLabels, const NDArray &logInputLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex), FLOAT_TYPES, INDEXING_TYPES);
+			BUILD_DOUBLE_TEMPLATE(template void ctc_loss_, (const NDArray &logits, const NDArray &targetLabels, const NDArray &logitsLengths, const NDArray &targetLabelLengths, NDArray &logLosses, NDArray &gradients, int blankIndex), FLOAT_TYPES, INDEXING_TYPES);
 
 
         } // namespace helpers

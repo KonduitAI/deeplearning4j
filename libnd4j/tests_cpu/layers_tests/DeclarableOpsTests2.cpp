@@ -4187,6 +4187,7 @@ TEST_F(DeclarableOpsTests2, ctc_loss_test1) {
     constexpr int MIN_TARGET_LEN = 2;
     constexpr int BLANK_INDEX=CLASS_LEN-1;
     //logits were generated using numpy random and applying log softmax
+    //[ctc_loss.py](https://gist.github.com/quickwritereader/ca9858be201fd857348826a56e2bebc4)
     auto logits =  NDArrayFactory::create<float>('c', {BATCH_LEN, FRAME_LEN, CLASS_LEN },
       {-1.52900087f, -1.7423916f, -1.79369985f, -1.68980741f, -1.35771429f,
        -2.08261997f, -1.65483307f, -1.31878488f, -1.38940393f, -1.78624192f,
