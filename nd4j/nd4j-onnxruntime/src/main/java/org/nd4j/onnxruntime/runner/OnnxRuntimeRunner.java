@@ -44,18 +44,15 @@ public class OnnxRuntimeRunner implements Closeable  {
     private SessionOptions sessionOptions;
     private   static Env env;
     private Pointer bp;
-    private List<String> inputNames,outputNames;
 
 
     @Builder
-    public OnnxRuntimeRunner(String modelUri,List<String> inputs,List<String> outputs) {
+    public OnnxRuntimeRunner(String modelUri) {
         if(env == null) {
             env = new Env(ONNXUtils.getOnnxLogLevelFromLogger(log), new BytePointer("nd4j-serving-onnx-session-" + UUID.randomUUID().toString()));
             env.retainReference();
         }
 
-        this.inputNames = inputs;
-        this.outputNames = outputs;
         sessionOptions = new SessionOptions();
         sessionOptions.SetGraphOptimizationLevel(ORT_ENABLE_EXTENDED);
         sessionOptions.SetIntraOpNumThreads(1);
@@ -128,13 +125,24 @@ public class OnnxRuntimeRunner implements Closeable  {
                 outputNodeNames,
                 numOutputNodes);
 
+        outputVector.retainReference();
         Map<String, INDArray> ret = new LinkedHashMap<>();
 
         for (int i = 0; i < numOutputNodes; i++) {
             Value outValue = outputVector.get(i);
-
+            outValue.retainReference();
+            TypeInfo typeInfo = session.GetOutputTypeInfo(i);
             DataBuffer buffer = getDataBuffer(outValue);
-            ret.put((outputNodeNames.get(BytePointer.class, i)).getString(), Nd4j.create(buffer));
+            LongPointer longPointer = outValue.GetTensorTypeAndShapeInfo().GetShape();
+            //shape info can be null
+            if(longPointer != null) {
+                long[] shape = new long[(int) longPointer.capacity()];
+                longPointer.get(shape);
+                ret.put((outputNodeNames.get(BytePointer.class, i)).getString(), Nd4j.create(buffer).reshape(shape));
+            } else {
+                ret.put((outputNodeNames.get(BytePointer.class, i)).getString(), Nd4j.create(buffer));
+
+            }
         }
 
         return ret;
