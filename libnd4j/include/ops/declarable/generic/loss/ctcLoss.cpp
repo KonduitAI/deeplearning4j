@@ -80,7 +80,7 @@ DECLARE_SHAPE_FN(ctc_loss) {
 
 
 //////////////////////////////////////////////////////////////////////////
-CUSTOM_OP_IMPL(ctc_loss_grad, 4, 1, false, 1, 1) {
+CUSTOM_OP_IMPL(ctc_loss_grad, 4, 1, false, 0, 1) {
  
     auto targetLabels = INPUT_VARIABLE(0);
     auto logitInput = INPUT_VARIABLE(1);
