@@ -4177,14 +4177,20 @@ TEST_F(DeclarableOpsTests2, lstmCell_test12) {
     
 }
 
-
+#if !defined(__CUDABLAS__) || defined(HAVE_CUDNN)
 TEST_F(DeclarableOpsTests2, ctc_loss_test1) {
     constexpr int FRAME_LEN = 6 ;
     constexpr int CLASS_LEN = 5 ;
     constexpr int BATCH_LEN = 4  ;
-    constexpr int MAX_TARGET_LEN = 4;
     constexpr int MIN_TARGET_LEN = 2;
+    constexpr int MAX_TARGET_LEN = 4;
+
+#if defined(HAVE_CUDNN)
+//cudnn blankindex should be 0
+    constexpr int BLANK_INDEX=0;
+#else
     constexpr int BLANK_INDEX=CLASS_LEN-1;
+#endif
     //logits were generated using numpy random and applying log softmax
     //[ctc_loss.py](https://gist.github.com/quickwritereader/ca9858be201fd857348826a56e2bebc4)
     auto logits =  NDArrayFactory::create<float>('c', {BATCH_LEN, FRAME_LEN, CLASS_LEN },
@@ -4215,10 +4221,22 @@ TEST_F(DeclarableOpsTests2, ctc_loss_test1) {
        });
     
     auto logits_length = NDArrayFactory::create<int>('c', {BATCH_LEN}, {FRAME_LEN,FRAME_LEN,FRAME_LEN,FRAME_LEN});
-    auto labels = NDArrayFactory::create<int>('c',{BATCH_LEN, MAX_TARGET_LEN}, {2, 2, 2, 0, 1, 1, 0, 0, 1, 2, 2, 3, 0, 2, 1, 2});
-    auto labels_len =  NDArrayFactory::create<int>('c', {BATCH_LEN}, {MIN_TARGET_LEN, MIN_TARGET_LEN +1, MAX_TARGET_LEN, MIN_TARGET_LEN +1});
+    std::vector<int> target ={2, 2, 2, 0, 1, 1, 0, 0, 1, 2, 2, 3, 0, 2, 1, 2};
+#if defined(HAVE_CUDNN) 
+    //for cudnn blank index is -. therefore our targets cant be 0
+    for(int i=0;i<target.size();i++){
+        target[i]=target[i]+1;
+    }
+#endif
+    auto labels = NDArrayFactory::create<int>('c',{BATCH_LEN, MAX_TARGET_LEN}, target );
 
+    auto labels_len =  NDArrayFactory::create<int>('c', {BATCH_LEN}, {MIN_TARGET_LEN,MIN_TARGET_LEN +1, MAX_TARGET_LEN, MIN_TARGET_LEN +1});
+
+#if defined(HAVE_CUDNN)
+    auto expected = NDArrayFactory::create<float>('c', {BATCH_LEN}, {6.088762f,  5.9546056f, 7.5806675f, 5.5532417f});
+#else
     auto expected = NDArrayFactory::create<float>('c', {BATCH_LEN}, {6.0661564f, 6.4285727f, 7.7180986f, 4.936057f});
+#endif
     sd::ops::ctc_loss op;
 
     //logits.printIndexedBuffer("logits");
@@ -4321,4 +4339,4 @@ TEST_F(DeclarableOpsTests2, ctc_loss_grad_test1) {
 
 }
 
-
+#endif
