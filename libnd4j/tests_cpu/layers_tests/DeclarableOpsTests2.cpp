@@ -4262,7 +4262,12 @@ TEST_F(DeclarableOpsTests2, ctc_loss_grad_test1) {
     constexpr int BATCH_LEN = 4  ;
     constexpr int MAX_TARGET_LEN = 4;
     constexpr int MIN_TARGET_LEN = 2;
+#if defined(HAVE_CUDNN)
+//cudnn blankindex should be 0
+    constexpr int BLANK_INDEX=0;
+#else
     constexpr int BLANK_INDEX=CLASS_LEN-1;
+#endif
     //logits were generated using numpy random and applying log softmax
     //[ctc_loss.py](https://gist.github.com/quickwritereader/ca9858be201fd857348826a56e2bebc4)
     auto logits =  NDArrayFactory::create<float>('c', {BATCH_LEN, FRAME_LEN, CLASS_LEN },
@@ -4293,9 +4298,45 @@ TEST_F(DeclarableOpsTests2, ctc_loss_grad_test1) {
        });
     
     auto logits_length = NDArrayFactory::create<int>('c', {BATCH_LEN}, {FRAME_LEN,FRAME_LEN,FRAME_LEN,FRAME_LEN});
-    auto labels = NDArrayFactory::create<int>('c',{BATCH_LEN, MAX_TARGET_LEN}, {2, 2, 2, 0, 1, 1, 0, 0, 1, 2, 2, 3, 0, 2, 1, 2});
+    std::vector<int> target ={2, 2, 2, 0, 1, 1, 0, 0, 1, 2, 2, 3, 0, 2, 1, 2};
+#if defined(HAVE_CUDNN) 
+    //for cudnn blank index is 0. therefore our targets cant be 0
+    for(int i=0;i<target.size();i++){
+        target[i]=target[i]+1;
+    }
+#endif
+    auto labels = NDArrayFactory::create<int>('c',{BATCH_LEN, MAX_TARGET_LEN}, target );
     auto labels_len =  NDArrayFactory::create<int>('c', {BATCH_LEN}, {MIN_TARGET_LEN, MIN_TARGET_LEN +1, MAX_TARGET_LEN, MIN_TARGET_LEN +1});
-
+#if defined(HAVE_CUDNN)
+//results for blank Index=0
+    auto expected =  NDArrayFactory::create<float>('c', {BATCH_LEN, FRAME_LEN, CLASS_LEN}, 
+    {
+       -0.2673936f,   0.17510113f,  0.16634358f, -0.33129925f, 0.2572481f,
+       -0.17626494f,  0.19112396f,  0.2674601f,  -0.44990796f, 0.1675888f,
+       -0.33695614f,  0.27529928f,  0.1543045f,  -0.28359637f, 0.19094874f,
+       -0.26243734f,  0.1236309f,   0.13383625f, -0.26430953f, 0.26927972f,
+       -0.33964074f,  0.21812534f,  0.1907491f,  -0.3002034f,  0.23096953f,
+       -0.200618f,    0.15514892f,  0.19264314f, -0.3310032f,  0.18382908f,
+       -0.04921098f,  0.21598133f, -0.52588296f,  0.13597165f, 0.22314091f,
+       -0.38300496f,  0.11730913f, -0.2633105f,   0.2825293f,  0.24647695f,
+       -0.34686768f,  0.16539758f, -0.280806f,    0.24202588f, 0.22025016f,
+       -0.21347934f,  0.19306758f, -0.304228f,    0.18027757f, 0.14436226f,
+        0.02692442f, -0.08318196f, -0.2236172f,   0.15634498f, 0.12352975f,
+        0.03155032f, -0.5855137f,   0.14724013f,  0.18989684f, 0.2168265f,
+        0.10374172f,  0.11116405f, -0.67208123f,  0.25178862f, 0.20538692f,
+        0.09189357f,  0.14803931f,  0.00725803f, -0.5132462f,  0.2660552f,
+       -0.4309733f,   0.16058321f,  0.16320339f, -0.21557501f, 0.32276183f,
+       -0.32850766f,  0.2217448f,   0.21034124f, -0.2934553f,  0.18987685f,
+        0.06212101f,  0.1750198f,   0.17887063f, -0.38780046f, -0.02821094f,
+        0.05002825f,  0.19618073f,  0.23872548f,  0.16032055f, -0.64525515f,
+       -0.19972575f, -0.38012666f,  0.20550671f,  0.14981383f, 0.22453187f,
+       -0.02966774f, -0.34505254f,  0.21335125f, -0.00961271f, 0.17098173f,
+       -0.04058227f, -0.03726651f,  0.16733989f, -0.295955f,   0.20646395f,
+       -0.05670565f,  0.12657055f, -0.00966609f, -0.2936089f,  0.23341022f,
+       -0.01142454f,  0.17226583f, -0.2727364f,  -0.01445916f, 0.12635438f,
+       -0.23244353f,  0.22339724f, -0.5122685f,   0.29238105f, 0.2289337f
+    });
+#else
     auto expected = NDArrayFactory::create<float>('c', {BATCH_LEN, FRAME_LEN, CLASS_LEN}, 
     {
         0.21675213f,  0.17510113f, -0.27113008f,  0.18455505f, -0.30527824f,
@@ -4322,8 +4363,8 @@ TEST_F(DeclarableOpsTests2, ctc_loss_grad_test1) {
         0.1546654f,   0.00699046f, -0.26606354f,  0.17164008f, -0.06723261f,
         0.2533586f,  -0.31069174f, -0.07983261f,  0.19742766f, -0.06026195f,
         0.1379485f,  -0.47723943f,  0.11733948f,  0.29238105f, -0.07042958
-    }
-    );
+    });
+#endif
     sd::ops::ctc_loss_grad op;
 
     auto results = op.evaluate({&labels, &logits, &labels_len, &logits_length}, {}, {BLANK_INDEX});
